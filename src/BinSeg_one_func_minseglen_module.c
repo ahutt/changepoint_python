@@ -1,16 +1,10 @@
-#include <Python.h>
-#include <R.h> 
-#include <Rmath.h>
-#include <Rinternals.h> // RK addition
-#include <R_ext/RS.h>	// RK addition
-#include <R_ext/Lapack.h> // RK addition
-#include <R_ext/BLAS.h> // RK addition
+//#include <Python.h>
 #include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <stdio.h> // already pulled in by Python.h
+#include <stdlib.h> // already pulled in by Python.h
 #include <stddef.h>
-#include <string.h>
-//#include "cost_general_functions.c" // commented out as implicitly in the workspace as using the package.
+#include <string.h> // already pulled in by Python.h
+#include "cost_general_functions.c" 
 
 
 void binseg(cost_func,sumstat,n,pen,Q,cptsout,minseglen,likeout,op_cps, shape)
@@ -90,7 +84,7 @@ costfunction = &mbic_meanvar_poisson;
      void order_vec();
 
     for(q=0;q<*Q;q++){
-      R_CheckUserInterrupt(); // checks if user has interrupted the R session and quits if true 
+      //R_CheckUserInterrupt(); // checks if user has interrupted the R session and quits if true 
       for(p=0;p<*n;p++){lambda[p]=0;}
         i=1;
         st=tau[0]+1;

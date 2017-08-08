@@ -67,16 +67,16 @@ def single_meanvar_exp(data, minseglen, penalty = "MBIC", pen_value = 0, Class =
         
     penalty_decision(penalty, pen_value, n, diffparam = 1, asymcheck = "meanvar_exp", method = "AMOC")
     if shape(data) == (0,0) or (0,) or () or None:
-        tmp = single_meanvar_exp_calc(coredata(data), minseglen, extrainf = True)
+        tmp = single_meanvar_exp_calc(data, minseglen, extrainf = True)
         if penalty == "MBIC":
             tmp[2] = tmp[2] + log(tmp[0]) + log(n - tmp[0] + 1)
         ans = decision(tmp[0], tmp[1], tmp[2], penalty, n, pen_value, diffparam = 1)
         if Class == True:
-            return(class_input(data, cpttype = "mean and variance", method = "AMOC", test_stat = "Exponential", penalty = penalty, pen_value = ans$pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans$cpt]))
+            return(class_input(data, cpttype = "mean and variance", method = "AMOC", test_stat = "Exponential", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt]))
         else:
             an = (2 * log(log(n))) ** (1/2)
             bn = 2 * log(log(n)) + (1/2) * log(log(log(n))) - (1/2) * log(pi)
-            out = [ans$cpt, exp(-2 * exp(-an * sqrt(abs(tmp[1] - tmp[2])) + an * bn)) - exp(-2 * exp(an * bn))] #Chen & Gupta (2000) pg149
+            out = [ans.cpt, exp(-2 * exp(-an * sqrt(abs(tmp[1] - tmp[2])) + an * bn)) - exp(-2 * exp(an * bn))] #Chen & Gupta (2000) pg149
             out.rename(columns({'cpt', 'p value'}))
             return(out)
     else:
@@ -88,12 +88,12 @@ def single_meanvar_exp(data, minseglen, penalty = "MBIC", pen_value = 0, Class =
             rep = len(data)
             out = list()
             for i in range(1, rep):
-                out[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Exponential", penalty = penalty, pen_value = ans$pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans$cpt[i]])
+                out[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Exponential", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt[i]])
             return(out)
         else:
             an = (2 * log(log(n))) ** (1/2)
             bn = 2 * log(log(n)) + (1/2) * log(log(log(n))) - (1/2) * log(pi)
-            out = vstack(ans$cpt, exp(-2 * exp(-an * sqrt(abs(tmp[:,1] - tmp[:,2])) + bn)) - exp(-2 * exp(bn))) #chen & Gupta (2000) pg149
+            out = vstack(ans.cpt, exp(-2 * exp(-an * sqrt(abs(tmp[:,1] - tmp[:,2])) + bn)) - exp(-2 * exp(bn))) #chen & Gupta (2000) pg149
             out.rename(columns({'cpt', 'p value'}))
             out.rename(rows({None, None}))
             return(out)
@@ -137,7 +137,7 @@ def segneigh_mean_var_exp(data, Q = 5, pen = 0):
     op_cps = None
     k = range(0, (Q - 1))
     
-    for i in range(1: size(pen)):
+    for i in range(1,size(pen)):
         criterion = -2 * like_Q[:,n] + k * pen[i]
         op_cps = [op_cps, which(criterion == min(criterion)) - 1]
     if op_cps == (Q - 1):
@@ -148,7 +148,7 @@ def segneigh_mean_var_exp(data, Q = 5, pen = 0):
         cpts = [sorted(cps_Q[op_cps + 1,:][cps_Q[op_cps + 1,:] > 0], reverse = True), n]
     return(list(cps = (apply_over_axes(cps_Q, 1, sort)).T, cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = like_Q[:,n]))
 
-def multiple_meanvar_exp(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True, minseglen):
+def multiple_meanvar_exp(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
     if sum(data < 0) > 0:
         print('Exponential test statistic requires positive data')
     if(not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh")):
@@ -163,16 +163,17 @@ def multiple_meanvar_exp(data, mul_method = "PELT", penalty = "MBIC", pen_value 
         #single dataset
         n = size(data)
     else:
-        if n < (2 * minseglen):
-            print('Minimum segment legnth is too large to include a change in this data')
-        pen_value = penalty_decision(penalty, pen_value, n, diffparam = 1, asymcheck = costfunc, method = mul_method)
-        if shape(data) == (0,0) or (0,) or () or None:
-            #single dataset
-            out = data_input(data = data, method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
-            if Class == True:
-                return(class_input(data, cpttype = "mean and variance", method = mul_method, test_stat = "Exponential", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
-            else:
-                return(out[[2]])
+        n = len(data.T)
+    if n < (2 * minseglen):
+        print('Minimum segment legnth is too large to include a change in this data')
+    pen_value = penalty_decision(penalty, pen_value, n, diffparam = 1, asymcheck = costfunc, method = mul_method)
+    if shape(data) == (0,0) or (0,) or () or None:
+        #single dataset
+        out = data_input(data = data, method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
+        if Class == True:
+            return(class_input(data, cpttype = "mean and variance", method = mul_method, test_stat = "Exponential", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
+        else:
+            return(out[[2]])
     else:
         rep = len(data)
         out = list()
@@ -183,7 +184,8 @@ def multiple_meanvar_exp(data, mul_method = "PELT", penalty = "MBIC", pen_value 
         if Class == True:
             ans = list()
             for i in range(1, rep):
-                ans[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = mul_method, test_stat = "Exponential", penalty = penalty, pen_value, pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[[i]], Q = Q)
+                ans[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = mul_method, test_stat = "Exponential", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[[i]], Q = Q)
             return(ans)
         else:
             return(cpts)
+

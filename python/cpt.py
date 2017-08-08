@@ -1,4 +1,4 @@
-from warning import warn
+from warnings import warn
 from CROPS import CROPS
 from multiple_norm import multiple_mean_norm
 from multiple_norm import multiple_var_norm
@@ -10,6 +10,12 @@ from exp import multiple_meanvar_exp
 from single_norm import single_mean_norm
 from single_norm import single_var_norm
 from single_norm import single_meanvar_norm
+from gamma import single_meanvar_gamma
+from gamma import multiple_meanvar_gamma
+from poisson import single_meanvar_poisson
+from poisson import multiple_meanvar_poisson
+from single_nonparametric import single_var_css
+
 
 def cpt_mean(data, penalty = None, pen_value = 0, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, minseglen = 1):
     
@@ -45,7 +51,7 @@ def cpt_mean(data, penalty = None, pen_value = 0, method = "AMOC", Q = 5, test_s
     elif test_stat == "CUMSUM":
         warn('Traditional penalty values are not appropriate for the CUMSUM test statistic')
         if method == "AMOC":
-            return(single_mean_cumsum(data, penalty, pen_value, Class, param_estimates, minseglen))
+            return(single_mean_cusum(data, penalty, pen_value, Class, param_estimates, minseglen))
         elif method == "SegNeigh" or method == "BinSeg":
             return(single_mean_cusum(data, Class, param_estimates, minseglen, mul_method = method, penalty = penalty, pen_value = pen_value, Q = Q))
         else:

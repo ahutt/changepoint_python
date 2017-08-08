@@ -64,27 +64,27 @@ def single_meanvar_gamma(data, minseglen, shape = 1, penalty = "MBIC", pen_value
         print('Minimum segment legnth is too large to include a change in this data')
     pen_value = penalty_decision(penalty, pen_value, n, diffparam = 1, asymcheck = "meanvar_gamma", method = "AMOC")
     if shape(data) == ((0,0) or (0,) or () or None):
-        tmp = single_meanvar_gamma_calc(coredata(data), shape, minseglen, extrainf = True)
+        tmp = single_meanvar_gamma_calc(data, shape, minseglen, extrainf = True)
         if penalty == "MBIC":
             tmp[2] = tmp[2] + log(n - tmp[0] + 1)
         ans = decision(tmp[0], tmp[1], tmp[2], penalty, n, pen_value, diffparam = 1)
         if Class == True:
-            return(class_input(data, cpttype = "mean and variance", method = "AMOC", test_stat = "Gamma", penalty = penalty, pen_value = ans$pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans$cpt], shape = shape))
+            return(class_input(data, cpttype = "mean and variance", method = "AMOC", test_stat = "Gamma", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt], shape = shape))
         else:
-            return(ans$cpt)
+            return(ans.cpt)
     else:
         tmp = single_meanvar_gamma_calc(data, shape, minseglen, extrainf = True)
         if penalty == "MBIC":
-            tmp[:,2] = tmp[,3] + log(tmp[:,0]) + log(n - tmp[:,1] + 1)
+            tmp[:,2] = tmp[:,3] + log(tmp[:,0]) + log(n - tmp[:,1] + 1)
         ans = decision(tmp[:,0], tmp[:,1], tmp[:,2], penalty, n, pen_value, diffparam = 1)
         if Class == True:
             rep = len(data)
             out = list()
             for i in range(1,rep):
-                out[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Gamma", penalty = penalty, pen_value = ans$pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans$cpt[i]], shape = shape)
+                out[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Gamma", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt[i]], shape = shape)
             return(out)
         else:
-            return(ans$cpt)
+            return(ans.cpt)
 
 def segneigh_meanvar_gamma(data, shape = 1, Q = 5, pen = 0):
     if sum(data <= 0) > 0:
@@ -131,7 +131,7 @@ def segneigh_meanvar_gamma(data, shape = 1, Q = 5, pen = 0):
 def multiple_meanvar_gamma(data, minseglen, shape = 1, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
     if sum(data <= 0) > 0:
         print('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
-    if not((mul_method == "PELT") or (mul_method == "BinSeg") or (mul_method = "SegNeigh")):
+    if not((mul_method == "PELT") or (mul_method == "BinSeg") or (mul_method == "SegNeigh")):
         print("Multiple Method is not recognised")
     costfunc == "meanvar_gamma"
     if penalty == "MBIC":

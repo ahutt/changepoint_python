@@ -13,9 +13,16 @@ def paste(a, b = " ", c = None):
 
 paste0 = partial(paste, b = "")
 
-#which.max
+#which_max
 def which_max(a,b):
     if a >= b:
+        return(1)
+    else:
+        return(2)
+        
+#which_min
+def which_min(a,b):
+    if a <= b:
         return(1)
     else:
         return(2)
@@ -34,3 +41,11 @@ def second_element(x):
             x.remove(x[i])
     x.remove(x[0])
     return(x)
+    
+#is_equal
+def is_equal(a,b):
+    if a == b:
+        return(True)
+    else:
+        return(False)
+

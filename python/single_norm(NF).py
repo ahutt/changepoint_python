@@ -70,11 +70,11 @@ def single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = T
         ans = decision(tmp[0], tmp[1], tmp[2], penalty, n, pen_value, diffparam = 1)
         
         if Class == True:
-            return(class_input(data, cpttype = "mean", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans$pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans$cpt]))
+            return(class_input(data, cpttype = "mean", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt]))
         else:
             alogn = (2 * log(log(n))) ** (-1/2)
             blogn = (alogn ** 2) + ((1/2) * alogn * log(log(log(n)))) # Chen & Gupta (2000) pg10
-            out = [ans$cpt, exp(-2 * (pi ** (1/2)) * exp(- alogn * sqrt(abs(tmp[1] - tmp[2])) + (alogn ** (-1)) * blogn)) - exp(-2 * (pi ** (1/2)) * exp((alogn ** (-1)) * blogn))]
+            out = [ans.cpt, exp(-2 * (pi ** (1/2)) * exp(- alogn * sqrt(abs(tmp[1] - tmp[2])) + (alogn ** (-1)) * blogn)) - exp(-2 * (pi ** (1/2)) * exp((alogn ** (-1)) * blogn))]
             out.rename(columns({'cpt', 'conf_value'}))
             return(out)
     else:
@@ -86,23 +86,23 @@ def single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = T
             rep = len(data)
             out = list()
             for i in range(1, rep):
-                out[[i]] = class_input(data, cpttype = "mean", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans$pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans$cpt[i]])
+                out[[i]] = class_input(data, cpttype = "mean", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt[i]])
             return(out)
         else:
             alogn = (2 * log(log(n))) ** (-1/2)
             blogn = (alogn ** (-1)) + (1/2) * alogn * log(log(log(n)))
-            out = vstack(ans$cpt, exp(-2 * (pi ** (1/2)) * exp(-alogn * sqrt(abs(tmp[:,1] - tmp[:,2])) + (alogn ** 1) * blogn)) - exp( -2 * (pi ** (1/2)) * exp((alogn ** (-1)) * blogn)))
+            out = vstack(ans.cpt, exp(-2 * (pi ** (1/2)) * exp(-alogn * sqrt(abs(tmp[:,1] - tmp[:,2])) + (alogn ** 1) * blogn)) - exp( -2 * (pi ** (1/2)) * exp((alogn ** (-1)) * blogn)))
             out.rename(columns({'cpt', 'conf_value'}))
             out.rename(rows({None, None}))
             return(out)
 
 def single_var_norm_calc(data, mu, minseglen, extrainf = True):
     n = size(data)
-    y = [0, cumsum(square(
     dummy = []
     for i in data:
-        dummy.append.(i - mu)
-        return(dummy)))]
+        dummy.append(i - mu)
+    return(dummy)
+    y = [0, cumsum(square(dummy))]
     null = n * log(y[n]/n)
     taustar = range(minseglen, n - minseglen + 1)
     sigma1 = y[taustar + 1]/taustar
@@ -142,13 +142,13 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
             tmp[2] = tmp[2] + log(tmp[0]) + log(n - tmp[0] + 1)
         ans = decision(tmp[0], tmp[1], tmp[2], penaty, n, pen_value, diffparam = 1)
         if Class == True:
-            out = class_input(data, cpttype = "variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans$cpt])
-            param_est(out) = [param_est(out), mean = mu]
+            out = class_input(data, cpttype = "variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt])
+            param_est(out) = [param_est(out), mean == mu]
             return(out)
         else:
             alogn = sqrt(2 * log(log(n)))
             blogn = 2 * log(log(n)) + (log(log(log(n))))/2 - log(gamma(1/2))
-            out = [ans$cpt, exp(-2 * exp(-alogn * sqrt(abs(tmp[1] - tmp[2])) + blogn)) - exp(-2 * exp(blogn))] # Chen & Gupta (2000) pg27
+            out = [ans.cpt, exp(-2 * exp(-alogn * sqrt(abs(tmp[1] - tmp[2])) + blogn)) - exp(-2 * exp(blogn))] # Chen & Gupta (2000) pg27
             out.rename(columns({'cpt', 'conf_value'}))
             return(out)
     else:
@@ -157,7 +157,7 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
         if length(mu) != rep:
             mu = repeat(mu, rep)
         for i in range(1, rep):
-            if know_mean == False & mu[i] = None:
+            if know_mean == False & mu[i] == None:
                 mu = mean(coredata(data[i,:]))
             tmp[i,:] = single_var_norm_calc(data[i,:], mu[i], minseglen, extrainf = True)
         
@@ -167,13 +167,13 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
         if Class == True:
             out = list()
             for i in range(1,rep):
-                out[[i]] = class_input(data, cpttype = "variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans$pen, menseglen = minseglen, param_estimates = param_estimates, out = [0, ans$cpt[i]])
-                param_est(out[[i]]) = [param_est(out[[i]]), mean = mu[i]]
+                out[[i]] = class_input(data, cpttype = "variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, menseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt[i]])
+                param_est(out[[i]]) = [param_est(out[[i]]), mean == mu[i]]
             return(out)
         else:
             alogn = sqrt(2 * log(log(n)))
             blogn = 2 * log(log(n)) + (log(log(log(n))))/2 - log(gamma(1/2))
-            out = vstack(ans$cpt, exp(-2 * exp(-alogn*sqrt(abs(tmp[:,1] - tmp[:,3])) + blogn)) - exp(-2 * exp(blogn))) # Chen & Gupta (2000) pg27
+            out = vstack(ans.cpt, exp(-2 * exp(-alogn*sqrt(abs(tmp[:,1] - tmp[:,3])) + blogn)) - exp(-2 * exp(blogn))) # Chen & Gupta (2000) pg27
             
             out.rename(columns({'cpt', 'conf_value'}))
             out.rename(rows({None, None}))
@@ -237,11 +237,11 @@ def single_meanvar_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class 
             tmp[2] = tmp[2] + log(tmp[0]) + log(n - tmp[0] + 1)
         ans = decision(tmp[0], tmp[1], tmp[2], penalty, n, pen_value, diffparam = 2)
         if Class == True:
-            return(class_input(data, cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans$pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans$cpt]))
+            return(class_input(data, cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt]))
         else:
             alogn = sqrt(2 * log(log(n)))
             blogn = 2 * log(log(n)) + log(log(log(n)))
-            out = [ans$cpt, exp(-2 * exp(-alogn * sqrt(abs(tmp[2] - tmp[3])) + blogn)) - exp(-2 * exp(blogn))] # Chen & Gupta (2000) pg54
+            out = [ans.cpt, exp(-2 * exp(-alogn * sqrt(abs(tmp[2] - tmp[3])) + blogn)) - exp(-2 * exp(blogn))] # Chen & Gupta (2000) pg54
             out.rename(columns({'cpt', 'conf_value'}))
             return(out)
     else:
@@ -250,12 +250,12 @@ def single_meanvar_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class 
             rep = len(data)
             out = list()
             for i in range(1, rep):
-                out[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans$pen, minseglen = minseglen, param_estimates = param_estimates, out = [0,ans$cpt[i]])
+                out[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0,ans.cpt[i]])
             return(out)
         else:
             alogn = sqrt(2 * log(log(n)))
             blogn = 2 * log(log(n)) + log(log(log(n)))
-            out = vstack(ans$cpt, exp(-2 * exp(-alogn * sqrt(abs(tmp[:,1] - tmp[:,2])) + blogn)) - exp(-2 * exp(blogn))) # Chen & Gupta (2000) pg54
+            out = vstack(ans.cpt, exp(-2 * exp(-alogn * sqrt(abs(tmp[:,1] - tmp[:,2])) + blogn)) - exp(-2 * exp(blogn))) # Chen & Gupta (2000) pg54
             out.rename(columns({'cpt', 'conf_value'}))
             out.rename(rows({None, None}))
             return(out)

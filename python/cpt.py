@@ -1,4 +1,4 @@
-from warning import warn
+from warnings import warn
 from CROPS import CROPS
 from multiple_norm import multiple_mean_norm
 from multiple_norm import multiple_var_norm
@@ -14,6 +14,7 @@ from gamma import single_meanvar_gamma
 from gamma import multiple_meanvar_gamma
 from poisson import single_meanvar_poisson
 from poisson import multiple_meanvar_poisson
+from single_nonparametric import single_var_css
 
 
 def cpt_mean(data, penalty = None, pen_value = 0, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, minseglen = 1):

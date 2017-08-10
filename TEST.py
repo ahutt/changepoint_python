@@ -1,6 +1,6 @@
 from ctypes import cdll
-lib = cdll.LoadLibrary('./src/libBinSeg.so')
-execfile('../python/BinSeg_one_func_minseglen(NF)(C).py')
+lib = cdll.LoadLibrary('.\src\libBinSeg.so')
+#execfile('../python/BinSeg_one_func_minseglen(NF)(C).py')
 
 
 

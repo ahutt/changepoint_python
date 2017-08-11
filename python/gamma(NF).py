@@ -13,6 +13,8 @@ from warnings import warn
 from numpy import apply_over_axes
 from functions import lapply
 from functions import second_element
+from class_input import class_input
+from data_input import data_input
 
 def singledim(data, shape, minseglen, extrainf = True):
     n = size(data)
@@ -88,6 +90,10 @@ def single_meanvar_gamma(data, minseglen, shape = 1, penalty = "MBIC", pen_value
 
 def segneigh_meanvar_gamma(data, shape = 1, Q = 5, pen = 0):
     if sum(data <= 0) > 0:
+        print('Gamma test statistic requires positive data')
+    
+    n = size(data)
+    if n < 4:
         print('Data must have atleast 4 observations to fit a changepoint model.')
     if Q > ((n/2) + 1):
         print(paste('Q is larger than the maximum number of segments',(n/2)+1))
@@ -133,7 +139,7 @@ def multiple_meanvar_gamma(data, minseglen, shape = 1, mul_method = "PELT", pena
         print('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
     if not((mul_method == "PELT") or (mul_method == "BinSeg") or (mul_method == "SegNeigh")):
         print("Multiple Method is not recognised")
-    costfunc == "meanvar_gamma"
+    costfunc = "meanvar_gamma"
     if penalty == "MBIC":
         if mul_method == "SegNeigh":
             print('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')

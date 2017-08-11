@@ -2,8 +2,6 @@ from numpy import cumsum
 from math import log
 from shutil import which
 from numpy import shape
-from numpy import matrix
-from pandas import DataFrame
 from penalty_decision import penalty_decision
 from math import pi
 from math import exp
@@ -15,11 +13,11 @@ from numpy import zeros
 from numpy import empty
 from warnings import warn
 from numpy import cumsum
-from numpy import apply_over_axes
 from functions import lapply
 from functions import second_element
 from class_input import class_input
 from decision import decision
+from data_input import data_input
 
 def singledim(data, minseglen, extrainf = True):
     n = size(data)
@@ -77,7 +75,7 @@ def single_meanvar_exp(data, minseglen, penalty = "MBIC", pen_value = 0, Class =
             an = (2 * log(log(n))) ** (1/2)
             bn = 2 * log(log(n)) + (1/2) * log(log(log(n))) - (1/2) * log(pi)
             out = [ans.cpt, exp(-2 * exp(-an * sqrt(abs(tmp[1] - tmp[2])) + an * bn)) - exp(-2 * exp(an * bn))] #Chen & Gupta (2000) pg149
-            out.rename(columns({'cpt', 'p value'}))
+            out.columns({'cpt', 'p value'})
             return(out)
     else:
         tmp = single_meanvar_exp_calc(data, minseglen, extrainf = True)
@@ -94,8 +92,8 @@ def single_meanvar_exp(data, minseglen, penalty = "MBIC", pen_value = 0, Class =
             an = (2 * log(log(n))) ** (1/2)
             bn = 2 * log(log(n)) + (1/2) * log(log(log(n))) - (1/2) * log(pi)
             out = vstack(ans.cpt, exp(-2 * exp(-an * sqrt(abs(tmp[:,1] - tmp[:,2])) + bn)) - exp(-2 * exp(bn))) #chen & Gupta (2000) pg149
-            out.rename(columns({'cpt', 'p value'}))
-            out.rename(rows({None, None}))
+            out.columns({'cpt', 'p value'})
+            out.rows({None, None})
             return(out)
 
 def segneigh_mean_var_exp(data, Q = 5, pen = 0):
@@ -146,7 +144,7 @@ def segneigh_mean_var_exp(data, Q = 5, pen = 0):
         cpts = n
     else:
         cpts = [sorted(cps_Q[op_cps + 1,:][cps_Q[op_cps + 1,:] > 0], reverse = True), n]
-    return(list(cps = (apply_over_axes(cps_Q, 1, sort)).T, cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = like_Q[:,n]))
+    return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = like_Q[:,n]))
 
 def multiple_meanvar_exp(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
     if sum(data < 0) > 0:

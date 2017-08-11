@@ -14,6 +14,7 @@ from functions import lapply
 from functions import second_element
 from data_input import data_input
 from numpy import cumsum
+from class_input import class_input
 
 def singledim(data, minseglen, extrainf = True):
     n = size(data)
@@ -30,7 +31,7 @@ def singledim(data, minseglen, extrainf = True):
     tau = tau + minseglen - 1 # correcting for the fact that we are starting at minseglen
     if extrainf == True:
         out = [tau, null, taulike]
-        out.rename(columns({'cpt', 'null' , 'alt'}))
+        out.columns({'cpt', 'null' , 'alt'})
         return(out)
     else:
         return(tau)
@@ -46,7 +47,7 @@ def single_meanvar_poisson_calc(data, minseglen, extrainf = True):
         if extrainf == False:
             for i in range(1,rep):
                 cpt[i,:] = singledim(data[i,:], minseglen, extrainf)
-            cpt.rename(columns({'cpt', 'null' , 'alt'}))
+            cpt.columns({'cpt', 'null' , 'alt'})
         return(cpt)
 
 def single_meanvar_poisson(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True):

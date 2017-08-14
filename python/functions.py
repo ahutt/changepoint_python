@@ -29,7 +29,7 @@ def which_min(a,b):
 
 #lapply
 def lapply(x,y):
-    l = []
+    l = list()
     for i in x:
         l.append(y(i))
     return(l)
@@ -49,3 +49,10 @@ def is_equal(a,b):
     else:
         return(False)
 
+#sapply
+def sapply(x,y):
+    l = []
+    for i in x:
+        l.append(y(i))
+    return(l)
+    

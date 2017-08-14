@@ -22,7 +22,7 @@ def decision(tau, null, alt = None, penalty = "MBIC", n = 0, diffparam = 1, pen_
         out.rename(columns = {'cpt'}, inplace = True)
         return(list(cpt = out, pen = pen_value))
     else:
-        rep = size(ta)
+        rep = size(tau)
         out = None
         for i in range(1,rep):
             out[i] = single_decision(tau[i-1], null[i-1], alt[i-1], n, diffparam, pen_value)

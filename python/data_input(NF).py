@@ -3,6 +3,9 @@ from numpy import vstack
 from numpy import cumsum
 from numpy import square
 from numpy import subtract
+from BinSeg_one_func_minseglen import BINSEG
+from PELT_one_func_minseglen import PELT
+from SegNeigh_one_func_minseglen import SEGNEIGH
 
 def data_input(data, method, pen_value, costfunc, minseglen, Q, var=0, shape=1):
     if var != 0:

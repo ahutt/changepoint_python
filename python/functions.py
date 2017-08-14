@@ -58,8 +58,8 @@ def sapply(x,y):
 
 #first_element
 def first_element(x):
-    for i in range(1,len(x)-1):
-        while i >= 1 and i <= len(x)-1:
-            x.remove(x[i])
-    x.remove(x[0])
-    return(x)
+    n = len(x)
+    v = []
+    for i in range(0,n):
+        v.append(x[i][0])
+    return(v) 

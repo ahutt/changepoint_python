@@ -64,10 +64,10 @@ def length_of(x):
         v.append(len(i))
     print(v)
 
-#a
+#sapply
 from numpy import asarray
 
-def a(x,y):
+def sapply(x,y):
     v = list()
     for i in y:
         v.append(x[i])

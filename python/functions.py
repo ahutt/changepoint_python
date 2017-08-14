@@ -49,17 +49,27 @@ def is_equal(a,b):
     else:
         return(False)
 
-#sapply
-def sapply(x,y):
-    l = []
-    for i in x:
-        l.append(y(i))
-    return(l)
-
 #first_element
 def first_element(x):
     n = len(x)
     v = []
     for i in range(0,n):
         v.append(x[i][0])
-    return(v) 
+    return(v)
+
+#length of element in a list
+def length_of(x):
+    v = []
+    for i in x:
+        v.append(len(i))
+    print(v)
+
+#a
+from numpy import asarray
+
+def a(x,y):
+    v = list()
+    for i in y:
+        v.append(x[i])
+    b = asarray(v)
+    return(b)

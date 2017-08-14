@@ -1,6 +1,8 @@
 from math import inf
 from numpy import size
+from functions import lapply
 from functions import sapply
+from numpy import diff
 
 def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = list(), Q = None, shape = None):
     if method == "BinSeg" or method == "SegNeigh" or penalty == "CROPS":
@@ -8,15 +10,15 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
     else:
         ans = "cpt".__new__
     
-    data_set(ans) = data
-    cpttype(ans) = cpttpye
-    method(ans) = method
-    test_stat(ans) = test_stat
-    pen_type(ans) = penalty
-    pen_value(ans) = pen_value
-    minseglen(ans) = minseglen
+    ans.data_set = data
+    ans.cpttype = cpttype
+    ans.method = method
+    ans.test_stat = test_stat
+    ans.pen_type = penalty
+    ans.pen_value = pen_value
+    ans.minseglen = minseglen
     if penalty != "CROPS":
-        cpts(ans) = out[[1]]
+        ans.cpts = out[[1]]
         
         if param_estimates == True:
             if test_stat == "Gamma":
@@ -25,14 +27,31 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
                 ans = param(ans)
     
     if method == "PELT":
-        ncpts_max(ans) = inf
+        ans.ncpts_max = inf
     elif method == "AMOC":
-        ncpts_max(ans) = 1
+        ans.ncpts_max = 1
     else:
-        ncpts_max(ans) = Q
+        ans.ncpts_max = Q
     
     if method == "BinSeg":
         l = list()
         for i in range(1, size(out.cps)/2):
             l[[i]] = out.cps[1,range(1,i)]
-        m = #line 36
+        f = lapply(l, len)
+        m = sapply(out[[2]], range(1,max(f)))
+        
+        ans.cpts_full = m
+        ans.pen_value_full = out.cps[2,:]
+    elif method == "SegNeigh":
+        ans.cpts_full = out.cps[-1,:]
+        ans.pen_value_full = -diff(out.like_Q)
+    elif penalty == "CROPS":
+        f = lapply(out[[2]], len)
+        m = sapply(out[[2]], range(1, max(f)))
+        
+        ans.cpts_full = m
+        ans.pen_value_full = out[[1]][1,:]
+        if test_stat == "Gamma":
+            (ans.param_est).shape = shape
+    
+    return(ans)

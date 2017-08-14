@@ -215,4 +215,98 @@ def segneigh_mean_cusum(data, Q = 5, pen = 0):
     
     return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps+1], like_Q = like_Q[:,n]))
 
-#line 240
+def binseg_mean_cusum(data, minseglen ,Q = 5, pen = 0):
+    n = size(data)
+    if n < 2:
+        print('Data must have atleast 2 observations to fit a changepoint model.')
+    
+    if Q > (n/2) + 1:
+        print(paste('Q is larger than the maximum number of segments',(n/2)+1))
+    
+    y = [0, cumsum(data)]
+    tau = [0,n]
+    cpt = zeros([2,Q])
+    oldmax = inf
+    
+    for q in range(1,Q):
+        Lambda = repeat(0, n - 1)
+        i = 1
+        st = tau[0] + 1
+        end = tau[1]
+        for j in range(1,n-1):
+            if j == end:
+                st = end + 1
+                i = i + 1
+                end = tau[i]
+            else:
+                if (j - st >= minseglen) and (end - j >= minseglen):
+                    Lambda[j] = ((y[j] - y[st]) - ((j - st + 1)/(end - st + 1)) * (y[end] - y[st]))/(end - st + 1)
+        k = which_max(abs(Lambda))
+        cpt[1,q] = k
+        cpt[2,q] = min(oldmax, max(abs(Lambda)))
+        tau = sorted([tau,k])
+    op_cps = None
+    p = range(1,Q-1)
+    for i in range(1, len(pen)):
+        criterion = (cpt[2,:]) >= pen[i]
+        if sum(criterion) == 0:
+            op_cps = 0
+        else:
+            op_cps = [op_cps, max(which((criterion) == True))]
+    if op_cps == Q:
+        warn('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
+    
+    if op_cps == 0:
+        cpts = n
+    else:
+        cpts = [sorted(cpt[0,range(0,op_cps - 1)]), n]
+    
+    return(list(cps = cpt, cpts = cpts, op_cpts = op_cps, pen = pen))
+
+def multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymptotic", pen_value = 0.05, Q = 5, Class = True, param_estimates = True):
+    if mul_method == "PELT":
+        print("Multiple Method is not recognised")
+    if penalty != "MBIC":
+        costfunc = "mean_cumsum"
+    else:
+        print("MBIC penalty is not valid for nonparametric test statistics.")
+    diffparam = 1
+    if shape(data) == (0,0) or (0,) or () or None:
+        #single dataset
+        n = size(data)
+    else:
+        n = len(data.T)
+    if n < (2 * minseglen):
+        print('Minimum segment legnth is too large to include a change in this data')
+    
+    pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
+    if shape(data) == (0,0) or (0,) or () or None:
+        #single dataset
+        if mul_method == "BinSeg":
+            out = binseg_mean_cusum(data, Q, pen_value)
+        elif mul_method == "SegNeigh":
+            out = segneigh_mean_cusum(data, Q, pen_value)
+        if Class == True:
+            return(class_input(data, cpttype = "mean", method = mul_method, test_stat = "CUSUM", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
+        else:
+            return(out)
+    else:
+        rep = len(data)
+        out = list()
+        if Class == True:
+            cpts = list()
+        if mul_method == "BinSeg":
+            for i in range(1,rep):
+                out = [out, list(binseg_mean_cusum(data[i,:], Q, pen_value))]
+            if Class == True:
+                cpts = out
+        elif mul_method == "SegNeigh":
+            for i in range(1,rep):
+                out = [out, list(segneigh_mean_cusum(data[i,:], Q, pen_value))]
+        if Class == True:
+            ans = list()
+            for i in range(1,rep):
+                ans[[i]] = class_input(data[i,:], cpttype = "mean", method = mul_method, test_stat = "CUSUM", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q)
+            return(ans)
+        else:
+            return(out)

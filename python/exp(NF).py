@@ -12,7 +12,6 @@ from functions import paste
 from numpy import zeros
 from numpy import empty
 from warnings import warn
-from numpy import cumsum
 from functions import lapply
 from functions import second_element
 from class_input import class_input

@@ -1,6 +1,5 @@
 from statistics import mean
 from math import inf
-from math import exp
 from math import log
 from math import pi
 from shutil import which

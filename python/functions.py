@@ -36,12 +36,12 @@ def lapply(x,y):
     
 # second_element
 def second_element(x):
-    for i in range(2,len(x)-1):
-        while i <= len(x)-1:
-            x.remove(x[i])
-    x.remove(x[0])
-    return(x)
-    
+    n = len(x)
+    v = []
+    for i in range(0,n):
+        v.append(x[i][1])
+    return(v)        
+        
 #is_equal
 def is_equal(a,b):
     if a == b:
@@ -55,4 +55,11 @@ def sapply(x,y):
     for i in x:
         l.append(y(i))
     return(l)
-    
+
+#first_element
+def first_element(x):
+    for i in range(1,len(x)-1):
+        while i >= 1 and i <= len(x)-1:
+            x.remove(x[i])
+    x.remove(x[0])
+    return(x)

@@ -1,5 +1,6 @@
 from math import inf
 from numpy import size
+from functions import sapply
 
 def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = list(), Q = None, shape = None):
     if method == "BinSeg" or method == "SegNeigh" or penalty == "CROPS":

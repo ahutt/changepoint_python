@@ -1,15 +1,14 @@
 from penalty_decision import penalty_decision
 from functions import which_max
 from numpy import cumsum
-from numpy import matrix
 from numpy import shape
 from numpy import size
 from decision import decision
 from numpy import square
-from functions import which_max
 from math import sqrt
 from numpy import zeros
 from numpy import subtract
+from statistics import mean
 
 def singledim(data, minseglen, extrainf = True):
     n = size(data)
@@ -65,18 +64,18 @@ def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = Tru
         tmp = single_var_css_calc(data, minseglen, extrainf = True)
         ans = decision(tau = tmp[0], null = tmp[1], penalty = "Manual", n = n, diffparam = 1, pen_value = pen_value)
         if Class == True:
-            out = new("cpt")
-            data_set(out) = data
-            cpttype(out) = "variance"
-            method(out) = "AMOC"
-            test_stat(out) = "CSS"
-            pen_type(out) = penalty
-            pen_value(out) = ans.pen
-            ncpts_max(out) = 1
+            out = "cpt".__new__
+            out.data_set = data
+            out.cpttype = "variance"
+            out.method = "AMOC"
+            out.test_stat = "CSS"
+            out.pen_type = penalty
+            out.pen_value = ans.pen
+            put.ncpts_max = 1
             if ans.cpt != n:
-                cpts(out) = [ans.cpt, n]
+                out.cpts = [ans.cpt, n]
             else:
-                cpts(out) = ans.cpt
+                out.cpts = ans.cpt
             if param_estimates == True:
                 out = param(out)
             return(out)
@@ -89,18 +88,18 @@ def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = Tru
             rep = len(data)
             out = len()
             for i in range(1,rep):
-                out[[i-1]] = new("cpt")
-                data_set(out[[i-1]]) = ts(data[i-1,:])
-                cpttype(out[[i-1]]) = "variance"
-                method(out[[i-1]]) = "AMOC"
-                test_stat(out[[i-1]]) = "CSS"
-                pen_type(out[[i-1]]) = penalty
-                pen_value(out[[i-1]]) = ans.pen
-                ncpts_max(out[[i-1]]) = 1
+                out[[i-1]] = "cpt".__new__
+                out[[i-1]].data_set = ts(data[i-1,:])
+                out[[i-1]].cpttype = "variance"
+                out[[i-1]].method = "AMOC"
+                out[[i-1]].test_stat = "CSS"
+                out[[i-1]].pen_type = penalty
+                out[[i-1]].pen_value = ans.pen
+                out[[i-1]].cpts_max = 1
                 if ans.cpt[i-1] != n:
-                    cpts(out[[i-1]]) = [ans.cpt[i-1], n]
+                    out[[i-1]].cpts = [ans.cpt[i-1], n]
                 else:
-                    cpts(out[[i-1]]) = ans.cpt[i-1]
+                    out[[i-1]].cpts = ans.cpt[i-1]
                 if param_estimates == True:
                     out[[i-1]] = param(out[[i-1]])
             return(out)
@@ -136,7 +135,7 @@ def single_mean_cusum_calc(data, minseglen, extrainf = True):
             cpt.rename(columns = {'cpt', 'test statistic'}, inplace = True)
         return(cpt)
 
-def single_mean_cusum(data, minseglen, penalty = "Asymptotic", pen_value = 0.05, Class = True, param_estimate):
+def single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", pen_value = 0.05, Class = True):
     if size(pen_value) > 1:
         print('Only one dimensional penalties can be used for CUSUM')
     if penalty == "MBIC":
@@ -157,18 +156,18 @@ def single_mean_cusum(data, minseglen, penalty = "Asymptotic", pen_value = 0.05,
         tmp = single_mean_cusum_calc(data, minseglen, extrainf = True)
         ans = decision(tau = tmp[0], null = tmp[1], penalty = penalty, n = n, diffparam = 1, pen_value = pen_value)
         if Class == True:
-            out = new("cpt")
-            data_set(out) = data
-            cpttype(out) = "mean"
-            method(out) = "AMOC"
-            test_stat(out) = "CUSUM"
-            pen_type(out) = penalty
-            pen_value(out) = ans.pen
-            ncpts_max(out) = 1
+            out = "cpt".__new__
+            out.data_set = data
+            out.cpttype = "mean"
+            out.method = "AMOC"
+            out.test_stat = "CUSUM"
+            out.pen_type = penalty
+            out.pen_value = ans.pen
+            out.ncpts_max = 1
             if ans.cpt != n:
-                cpts(out) = [ans.cpt, n]
+                out.cpts = [ans.cpt, n]
             else:
-                cpts(out) = ans.cpt
+                out.cpts = ans.cpt
             if param_estimates == True:
                 out = param(out)
             return(out)
@@ -181,18 +180,18 @@ def single_mean_cusum(data, minseglen, penalty = "Asymptotic", pen_value = 0.05,
             rep = len(data)
             out = list()
             for i in range(1,rep):
-                out[[i]] = new("cpt")
-                data_set(out[[i]]) = ts(data[i,:])
-                cpttype(out[[i]]) = "mean"
-                method(out[[i]]) = "AMOC"
-                test_stat(out[[i]]) = "CUSUM"
-                pen_type(out[[i]]) = penalty
-                pen_value(out[[i]]) = ans.pen
-                ncpts_max(out[[i]]) = 1
+                out[[i]] = "cpt".__new__
+                out[[i]].data_set = ts(data[i,:])
+                out[[i]].cpttype = "mean"
+                out[[i]].method = "AMOC"
+                out[[i]].test_stat = "CUSUM"
+                out[[i]].pen_type = penalty
+                out[[i]].pen_value = ans.pen
+                out[[i]].ncpts_max = 1
                 if ans.cpt[i] != n:
-                    cpts(out[[i]]) = [ans.cpt[i],n]
+                    out[[i]].cpts = [ans.cpt[i],n]
                 else:
-                    cpts(out[[i]]) = ans.cpt[i]
+                    out[[i]].cpts = ans.cpt[i]
                 if param_estimates == True:
                     out[[i]] = param(out[[i]])
             return(out)

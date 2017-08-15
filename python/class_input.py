@@ -3,6 +3,7 @@ from numpy import size
 from functions import lapply
 from functions import sapply
 from numpy import diff
+from param import param
 
 def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = list(), Q = None, shape = None):
     if method == "BinSeg" or method == "SegNeigh" or penalty == "CROPS":

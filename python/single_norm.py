@@ -120,7 +120,7 @@ def single_var_norm_calc(data, mu, minseglen, extrainf = True):
     tau =  tau + minseglen - 1 #correcting for the fact that we are starting at minseglen
     if extrainf == True:
         out = [tau, null, taulike]
-        out.rename(columns({'cpt', 'null', 'alt'}))
+        out.columns({'cpt', 'null', 'alt'})
         return(out)
     else:
         return(tau)

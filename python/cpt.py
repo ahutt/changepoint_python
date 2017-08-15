@@ -2,7 +2,7 @@ from warnings import warn
 from CROPS import CROPS
 from multiple_norm import multiple_mean_norm
 from multiple_norm import multiple_var_norm
-from single_non_parametric import single_mean_cusum
+from single_nonparametric import single_mean_cusum
 from multiple_norm import multiple_meanvar_norm
 from exp import single_meanvar_exp
 from numpy import size

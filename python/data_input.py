@@ -5,7 +5,7 @@
 #from numpy import subtract
 from PELT import PELT_meanvar_norm
 from BinSeg import binseg_meanvar_norm
-from multiple_norm import segneigh_meanvar_norm
+from SegNeigh import segneigh_meanvar_norm
 
 def data_input(data, method, pen_value, costfunc, minseglen, Q, var=0, shape=1):
     #if var != 0:

@@ -9,6 +9,7 @@ from math import sqrt
 from numpy import zeros
 from numpy import subtract
 from statistics import mean
+from param import param
 
 def singledim(data, minseglen, extrainf = True):
     n = size(data)
@@ -71,7 +72,7 @@ def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = Tru
             out.test_stat = "CSS"
             out.pen_type = penalty
             out.pen_value = ans.pen
-            put.ncpts_max = 1
+            out.ncpts_max = 1
             if ans.cpt != n:
                 out.cpts = [ans.cpt, n]
             else:

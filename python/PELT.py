@@ -1,4 +1,3 @@
-from math import log
 from math import pi
 from statistics import mean
 from numpy import size
@@ -11,6 +10,7 @@ from numpy import multiply
 from numpy import power
 from numpy import divide
 from functions import less_than_equal
+from numpy import log
 
 def mll_var_EFK(x,n):
     neg = less_than_equal(x,0)

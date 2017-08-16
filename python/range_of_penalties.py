@@ -9,7 +9,7 @@ from functions import is_equal
 from numpy import repeat
 from numpy import vstack
 
-def range_of_penalties(sumstat, minseglen, min_pen, max_pen, cost = "mean_norm", PELT = True, shape = 1):
+def range_of_penalties(sumstat, minseglen, cost = "mean_norm", PELT = True, shape = 1):
     min_pen = log(size((sumstat)/3) - 1)
     max_pen = 10 * log(size((sumstat)/3) - 1)
     NCALC = 0

@@ -10,9 +10,10 @@ from numpy import add
 from numpy import multiply
 from numpy import power
 from numpy import divide
+from functions import less_than_equal
 
 def mll_var_EFK(x,n):
-    neg = x <= 0
+    neg = less_than_equal(x,0)
     x[neg == True] = 0.00000000001
     return(n * (log(2 * pi) + log(x/n) + 1))
 
@@ -45,7 +46,7 @@ def PELT_var_norm(data, pen = 0, know_mean = False, mu = None, nprune = False):
         else:
             cpt = tmpt[tmplike == lastchangelike[tstar - 1, 0]][0]
             lastchangecpts[tstar - 1,:] = [cpt, tstar]
-        checklist = tmpt[tmplike <= lastchangelike[tstar - 1, 0] + pen]
+        checklist = tmpt[add(less_than_equal(tmplike,lastchangelike[tstar - 1, 0]),pen)]
         if nprune == True:
             noprune = [noprune, size(checklist)]
     if nprune == True:
@@ -89,7 +90,7 @@ def PELT_mean_norm(data, pen = 0, nprune = False):
         else:
             cpt = tmpt[tmplike == lastchangelike[tstar - 1,0]][0]
             lastchangecpts[tstar - 1,:] = [cpt, tstar]
-        checklist = tmpt[tmplike <= lastchangelike[tstar - 1,0] + pen]
+        checklist = tmpt[add(less_than_equal(tmplike,lastchangelike[tstar - 1,0]),pen)]
         if nprune == True:
             noprune = [noprune, size(checklist)]
     if nprune == True:
@@ -104,7 +105,7 @@ def PELT_mean_norm(data, pen = 0, nprune = False):
 
 def mll_meanvar_EFK(x2,x,n):
     sigmasq = multiply((1/n),subtract(x2,divide(power(x,2),n)))
-    neg = sigmasq <= 0
+    neg = less_than_equal(sigmasq,0)
     sigmasq[neg == True] = 0.00000000001
     return(add(add(n * (log(2 * pi),log(sigmasq)),1)))
 
@@ -136,7 +137,7 @@ def PELT_meanvar_norm(data, pen = 0, nprune = False):
         else:
             cpt = tmpt[tmplike == lastchangelike[tstar - 1,0]][0]
             lastchangecpts[tstar - 1,:] = [cpt, tstar]
-        checklist = tmpt[tmplike <= lastchangelike[tstar - 1,0] + pen]
+        checklist = tmpt[add(less_than_equal(tmplike,lastchangelike[tstar - 1,0]),pen)]
         if nprune == True:
             noprune = [noprune, size(checklist)]
     if nprune == True:

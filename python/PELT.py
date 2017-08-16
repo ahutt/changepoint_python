@@ -107,7 +107,7 @@ def mll_meanvar_EFK(x2,x,n):
     sigmasq = multiply((1/n),subtract(x2,divide(power(x,2),n)))
     neg = less_than_equal(sigmasq,0)
     sigmasq[neg == True] = 0.00000000001
-    return(add(add(n * (log(2 * pi),log(sigmasq)),1)))
+    return(multiply(n,add((add(log(2 * pi),log(sigmasq))),1)))
 
 def PELT_meanvar_norm(data, pen = 0, nprune = False):
     n = size(data)

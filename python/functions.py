@@ -73,3 +73,44 @@ def sapply(x,y):
         v.append(x[i])
     b = asarray(v)
     return(b)
+
+#greater_than, less_than, greater_than_equal, less_than_equal
+def greater_than(a,b):
+    l = []
+    for i in a:
+        if i > b:
+            c = True
+        else:
+            c = False
+        l.append(c)
+    return(l)
+
+def less_than(a,b):
+    l = []
+    for i in a:
+        if i < b:
+            c = True
+        else:
+            c = False
+        l.append(c)
+    return(l)
+
+def greater_than_equal(a,b):
+    l = []
+    for i in a:
+        if i >= b:
+            c = True
+        else:
+            c = False
+        l.append(c)
+    return(l)
+
+def less_than_equal(a,b):
+    l = []
+    for i in a:
+        if i <= b:
+            c = True
+        else:
+            c = False
+        l.append(c)
+    return(l)

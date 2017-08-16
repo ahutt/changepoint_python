@@ -6,6 +6,10 @@ from numpy import cumsum
 from numpy import square
 from numpy import subtract
 from numpy import empty
+from numpy import add
+from numpy import multiply
+from numpy import power
+from numpy import divide
 
 def mll_var_EFK(x,n):
     neg = x <= 0
@@ -99,10 +103,10 @@ def PELT_mean_norm(data, pen = 0, nprune = False):
         return(cpt == sorted(fcpt))
 
 def mll_meanvar_EFK(x2,x,n):
-    sigmasq = (1/n) * (x2 - (x ** 2)/n)
+    sigmasq = multiply((1/n),subtract(x2,divide(power(x,2),n)))
     neg = sigmasq <= 0
     sigmasq[neg == True] = 0.00000000001
-    return(n * (log(2 * pi) + log(sigmasq) + 1))
+    return(add(add(n * (log(2 * pi),log(sigmasq)),1)))
 
 def PELT_meanvar_norm(data, pen = 0, nprune = False):
     n = size(data)

@@ -175,8 +175,14 @@ def compare(a,b):
 
 #truefalse
 def truefalse(a,b):
-    l = []
-    for i in range(0,len(a)):
-        if b[i] == True:
-            l.append(a[i])
-    return(l)
+    if size(a) == 1 and size(b) == 1:
+        if b == True:
+            return(a)
+        else:
+            return(None)
+    else:
+        l = []
+        for i in range(0,len(a)):
+            if b[i] == True:
+                l.append(a[i])
+        return(l)

@@ -15,6 +15,9 @@ from numpy import append
 from numpy import array
 from numpy import where
 from functions import compare
+from functions import truefalse
+from numpy import zeros
+from numpy import int
 
 def mll_var_EFK(x,n):
     neg = less_than_equal(x,0)
@@ -118,8 +121,8 @@ def PELT_meanvar_norm(data, pen = 0, nprune = False):
     y2 = append([0], cumsum(square(data)))
     y = append([0], cumsum(data))
     
-    lastchangecpts = empty([n,2])
-    lastchangelike = empty([n,2])
+    lastchangecpts = zeros([n,2], int)
+    lastchangelike = zeros([n,2], int)
     checklist = None
     lastchangelike[0,:] = [mll_meanvar_EFK(y2[1], y[1], 1), add(mll_meanvar_EFK(subtract(y2[n],y2[1]), y[n] - y[1], n - 1),pen)]
     lastchangecpts[0,:] = [0,1]
@@ -138,17 +141,17 @@ def PELT_meanvar_norm(data, pen = 0, nprune = False):
         if lastchangelike[subtract(tstar,1),0] == mll_meanvar_EFK(y2[tstar], y[tstar], tstar):
             lastchangecpts[subtract(tstar,1),:] = [0,tstar]
         else:
-            cpt = tmpt[compare(tmplike,lastchangelike[subtract(tstar,1),0])][0]
+            cpt = truefalse(tmpt,compare(tmplike,lastchangelike[subtract(tstar,1),0]))[0]
             lastchangecpts[subtract(tstar,1),:] = [cpt, tstar]
-        checklist = tmpt[add(less_than_equal(tmplike,lastchangelike[subtract(tstar,1),0]),pen)]
+        checklist = truefalse(tmpt,less_than_equal(tmplike,add(lastchangelike[subtract(tstar,1),0],pen)))
         if nprune == True:
             noprune = [noprune, size(checklist)]
     if nprune == True:
         return(noprune)
     else:
-        fcpt = None
         last = n
         while last != 0:
-            fcpt = [fcpt, lastchangecpts[last - 1, 1]]
+            fcpt = lastchangecpts[last - 1, 1]
             last = lastchangecpts[last - 1, 0]
-        return(cpt == sorted(fcpt))
+            cpt = sorted(fcpt)
+        return(cpt)

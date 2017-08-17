@@ -179,7 +179,7 @@ def truefalse(a,b):
         if b == True:
             return(a)
         else:
-            return(None)
+            return([])
     else:
         l = []
         for i in range(0,len(a)):

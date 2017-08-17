@@ -139,12 +139,31 @@ def less_than_equal(a,b):
             l.append(c)
         return(l)
         
-#compare vectors
+#compare
 from numpy import size
 
-def compare_vectors(a,b):
-    if size(a) != size(b):
-        print('Objects have different lengths')
+def compare(a,b):
+    if size(a) == 1 and size(b) == 1:
+        return(a == b)
+    elif size(a) != size(b):
+        if size(a) == 1:
+            l = []
+            for i in range(0, size(b)):
+                if a == b[i]:
+                    l.append(True)
+                else:
+                    l.append(False)
+            return(l)
+        elif size(b) == 1:
+            l = []
+            for i in range(0, size(a)):
+                if b == a[i]:
+                    l.append(True)
+                else:
+                    l.append(False)
+            return(l)
+        else:
+            return("lengths of inputs are not applicable")
     else:
         l = []
         for i in range(0,size(a)):
@@ -153,3 +172,4 @@ def compare_vectors(a,b):
             else:
                 l.append(False)
         return(l)
+        

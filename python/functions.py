@@ -172,4 +172,11 @@ def compare(a,b):
             else:
                 l.append(False)
         return(l)
-        
+
+#truefalse
+def truefalse(a,b):
+    l = []
+    for i in range(0,len(a)):
+        if b[i] == True:
+            l.append(a[i])
+    return(l)

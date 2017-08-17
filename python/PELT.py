@@ -14,6 +14,7 @@ from numpy import log
 from numpy import append
 from numpy import array
 from numpy import where
+from functions import compare_vectors
 
 def mll_var_EFK(x,n):
     neg = less_than_equal(x,0)
@@ -137,7 +138,7 @@ def PELT_meanvar_norm(data, pen = 0, nprune = False):
         if lastchangelike[subtract(tstar,1),0] == mll_meanvar_EFK(y2[tstar], y[tstar], tstar):
             lastchangecpts[subtract(tstar,1),:] = [0,tstar]
         else:
-            cpt = tmpt[(tmplike == lastchangelike[subtract(tstar,1),0])][0]
+            cpt = tmpt[compare_vectors(tmplike,lastchangelike[subtract(tstar,1),0])][0]
             lastchangecpts[subtract(tstar,1),:] = [cpt, tstar]
         checklist = tmpt[add(less_than_equal(tmplike,lastchangelike[subtract(tstar,1),0]),pen)]
         if nprune == True:

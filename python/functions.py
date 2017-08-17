@@ -140,12 +140,14 @@ def less_than_equal(a,b):
         return(l)
         
 #compare vectors
+from numpy import size
+
 def compare_vectors(a,b):
-    if len(a) != len(b):
+    if size(a) != size(b):
         print('Objects have different lengths')
     else:
         l = []
-        for i in range(0,len(a)):
+        for i in range(0,size(a)):
             if a[i] == b[i]:
                 l.append(True)
             else:

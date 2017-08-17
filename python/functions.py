@@ -138,3 +138,16 @@ def less_than_equal(a,b):
                 c = False
             l.append(c)
         return(l)
+        
+#compare vectors
+def compare_vectors(a,b):
+    if len(a) != len(b):
+        print('Objects have different lengths')
+    else:
+        l = []
+        for i in range(0,len(a)):
+            if a[i] == b[i]:
+                l.append(True)
+            else:
+                l.append(False)
+        return(l)

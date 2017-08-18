@@ -18,6 +18,7 @@ from functions import compare
 from functions import truefalse
 from numpy import zeros
 from numpy import int
+from numpy import full
 
 def mll_var_EFK(x,n):
     neg = less_than_equal(x,0)
@@ -121,17 +122,19 @@ def PELT_meanvar_norm(data, pen = 0, nprune = False):
     y2 = append([0], cumsum(square(data)))
     y = append([0], cumsum(data))
     
-    lastchangecpts = zeros([n,2], int)
-    lastchangelike = zeros([n,2], int)
+    lastchangecpts = full((n,2), None)
+    lastchangelike = full((n,2), None)
     lastchangelike[0,:] = append(mll_meanvar_EFK(y2[1], y[1], 1), add(mll_meanvar_EFK(subtract(y2[n],y2[1]), y[n] - y[1], n - 1),pen))
     lastchangecpts[0,:] = [0,1]
     lastchangelike[1,:] = append(mll_meanvar_EFK(y2[2], y[2], 2), add(mll_meanvar_EFK(y2[n] - y2[2], y[n] - y[2], n - 2),pen))
     lastchangecpts[1,:] = [0,2]
     lastchangelike[2,:] = append(mll_meanvar_EFK(y2[3], y[3], 3), add(mll_meanvar_EFK(y2[n] - y2[3], y[n] - y[3], n - 3),pen))
     lastchangecpts[2,:] = [0,3]
-    for tstar in range(4,n):
-        tmpt = [subtract(tstar,2)]
-        tmplike = add(add(lastchangelike[subtract(tmpt,1), 0], mll_meanvar_EFK(subtract(y2[tstar],y2[tmpt]), subtract(y[tstar],y[tmpt]), subtract(tstar,tmpt))),pen)
+    noprune = "nan"
+    for tstar in range(4,n + 1):
+        tmplike = "nan"
+        tmpt = tstar - 2
+        tmplike = add(add(lastchangelike[tmpt - 1, 0], mll_meanvar_EFK(subtract(y2[tstar],y2[tmpt]), subtract(y[tstar],y[tmpt]), subtract(tstar,tmpt))),pen)
         if tstar == n:
             lastchangelike[subtract(tstar,1),:] = [min(append(tmplike, mll_meanvar_EFK(y2[tstar], y[tstar], tstar))), 0]
         else:
@@ -140,24 +143,18 @@ def PELT_meanvar_norm(data, pen = 0, nprune = False):
             lastchangecpts[subtract(tstar,1),:] = [0,tstar]
         else:
             cpt = truefalse(tmpt,compare(tmplike,lastchangelike[subtract(tstar,1),0]))
-            if size(cpt) != 0:
-                cpt = cpt[0]
-            else:
-                cpt = cpt
-            if size(cpt) != 0:
-                lastchangecpts[subtract(tstar,1),:] = append(cpt, tstar)
-            else:
-                lastchangecpts[subtract(tstar,1),:] = [tstar]
-        checklist = truefalse(tmpt,less_than_equal(tmplike,add(lastchangelike[subtract(tstar,1),0],pen)))
-        if nprune == True:
-            noprune = [size(checklist)]
-    if nprune == True:
-        return(noprune)
-    else:
-        last = n
-        while last != 0:
-            fcpt = lastchangecpts[last - 1, 1]
-            last = lastchangecpts[last - 1, 0]
-            
-        cpt = fcpt
-        return(cpt)
+            lastchangecpts[tstar-1,:] = [cpt, tstar]
+    print(lastchangecpts[tstar-1,:])
+#        checklist = truefalse(tmpt,less_than_equal(tmplike,add(lastchangelike[subtract(tstar,1),0],pen)))
+#        if nprune == True:
+#            noprune = [size(checklist)]
+#    if nprune == True:
+#        return(noprune)
+#    else:
+#        last = n
+#        while last != 0:
+#            fcpt = lastchangecpts[last - 1, 1]
+#            last = lastchangecpts[last - 1, 0]
+#            
+#        cpt = fcpt
+#        return(cpt)

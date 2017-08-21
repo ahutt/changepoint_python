@@ -113,9 +113,8 @@ def PELT_mean_norm(data, pen = 0, nprune = False):
 
 def mll_meanvar_EFK(x2,x,n):
     sigmasq = multiply((1/n),subtract(x2,divide(power(x,2),n)))
-    sigmasq = array(sigmasq)
-    sigmasq = where(sigmasq <= 0, 0.00000000001, sigmasq)
-    return(multiply(n,add((add(log(2 * pi),log(sigmasq))),1)))
+    sigmasq = where(array(sigmasq) <= 0, 0.00000000001, sigmasq)
+    return(multiply(n,add(add(log(2 * pi),log(sigmasq)),1)))
 
 def PELT_meanvar_norm(data, pen = 0, nprune = False):
     n = size(data)
@@ -124,28 +123,29 @@ def PELT_meanvar_norm(data, pen = 0, nprune = False):
     
     lastchangecpts = full((n,2), None)
     lastchangelike = full((n,2), None)
-    lastchangelike[0,:] = append(mll_meanvar_EFK(y2[1], y[1], 1), add(mll_meanvar_EFK(subtract(y2[n],y2[1]), y[n] - y[1], n - 1),pen))
+    lastchangelike[0,:] = append(mll_meanvar_EFK(y2[1], y[1], 1), add(mll_meanvar_EFK(y2[n] - y2[1], y[n] - y[1], n - 1),pen))
     lastchangecpts[0,:] = [0,1]
     lastchangelike[1,:] = append(mll_meanvar_EFK(y2[2], y[2], 2), add(mll_meanvar_EFK(y2[n] - y2[2], y[n] - y[2], n - 2),pen))
     lastchangecpts[1,:] = [0,2]
     lastchangelike[2,:] = append(mll_meanvar_EFK(y2[3], y[3], 3), add(mll_meanvar_EFK(y2[n] - y2[3], y[n] - y[3], n - 3),pen))
     lastchangecpts[2,:] = [0,3]
     noprune = "nan"
-    for tstar in range(4,n + 1):
+    for tstar in range(4,n+1):
         tmplike = "nan"
         tmpt = tstar - 2
-        tmplike = add(add(lastchangelike[tmpt - 1, 0], mll_meanvar_EFK(subtract(y2[tstar],y2[tmpt]), subtract(y[tstar],y[tmpt]), subtract(tstar,tmpt))),pen)
+        tmplike = lastchangelike[tmpt-1,0] + mll_meanvar_EFK(y2[tstar]-y2[tmpt], y[tstar]-y[tmpt], tstar-tmpt)+pen
         if tstar == n:
-            lastchangelike[subtract(tstar,1),:] = [min(append(tmplike, mll_meanvar_EFK(y2[tstar], y[tstar], tstar))), 0]
+            lastchangelike[tstar-1,:] = append(min(append(mll_meanvar_EFK(y2[tstar], y[tstar], tstar),tmplike)), 0)
         else:
-            lastchangelike[subtract(tstar,1),:] = append(min(append(tmplike, mll_meanvar_EFK(y2[tstar], y[tstar], tstar))), add(mll_meanvar_EFK(subtract(y2[n],y2[tstar]), subtract(y[n],y[tstar]), subtract(n,tstar)),pen))
-        if lastchangelike[subtract(tstar,1),0] == mll_meanvar_EFK(y2[tstar], y[tstar], tstar):
-            lastchangecpts[subtract(tstar,1),:] = [0,tstar]
-        else:
-            cpt = truefalse(tmpt,compare(tmplike,lastchangelike[subtract(tstar,1),0]))
-            lastchangecpts[tstar-1,:] = [cpt, tstar]
-    print(lastchangecpts[tstar-1,:])
+            lastchangelike[tstar-1,:]=append(min(append(tmplike,mll_meanvar_EFK(y2[tstar],y[tstar],tstar))),mll_meanvar_EFK(y2[n]-y2[tstar],y[n]-y[tstar],n-tstar)+pen)                       
+        print(lastchangelike)
+#        if lastchangelike[tstar-1,0] == mll_meanvar_EFK(y2[tstar], y[tstar], tstar):
+#            lastchangecpts[tstar-1,:] = [0,tstar]
+#        else:
+#            cpt = truefalse(tmpt,compare(tmplike,lastchangelike[tstar-1,0]))
+#            lastchangecpts[tstar-1,:] = [cpt, tstar]
 #        checklist = truefalse(tmpt,less_than_equal(tmplike,add(lastchangelike[subtract(tstar,1),0],pen)))
+#    print(lastchangelike[tstar-1,0]+pen)
 #        if nprune == True:
 #            noprune = [size(checklist)]
 #    if nprune == True:
@@ -155,6 +155,5 @@ def PELT_meanvar_norm(data, pen = 0, nprune = False):
 #        while last != 0:
 #            fcpt = lastchangecpts[last - 1, 1]
 #            last = lastchangecpts[last - 1, 0]
-#            
-#        cpt = fcpt
+#            cpt = fcpt
 #        return(cpt)

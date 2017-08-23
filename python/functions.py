@@ -180,9 +180,29 @@ def truefalse(a,b):
             return(a)
         else:
             return([])
+    elif len(a) > 1 and size(b) == 1:
+        if b == True:
+            return(a)
+        else:
+            return([])
     else:
         l = []
         for i in range(0,len(a)):
             if b[i] == True:
                 l.append(a[i])
         return(l)
+
+#truefalse2
+def truefalse2(a,b,c):
+    if size(b) == 1:
+        if b == True:
+            a = c
+        else:
+            a = a
+    else:
+        for i in range(0,size(a)):
+            if b[i] == True:
+                a[i] = c
+            else:
+                a[i] = a[i]
+    return(a)

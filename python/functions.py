@@ -206,3 +206,13 @@ def truefalse2(a,b,c):
             else:
                 a[i] = a[i]
     return(a)
+    
+#firstelementlist
+from numpy import ndim
+def first_element_list(a):
+    if ndim(a) == 1:
+        b = a[0]
+    else:
+        b = a[0][0]
+    return(b)
+    

@@ -17,6 +17,7 @@ from numpy import multiply
 from numpy import divide
 from numpy import power
 from functions import truefalse2
+from functions import first_element_list
 
 #The hashed out functions have not been tested and are currently not used anywhere in the package.
 
@@ -134,18 +135,18 @@ def PELT_meanvar_norm(data, pen = 0, nprune = False):
     
     for tstar in range(4,n+1):
         tmpt = tstar - 2
-        tmplike = lastchangelike[subtract(tmpt,1),0] + mll_meanvar_EFK(subtract(y2[tstar],y2[tmpt]), subtract(y[tstar],y[tmpt]), subtract(tstar-tmpt)) + pen
+        tmplike = lastchangelike[subtract(tmpt,1),0] + mll_meanvar_EFK(subtract(y2[tstar],y2[tmpt]), subtract(y[tstar],y[tmpt]), subtract(tstar,tmpt)) + pen
         if tstar == n:
             lastchangelike[tstar-1,:] = append(min(append(mll_meanvar_EFK(y2[tstar], y[tstar], tstar),tmplike)), 0)
         else:
             lastchangelike[tstar-1,:]=append(min(append(tmplike,mll_meanvar_EFK(y2[tstar],y[tstar],tstar))),mll_meanvar_EFK(y2[n]-y2[tstar],y[n]-y[tstar],n-tstar)) + pen
-            
+    checklist = 0
     for tstar in range(4,n+1):
         tmpt = [checklist,tstar-2]        
         if lastchangelike[tstar-1,0] == mll_meanvar_EFK(y2[tstar], y[tstar], tstar):
             lastchangecpts[tstar-1,:] = [0,tstar]
         else:
-            cpt = [truefalse(tmpt,compare(tmplike,lastchangelike[tstar-1,0]))][0]
+            cpt = first_element_list([truefalse(tmpt,compare(tmplike,lastchangelike[tstar-1,0]))])
             lastchangecpts[tstar-1,:] = [cpt, tstar]
             #everything above is fine.
         checklist = truefalse(tmpt,(tmplike <= lastchangelike[tstar-1,0] + pen))

@@ -6,18 +6,20 @@ from numpy import square
 from numpy import subtract
 #from numpy import empty
 from numpy import add
-from functions import less_than_equal
 from numpy import log
 from numpy import append
 from functions import compare
 from functions import truefalse
 from numpy import full
 from numpy import nan
+from numpy import array
+from functions import twoD_to_oneD
 from numpy import multiply
-from numpy import divide
 from numpy import power
 from functions import truefalse2
-from functions import first_element_list
+from functions import less_than_equal
+from numpy import ndim
+from numpy import divide
 
 #The hashed out functions have not been tested and are currently not used anywhere in the package.
 
@@ -113,11 +115,9 @@ from functions import first_element_list
 #        return(cpt == sorted(fcpt))
 
 def mll_meanvar_EFK(x2,x,n):
-    sigmasq = (1/n) * (x2 - ((x ** 2)/n))
-    if (sigmasq <= 0) == True:
-        sigmasq = 0.00000000001
-    else: sigmasq = sigmasq
-    a = n * (log(2 * pi) + log(sigmasq) + 1)
+    sigmasq = multiply(divide(1,n),subtract(x2,multiply((power(x,2)),divide(1,n))))
+    b = truefalse2(sigmasq,less_than_equal(sigmasq, 0),0.00000000001)
+    a = multiply(n,add(add(log(2 * pi),log(b)),1))
     return(a)
 
 def PELT_meanvar_norm(data, pen = 0, nprune = False):
@@ -132,39 +132,37 @@ def PELT_meanvar_norm(data, pen = 0, nprune = False):
     lastchangecpts[1,:] = [0,2]
     lastchangelike[2,:] = append(mll_meanvar_EFK(y2[3], y[3], 3), add(mll_meanvar_EFK(y2[n] - y2[3], y[n] - y[3], n - 3),pen))
     lastchangecpts[2,:] = [0,3]
-    
+    checklist = None
     for tstar in range(4,n+1):
-        tmpt = tstar - 2
-        tmplike = lastchangelike[subtract(tmpt,1),0] + mll_meanvar_EFK(subtract(y2[tstar],y2[tmpt]), subtract(y[tstar],y[tmpt]), subtract(tstar,tmpt)) + pen
+        tmpt = [checklist,tstar - 2]
+        tmpt = twoD_to_oneD(tmpt)
+        tmplike = add(add(array(lastchangelike)[subtract(tmpt,1),0], mll_meanvar_EFK(-subtract(y2[tmpt],y2[tstar]), -subtract(y[tmpt],y[tstar]), -subtract(tmpt,tstar))),pen)
         if tstar == n:
             lastchangelike[tstar-1,:] = append(min(append(mll_meanvar_EFK(y2[tstar], y[tstar], tstar),tmplike)), 0)
         else:
             lastchangelike[tstar-1,:]=append(min(append(tmplike,mll_meanvar_EFK(y2[tstar],y[tstar],tstar))),mll_meanvar_EFK(y2[n]-y2[tstar],y[n]-y[tstar],n-tstar)) + pen
-    checklist = 0
-    for tstar in range(4,n+1):
-        tmpt = [checklist,tstar-2]        
         if lastchangelike[tstar-1,0] == mll_meanvar_EFK(y2[tstar], y[tstar], tstar):
             lastchangecpts[tstar-1,:] = [0,tstar]
         else:
-            cpt = first_element_list([truefalse(tmpt,compare(tmplike,lastchangelike[tstar-1,0]))])
-            lastchangecpts[tstar-1,:] = [cpt, tstar]
+            cpt = truefalse(tmpt,compare(tmplike,lastchangelike[tstar-1,0]))
+            cpt = twoD_to_oneD(cpt)
+            if ndim(cpt) == 0:
+                cpt = cpt
+            else:
+                cpt = cpt[0]
+            lastchangecpts[tstar-1,:] = twoD_to_oneD([cpt, tstar])
             #everything above is fine.
-        checklist = truefalse(tmpt,(tmplike <= lastchangelike[tstar-1,0] + pen))
-        #print(tmpt)
-        #print(tmplike)
-    print(checklist)
-    #print(lastchangecpts)
-#        if nprune == True:
-#            noprune = [size(checklist)]
-#    if nprune == True:
-#        return(noprune)
-#    print(lastchangecpts)
-#    else:
-#        fcpt = []
-#        last = n
-#        while last != 0:
-#            fcpt = append(fcpt,lastchangecpts[last - 1, 1])
-#            last = lastchangecpts[last - 1, 0]
-#        print(fcpt)
-#        cpt = sorted(fcpt)
-#        return(cpt)
+        checklist = truefalse(tmpt,(tmplike <= (lastchangelike[tstar-1,0] + pen)))
+        if nprune == True:
+            noprune = [size(checklist)]
+    if nprune == True:
+        return(noprune)
+    else:
+        fcpt = []
+        last = n
+        while last != 0:
+            fcpt = append(fcpt,lastchangecpts[last - 1, 1])
+            last = lastchangecpts[last - 1, 0]
+        print(fcpt)
+        cpt = sorted(fcpt)
+        return(cpt)

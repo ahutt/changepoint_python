@@ -207,12 +207,28 @@ def truefalse2(a,b,c):
                 a[i] = a[i]
     return(a)
     
-#firstelementlist
+#first element list
 from numpy import ndim
-def first_element_list(a):
-    if ndim(a) == 1:
-        b = a[0]
+
+def twoD_to_oneD(list):
+    if isinstance(list,(int,float)) == True:
+        return(list)
     else:
-        b = a[0][0]
-    return(b)
+        if list == []:
+            return([None])
+        elif size(list) == 1 and len(list) == 1 and ndim(list) == 1:
+            return(list[0])
+        elif ndim(list) == 0:
+            return(list)
+        elif ndim(list) == 1:
+            if list[0] == None:
+                return(list[1])      
+            elif len(list) == 2:
+                if isinstance(list[0], (float, int)) == True:
+                    return(list)
+                else:
+                    list[0].append(list[1])
+                    return(list[0])
+            else:
+                return(list)
     

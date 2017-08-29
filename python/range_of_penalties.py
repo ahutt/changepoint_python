@@ -12,6 +12,7 @@ from numpy import subtract
 from numpy import add
 from numpy import power
 from numpy import abs
+from numpy import delete
 
 def range_of_penalties(sumstat, minseglen, cost = "mean_norm", PELT = True, shape = 1):
     min_pen = log(divide(size(sumstat),3) - 1)
@@ -27,16 +28,16 @@ def range_of_penalties(sumstat, minseglen, cost = "mean_norm", PELT = True, shap
     count = 0
     
     while size(pen_interval) > 0:
-        new_numcpts = []
-        new_penalty = []
-        new_cpts = []
+        new_numcpts = [None] * len(sumstat)
+        new_penalty = [None] * len(sumstat)
+        new_cpts = [None] * len(sumstat)
         
         for b in range(1, size(pen_interval)):
             
             ans = PELT_meanvar_norm(sumstat)
-            resultingcpts = ans[[1]]
+            resultingcpts = ans[1]
             new_numcpts[b] = size(resultingcpts)
-            new_cpts[b] = list(resultingcpts[-size(resultingcpts)])
+            new_cpts[b] = list(delete(resultingcpts, [size(resultingcpts)-1]))
             new_penalty[b] = ans[[2]][n] - (multiply((subtract(ans[[3]][n],1)),pen_interval[b]))
         
         if count == 0:

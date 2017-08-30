@@ -8,6 +8,28 @@ from functions import paste
 from parse import parse
 
 def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
+    """
+    penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method)
+    
+    Evaluates the arguments to give a numeric value for the penalty.
+
+    This function is called by cpt_mean, cpt_var and cpt_meanvar. This is not intended for use by regular users of the package. It is exported for developers to call directly for speed increases or to fit alternative cost functions.
+    
+    WARNING: No checks on arguments are performed!
+    
+    Parameters
+    ----------
+    penalty : Choice of "None", "SIC", "BIC", "MBIC", AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the pen_value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen_value parameter. The predefined penalties listed DO count the changepoint as a parameter, postfix a 0 e.g."SIC0" to NOT count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty. The value of the penalty when using the Manual penalty option - this can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    n : The length of the original data, required to give sensible "no changepoint" output.
+    diffparam : The difference in the number of parameters (degrees of freedom) when a change is added, required for the SIC, BIC, AIC, Hanna-Quinn and possibly Manual penalties. Do NOT include the changepoint when calculating this number as this is automatically added.
+    asymcheck : A text string which translates to the asymptotic formula for a specific cost function. Currently implemented values are: mean_norm, var_norm, meanvar_norm, reg_norm, var_css, mean_cusum, meanvar_gamma, meanvar_exp, meanvar_poisson.
+    method : Choice of "AMOC", "PELT", "SegNeigh" or "BinSeg".
+    
+    Returns
+    -------
+    
+    """
     if penalty == "SIC0" or penalty == "BIC0":
         pen_return = diffparam * log(n)
     elif penalty == "SIC" or penalty == "BIC":

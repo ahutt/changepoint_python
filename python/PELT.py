@@ -121,6 +121,25 @@ def mll_meanvar_EFK(x2,x,n):
     return(a)
 
 def PELT_meanvar_norm(data, pen = 0, nprune = False):
+    """
+    PELT_meanvar_norm(data, pen = 0, nprune = False)
+    
+    Implements the PELT (Pruned Exact Linear Time) method for identifying changepoints in a given set of summary statistics for a specified cost function and penalty.
+    
+    This function is called by cpt_mean, cpt_var and cpt_meanvar when method="PELT". This is not intended for use by regular users of the package. It is exported for developers to call directly for speed increases or to fit alternative cost functions.
+    
+    WARNING: No checks on arguments are performed!
+    
+    Parameters
+    ----------
+    data : 
+    pen : Default choice is 0, this should be evaluated elsewhere and a numerical value entered. This should be positive - this isn't checked but results are meaningless if it isn't.
+    nprune : 
+        
+    Returns
+    -------
+    
+    """
     n = size(data)
     y2 = append([0], cumsum(square(data)))
     y = append([0], cumsum(data))

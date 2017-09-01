@@ -15,6 +15,9 @@ from numpy import abs
 from numpy import delete
 
 def range_of_penalties(sumstat, minseglen, cost = "mean_norm", PELT = True, shape = 1):
+    """
+    PLEASE ENTER DETAILS
+    """
     min_pen = log(divide(size(sumstat),3) - 1)
     max_pen = 10 * log(divide(size(sumstat),3) - 1)
     pen_interval = [min_pen, max_pen]

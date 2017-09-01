@@ -6,6 +6,9 @@ from range_of_penalties import range_of_penalties
 from numpy import vstack
 
 def CROPS(data, pen_value, minseglen, shape, func, penalty = "CROPS", method = "PELT", test_stat = "Normal", Class = True, param_est = True):
+    """
+    PLEASE ENTER DETAILS.
+    """
     if method != "PELT":
         print('CROPS is a valid penalty choice only if method="PELT", please change your method or your penalty.')
     mu = mean(data)

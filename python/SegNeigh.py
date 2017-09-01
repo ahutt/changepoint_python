@@ -9,6 +9,23 @@ from warnings import warn
 from numpy import matrix
 
 def segneigh_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
+    """
+    segneigh_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None)
+    
+    Calculates the optimal positioning and number of changepoints for Normal data using Segment Neighbourhood method. Note that this gives the same results as PELT method but takes more computational time.
+    
+    Parameters
+    ----------
+    data : A vector containing the data within which you wish to find changepoints.
+    Q : Numeric value of the maximum number of segments (number of changepoints +1) you wish to search for, default is 5.
+    pen : Numeric value of the linear penalty function. This value is used in the final decision as to the optimal number of changepoints, used as k*pen where k is the number of changepoints to be tested.
+    know_mean : Logical, if True then the mean is assumed known and mu is taken as its value. If False, and mu=-1000 (default value) then the mean is estimated via maximum likelihood. If False and the value of mu is supplied, mu is not estimated but is counted as an estimated parameter for decisions.
+    mu : Numerical value of the true mean of the data. Either single value or vector of length len(data). If data is a matrix and mu is a single value, the same mean is used for each row.
+    
+    Returns
+    -------
+    PLEASE INSERT DETAILS.
+    """
     n = size(data)
     if n < 4:
         print ('Data must have atleast 4 observations to fit a changepoint model.')
@@ -57,6 +74,21 @@ def segneigh_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
     return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = -2 * like_Q[:,n]))
 
 def segneigh_mean_norm(data, Q = 5, pen = 0):
+    """
+    segneigh_mean_norm(data, Q = 5, pen = 0)
+    
+    Calculates the optimal positioning and number of changepoints for Normal data using Segment Neighbourhood method. Note that this gives the same results as PELT method but takes more computational time.
+    
+    Parameters
+    ----------
+    data : A vector containing the data within which you wish to find changepoints.
+    Q : Numeric value of the maximum number of segments (number of changepoints +1) you wish to search for, default is 5.
+    pen : Numeric value of the linear penalty function. This value is used in the final decision as to the optimal number of changepoints, used as k*pen where k is the number of changepoints to be tested.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     n = size(data)
     if n < 2:
         print('Data must have at least 2 observations to fit a changepoint model.')
@@ -106,6 +138,21 @@ def segneigh_mean_norm(data, Q = 5, pen = 0):
     return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = -2 * like_Q[:,n]))
 
 def segneigh_meanvar_norm(data, Q = 5, pen = 0):
+    """
+    segneigh_meanvar_norm(data, Q = 5, pen = 0)
+    
+    Calculates the optimal positioning and number of changepoints for Normal data using Segment Neighbourhood method. Note that this gives the same results as PELT method but takes more computational time.
+    
+    Parameters
+    ----------
+    data : A vector containing the data within which you wish to find changepoints.
+    Q : Numeric value of the maximum number of segments (number of changepoints +1) you wish to search for, default is 5.
+    pen : Numeric value of the linear penalty function.  This value is used in the final decision as to the optimal number of changepoints, used as k*pen where k is the number of changepoints to be tested.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     n = size(data)
     if n < 4:
         print ('Data must have atleast 4 observations to fit a changepoint model.')

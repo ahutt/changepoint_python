@@ -116,6 +116,9 @@ from numpy import transpose
 #        return(cpt == sorted(fcpt))
 
 def mll_meanvar_EFK(x2,x,n):
+    """
+    PLEASE ENTER DETAILS.
+    """
     sigmasq = multiply(divide(1,n),subtract(x2,multiply((power(x,2)),divide(1,n))))
     b = truefalse2(sigmasq,less_than_equal(sigmasq, 0),0.00000000001)
     a = multiply(n,add(add(log(2 * pi),log(b)),1))

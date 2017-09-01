@@ -102,6 +102,9 @@ from numpy import float64
 #    return(list(cps = cpt, op_cpts = op_cps, pen = pen))
 
 def mll_meanvar(x2,x,n):
+    """
+    PLEASE ENTER DETAILS.
+    """
     sigmasq = multiply(divide(1,n),subtract(x2,multiply((power(x,2)),divide(1,n))))
     b = truefalse2(sigmasq,less_than_equal(sigmasq, 0),0.00000000001)
     a = multiply(divide(-n,2),add(add(log(2 * pi),log(b)),1))

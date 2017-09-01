@@ -17,6 +17,9 @@ from math import gamma
 from class_input import class_input
 
 def singledim(data, minseglen, extrainf = True):
+    """
+    PLEASE ENTER DETAILS
+    """
     n = size(data)
     y = [0, cumsum(data)]
     y2 = [0, cumsum(square(data))]
@@ -34,6 +37,21 @@ def singledim(data, minseglen, extrainf = True):
         return(tau)
 
 def single_mean_norm_calc(data, minseglen, extrainf = True):
+    """
+    single_mean_norm_calc(data, minseglen, extrainf = True)
+    
+    Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    extrainf : Logical, if True the test statistic is returned along with the changepoint location. If False, only the changepoint location is returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if shape(data) == (0,0) or (0,) or () or None:
         #single data set
         cpt = singledim(data, minseglen, extrainf)
@@ -53,6 +71,24 @@ def single_mean_norm_calc(data, minseglen, extrainf = True):
         return(cpt)
 
 def single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True):
+    """
+    single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True)
+    
+    Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties. If Manual is specified, the manual penalty is contained in the pen_value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen_value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty (options are 0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95).  The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=test statistic, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    Class : Logical. If True then an object of class cpt is returned. If False a vector is returned.
+    param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset
         n = size(data)
@@ -99,6 +135,22 @@ def single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = T
             return(out)
 
 def single_var_norm_calc(data, mu, minseglen, extrainf = True):
+    """
+    single_var_norm_calc(data, mu, minseglen, extrainf = True)
+    
+    Calculates the scaled negative log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (min).
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    mu : Numerical value of the true mean of the data. Either single value or vector of length len(data). If data is a matrix and mu is a single value, the same mean is used for each row.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    extrainf : Logical, if True the test statistic is returned along with the changepoint location. If False, only the changepoint location is returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS
+    """
     n = size(data)
     dummy = []
     for i in data:
@@ -126,6 +178,26 @@ def single_var_norm_calc(data, mu, minseglen, extrainf = True):
         return(tau)
 
 def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean = False, mu = None, Class = True, param_estimates = True):
+    """
+    single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean = False, mu = None, Class = True, param_estimates = True)
+    
+    Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties. If Manual is specified, the manual penalty is contained in the pen_value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen_value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty (options are 0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95).  The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=test statistic, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    know_mean : Logical, if True then the mean is assumed known and mu is taken as its value.  If False, and mu=-1000 (default value) then the mean is estimated via maximum likelihood. If False and the value of mu is supplied, mu is not estimated but is counted as an estimated parameter for decisions.
+    mu : Numerical value of the true mean of the data. Either single value or vector of length len(data). If data is a matrix and mu is a single value, the same mean is used for each row.
+    Class : Logical. If True then an object of class cpt is returned. If False a vector is returned.
+    param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    
+    Returns
+    -------
+    PLEASE INSERT DETAILS.
+    """
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset
         n = size(data)
@@ -185,6 +257,9 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
             return(out)
 
 def singledim2(data, minseglen, extrainf = True):
+    """
+    PLEASE ENTER DETAILS
+    """
     n = size(data)
     y = [0, cumsum(data)]
     y2 = [0, cumsum(square(data))]
@@ -208,6 +283,21 @@ def singledim2(data, minseglen, extrainf = True):
         return(tau)
 
 def single_meanvar_norm_calc(data, minseglen, extrainf = True):
+    """
+    single_meanvar_norm_calc(data, minseglen, extrainf = True)
+    
+    Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    extrainf : Logical, if True the test statistic is returned along with the changepoint location. If False, only the changepoint location is returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset
         cpt = singledim2(data, extrainf, minseglen)
@@ -227,6 +317,24 @@ def single_meanvar_norm_calc(data, minseglen, extrainf = True):
         return(cpt)
 
 def single_meanvar_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True):
+    """
+    single_meanvar_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True)
+    
+    Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties. If Manual is specified, the manual penalty is contained in the pen_value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen_value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty (options are 0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95).  The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=test statistic, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    Class : Logical. If True then an object of class cpt is returned. If False a vector is returned.
+    param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset
         n = size(data)

@@ -12,6 +12,9 @@ from statistics import mean
 from param import param
 
 def singledim(data, minseglen, extrainf = True):
+    """
+    PLEASE ENTER DETAILS.
+    """
     n = size(data)
     y2 = [0, cumsum(square(data))]
     taustar = range(minseglen, n - minseglen + 1)
@@ -26,6 +29,21 @@ def singledim(data, minseglen, extrainf = True):
         return(tau)
 
 def single_var_css_calc(data, minseglen, extrainf = True):
+    """
+    single_var_css_calc(data, minseglen, extrainf = True)
+    
+    Calculates the cumulative sums of squares (css) test statistic for all possible changepoint locations and returns the single most probable (max).
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    extrainf : Logical, if True the test statistic is returned along with the changepoint location. If False, only the changepoint location is returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset
         cpt = singledim(data, extrainf, minseglen)
@@ -45,6 +63,24 @@ def single_var_css_calc(data, minseglen, extrainf = True):
         return(cpt)
 
 def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True):
+    """
+    single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True)
+    
+    A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties. If Manual is specified, the manual penalty is contained in the pen_value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen_value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty (options are 0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95).  The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=test statistic, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    Class : Logical. If True then an object of class cpt is returned. If False a vector is returned.
+    param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if size(pen_value) > 1:
         print('Only one dimensional penalties can be used for CSS')
     if penalty == "MBIC":
@@ -108,6 +144,9 @@ def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = Tru
             return(ans.cpt)
 
 def singledim2(data, minseglen, extrainf = True):
+    """
+    PLEASE ENTER DETAILS.
+    """
     n = size(data)
     ybar = mean(data)
     y = [0, cumsum(subtract(data,ybar))]
@@ -122,6 +161,21 @@ def singledim2(data, minseglen, extrainf = True):
         return(tau)
 
 def single_mean_cusum_calc(data, minseglen, extrainf = True):
+    """
+    single_mean_cusum_calc(data, minseglen, extrainf = True)
+    
+    Calculates the cumulative sums (cusum) test statistic for all possible changepoint locations and returns the single most probable (max).
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    extrainf : Logical, if True the test statistic is returned along with the changepoint location. If False, only the changepoint location is returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset
         cpt = singledim2(data, extrainf, minseglen)
@@ -137,6 +191,24 @@ def single_mean_cusum_calc(data, minseglen, extrainf = True):
         return(cpt)
 
 def single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", pen_value = 0.05, Class = True):
+    """
+    single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", pen_value = 0.05, Class = True)
+    
+    Calculates the cumulative sums (cusum) test statistic for all possible changepoint locations and returns the single most probable (max).
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties. If Manual is specified, the manual penalty is contained in the pen_value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen_value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty (options are 0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95).  The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=test statistic, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    Class : Logical. If True then an object of class cpt is returned. If False a vector is returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if size(pen_value) > 1:
         print('Only one dimensional penalties can be used for CUSUM')
     if penalty == "MBIC":

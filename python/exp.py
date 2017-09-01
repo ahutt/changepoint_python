@@ -19,6 +19,9 @@ from decision import decision
 from data_input import data_input
 
 def singledim(data, minseglen, extrainf = True):
+    """
+    PLEASE ENTER DETAILS
+    """
     n = size(data)
     y = [0, cumsum(data)]
     null = 2 * n * log(y[n]) - 2 * n * log(n)
@@ -35,6 +38,21 @@ def singledim(data, minseglen, extrainf = True):
         return(tau)
 
 def single_meanvar_exp_calc(data, minseglen, extrainf = True):
+    """
+    single_meanvar_exp_calc(data, minseglen, extrainf = True)
+    
+    Calculates the scaled log-likelihood (assuming the data is Exponential distributed) for all possible changepoint locations and returns the single most probable (max).
+    
+    Parameters
+    ----------
+    data : A vector or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    extrainf : Logical, if True the scaled null and alternative likelihood values are returned along with the changepoint location. If False, only the changepoint location is returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if shape(data) == (0,0) or (0,) or () or None:
         #single data set
         cpt = singledim(data, minseglen, extrainf)
@@ -50,6 +68,24 @@ def single_meanvar_exp_calc(data, minseglen, extrainf = True):
         return(cpt)
 
 def single_meanvar_exp(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True):
+    """
+    single_meanvar_exp(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True)
+    
+    Calculates the scaled log-likelihood (assuming the data is Exponential distributed) for all possible changepoint locations and returns the single most probable (max).
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties. If Manual is specified, the manual penalty is contained in the pen.value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty. The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    Class : Logical. If True then an object of class cpt is returned. If False a vector is returned.
+    param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if sum(data < 0) > 0:
         print('Exponential test statistic requires positive data')
     if shape(data) == (0,0) or (0,) or () or None:
@@ -95,7 +131,22 @@ def single_meanvar_exp(data, minseglen, penalty = "MBIC", pen_value = 0, Class =
             out.rows({None, None})
             return(out)
 
-def segneigh_mean_var_exp(data, Q = 5, pen = 0):
+def segneigh_meanvar_exp(data, Q = 5, pen = 0):
+    """
+    segneigh_mean_var_exp(data, Q = 5, pen = 0)
+    
+    Calculates the optimal positioning and number of changepoints for Exponential data using Segment Neighbourhood method. Note that this gives the same results as PELT method but takes more computational time.
+    
+    Parameters
+    ----------
+    data : A vector containing the data within which you wish to find changepoints.
+    Q : Numeric value of the maximum number of segments (number of changepoints +1) you wish to search for, default is 5.
+    pen : Numeric value of the linear penalty function. This value is used in the final decision as to the optimal number of changepoints, used as k*pen where k is the number of changepoints to be tested.
+    
+    Returns
+    -------
+    PLEASE ENTER DETIALS.
+    """
     if sum(data <= 0) > 0:
         print('Exponential test statistic requires positive data')
     n = size(data)
@@ -146,6 +197,26 @@ def segneigh_mean_var_exp(data, Q = 5, pen = 0):
     return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = like_Q[:,n]))
 
 def multiple_meanvar_exp(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
+    """
+    multiple_meanvar_exp(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
+    
+    Calculates the optimal positioning and number of changepoints for Exponential data using the user specified method.
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    mul_method : Choice of "PELT", "SegNeigh" or "BinSeg".
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties. If Manual is specified, the manual penalty is contained in the pen.value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty. The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    Q : The maximum number of changepoints to search for using the "BinSeg" method. The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
+    Class : Logical. If True then an object of class cpt is returned.
+    param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if sum(data < 0) > 0:
         print('Exponential test statistic requires positive data')
     if(not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh")):

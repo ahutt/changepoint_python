@@ -14,6 +14,21 @@ from penalty_decision import penalty_decision
 from class_input import class_input
 
 def segneigh_var_css(data, Q = 5, pen = 0):
+    """
+    segneigh_var_css(data, Q = 5, pen = 0)
+    
+    Calculates the optimal positioning and number of changepoints for Cumulative Sums of Sqaures test statistic using Segment Neighbourhood method.
+    
+    Parameters
+    ----------
+    data : A vector containing the data within which you wish to find changepoints.
+    Q : Numeric value of the maximum number of segments (number of changepoints +1) you wish to search for, default is 5.
+    pen : Numeric value of the linear penalty function.  This value is used in the final decision as to the optimal number of changepoints.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS
+    """
     n = size(data)
     if n < 4:
         print('Data must have atleast 4 observations to fit a changepoint model.')
@@ -65,6 +80,22 @@ def segneigh_var_css(data, Q = 5, pen = 0):
     return(list(cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = like_Q[:,n]))
 
 def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
+    """
+    binseg_var_css(data, Q = 5, pen = 0, minseglen = 2)
+    
+    Calculates the optimal positioning and number of changepoints for the cumulative sums of squares test statistic using Binary Segmentation method. Note that this is an approximate method.
+    
+    Parameters
+    ----------
+    data : A vector containing the data within which you wish to find changepoints.
+    Q : Numeric value of the maximum number of changepoints you wish to search for, default is 5.
+    pen : Numeric value of the linear penalty function.  This value is used in the decision as to the optimal number of changepoints.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     n = size(data)
     if n < 4:
         print('Data must have atleast 4 observations to fit a changepoint model.')
@@ -113,6 +144,26 @@ def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
     return(list(cps = cpt, cpts = cpts, op_cpts = op_cps, pen = pen))
 
 def multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
+    """
+    multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
+    
+    Calculates the optimal positioning and number of changepoints for the cumulative sums of squares test statistic using the user specified method.
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    mul_method : Choice of "SegNeigh" or "BinSeg".
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the pen_value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen_value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty. The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    Q : The maximum number of changepoints to search for using the "BinSeg" method. The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
+    Class : Logical. If True then an object of class cpt is returned.
+    param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS
+    """
     if mul_method == "PELT":
         print("CSS does not satisfy the assumptions of PELT, use SegNeigh or BinSeg instead.")
     elif not(mul_method == "BinSeg" or mul_method == "SegNeigh"):
@@ -164,6 +215,21 @@ def multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", p
 
 
 def segneigh_mean_cusum(data, Q = 5, pen = 0):
+    """
+    segneigh_mean_cusum(data, Q = 5, pen = 0)
+    
+    Calculates the optimal positioning and number of changepoints for Cumulative Sums test statistic using Segment Neighbourhood method.
+    
+    Parameters
+    ----------
+    data : A vector containing the data within which you wish to find changepoints.
+    Q : Numeric value of the maximum number of segments (number of changepoints +1) you wish to search for, default is 5.
+    pen : Numeric value of the linear penalty function. This value is used in the final decision as to the optimal number of changepoints.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     n = size(data)
     if n < 2:
         print('Data must have atleast 2 observations to fit a changepoint model.')
@@ -215,7 +281,23 @@ def segneigh_mean_cusum(data, Q = 5, pen = 0):
     
     return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps+1], like_Q = like_Q[:,n]))
 
-def binseg_mean_cusum(data, minseglen ,Q = 5, pen = 0):
+def binseg_mean_cusum(data, minseglen, Q = 5, pen = 0):
+    """
+    binseg_mean_cusum(data, minseglen ,Q = 5, pen = 0)
+    
+    Calculates the optimal positioning and number of changepoints for the cumulative sums test statistic using Binary Segmentation method. Note that this is an approximate method.
+    
+    Parameters
+    ----------
+    data : A vector containing the data within which you wish to find changepoints.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    Q : Numeric value of the maximum number of changepoints you wish to search for, default is 5.
+    pen : Numeric value of the linear penalty function.  This value is used in the decision as to the optimal number of changepoints.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     n = size(data)
     if n < 2:
         print('Data must have atleast 2 observations to fit a changepoint model.')
@@ -264,6 +346,26 @@ def binseg_mean_cusum(data, minseglen ,Q = 5, pen = 0):
     return(list(cps = cpt, cpts = cpts, op_cpts = op_cps, pen = pen))
 
 def multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymptotic", pen_value = 0.05, Q = 5, Class = True, param_estimates = True):
+    """
+    multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymptotic", pen_value = 0.05, Q = 5, Class = True, param_estimates = True)
+    
+    Calculates the optimal positioning and number of changepoints for the cumulative sums test statistic using the user specified method.
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    mul_method : Choice of "SegNeigh" or "BinSeg".
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn" and "Manual" penalties. If Manual is specified, the manual penalty is contained in the pen.value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    Q : The maximum number of changepoints to search for using the "BinSeg" method. The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
+    Class : Logical. If True then an object of class cpt is returned.
+    param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS
+    """
     if mul_method == "PELT":
         print("Multiple Method is not recognised")
     if penalty != "MBIC":

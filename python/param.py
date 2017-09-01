@@ -7,6 +7,9 @@ from numpy import multiply
 from numpy import matrix
 
 def param_mean(object):
+    """
+    PLEASE ENTER DETAILS.
+    """
     cpts = [0,object.cpts]
     data = object.data_set
     tmpmean = None
@@ -15,6 +18,9 @@ def param_mean(object):
     return(tmpmean)
 
 def param_var(object):
+    """
+    PLEASE ENTER DETAILS.
+    """
     cpts = [0, object.cpts]
     data = object.data_set
     seglen = object.seg_len
@@ -25,6 +31,9 @@ def param_var(object):
     return(tmpvar)
 
 def param_scale(object, shape):
+    """
+    PLEASE ENTER DETAILS.
+    """
     cpts = [0, object.cpts]
     data = object.data_set
     y = [0, cumsum(data)]
@@ -34,6 +43,9 @@ def param_scale(object, shape):
     return(tmpscale)
 
 def param_trend(object):
+    """
+    PLEASE ENTER DETAILS.
+    """
     cpts = [0, object.cpts]
     data = object.data_set
     seglen = object.seg_len
@@ -47,6 +59,9 @@ def param_trend(object):
     return(vstack(thetaS,thetaT))
 
 def param_meanar(object):
+    """
+    PLEASE ENTER DETAILS.
+    """
     seglen = object.seg_len
     data = object.data_set
     n = size(data) - 1
@@ -57,6 +72,9 @@ def param_meanar(object):
     return(vstack(beta1,beta2))
 
 def param_trender(object):
+    """
+    PLEASE ENTER DETAILS.
+    """
     seglen = object.seg_len
     data = object.data_set
     n = size(data) - 1
@@ -72,6 +90,19 @@ def param_trender(object):
     return(vstack(beta,thetajpo,thetaj))
 
 def param(object):
+    """
+    param(object)
+    
+    Generic function that returns parameter estimates.
+    
+    Parameters
+    ----------
+    object : Depending on the class of object depends on the method used to find the parameter estimates (and if one exists).
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if object.cpttype == "mean":
         object.param_est = list(mean = param_mean(object))
     elif object.cpttype == "variance":

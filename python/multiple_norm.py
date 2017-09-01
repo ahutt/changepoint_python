@@ -10,6 +10,28 @@ from class_input import class_input
 
 
 def multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, know_mean = False, mu = None, Class = True, param_estimates = True, minseglen = 2):
+    """
+    multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, know_mean = False, mu = None, Class = True, param_estimates = True, minseglen = 2)
+    
+    Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    mul_method : Choice of "PELT", "SegNeigh" or "BinSeg".
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties. If Manual is specified, the manual penalty is contained in the pen.value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty. The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    Q : The maximum number of changepoints to search for using the "BinSeg" method.  The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
+    know_mean : Logical, if True then the mean is assumed known and mu is taken as its value. If False, and mu=-1000 (default value) then the mean is estimated via maximum likelihood. If False and the value of mu is supplied, mu is not estimated but is counted as an estimated parameter for decisions.
+    mu : Numerical value of the true mean of the data. Either single value or vector of length len(data). If data is a matrix and mu is a single value, the same mean is used for each row.
+    Class : Logical. If True then an object of class cpt is returned.
+    param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh"):
         print ("Multiple Method is not recognised")
     costfunc = "var_norm"
@@ -60,6 +82,26 @@ def multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0
         return(cpts)
 
 def multiple_mean_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
+    """
+    multiple_mean_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
+    
+    Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    mul_method : Choice of "PELT", "SegNeigh" or "BinSeg".
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties. If Manual is specified, the manual penalty is contained in the pen_value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty. The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    Q : The maximum number of changepoints to search for using the "BinSeg" method. The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
+    Class : Logical. If True then an object of class cpt is returned.
+    param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh"):
         print("Multiple Method is not recognised")
     costfunc = "mean_norm"
@@ -100,6 +142,26 @@ def multiple_mean_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", p
             return(cps)
     
 def multiple_meanvar_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
+    """
+    multiple_meanvar_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
+    
+    Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
+    
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    mul_method : Choice of "PELT", "SegNeigh" or "BinSeg".
+    penalty : Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties. If Manual is specified, the manual penalty is contained in the pen.value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter. The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+    pen_value : The theoretical type I error e.g.0.05 when using the Asymptotic penalty. The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+    Q : The maximum number of changepoints to search for using the "BinSeg" method.  The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
+    Class : Logical. If True then an object of class cpt is returned.
+    param_esimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
+    
+    Returns
+    -------
+    PLEASE ENTER DETAILS.
+    """
     if not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh"):
         print("Multiple Method is not recognised")
     costfunc = "meanvar_norm"

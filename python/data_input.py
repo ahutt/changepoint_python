@@ -8,6 +8,9 @@ from BinSeg import binseg_meanvar_norm
 from SegNeigh import segneigh_meanvar_norm
 
 def data_input(data, method, pen_value, costfunc, minseglen, Q, var=0, shape=1):
+    """
+    PLEASE ENTER DETAILS.
+    """
     #if var != 0:
         #mu = var
     #else:

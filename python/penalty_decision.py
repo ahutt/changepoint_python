@@ -28,7 +28,7 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
     
     Returns
     -------
-    
+    PLEASE ENTER DETAILS
     """
     if penalty == "SIC0" or penalty == "BIC0":
         pen_return = diffparam * log(n)

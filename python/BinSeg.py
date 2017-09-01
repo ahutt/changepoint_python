@@ -119,13 +119,13 @@ def binseg_meanvar_norm(data, Q = 5, pen = 0):
     
     Parameters
     ----------
-    data : 
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
     Q : The maximum number of changepoints to search for (positive integer). No checks are performed and so a number larger than allowed can be input.
     pen : Default choice is 0, this should be evaluated elsewhere and a numerical value entered. This should be positive - this isn't checked but results are meaningless if it isn't.
     
     Returns
     -------
-    
+    PLEASE ENTER DETAILS.
     """
     n = size(data)
     y2 = append([0], cumsum(square(data)))

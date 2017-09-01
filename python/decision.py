@@ -32,6 +32,7 @@ def decision(tau, null, alt = None, penalty = "MBIC", n = 0, diffparam = 1, pen_
     
     Returns
     -------
+    PLEASE ENTER DETAILS
     """
     if alt == None:
         if size(tau) != size(null):

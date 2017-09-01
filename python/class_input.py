@@ -31,7 +31,7 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
     
     Returns
     -------
-    
+    PLEASE ENTER DETAILS.
     """
     if method == "BinSeg" or method == "SegNeigh" or penalty == "CROPS":
         ans = "cpt_range".__new__

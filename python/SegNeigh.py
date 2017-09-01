@@ -2,14 +2,15 @@ from numpy import size
 from functions import paste
 from numpy import zeros
 from numpy import empty
-from statistics import mean
+#from statistics import mean
 from shutil import which
 from math import inf
 from warnings import warn
 from numpy import matrix
 
+#The hashed out functions have not been tested and are currently not used anywhere in the package.
+
 #def segneigh_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
-# function has not been tested.
 #    """
 #    segneigh_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None)
 #    
@@ -75,7 +76,6 @@ from numpy import matrix
 #    return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = -2 * like_Q[:,n]))
 
 #def segneigh_mean_norm(data, Q = 5, pen = 0):
-# function has not been tested
 #    """
 #    segneigh_mean_norm(data, Q = 5, pen = 0)
 #    

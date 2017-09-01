@@ -17,6 +17,8 @@ from functions import greater_than_equal
 from numpy import append
 from numpy import float64
 
+#The hashed out functions have not been tested and are currently not used anywhere in the package.
+
 #def mll_var(x,n):
 #    neg = x <= 0
 #    x[neg == True] = 0.00000000001

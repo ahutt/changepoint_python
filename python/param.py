@@ -139,5 +139,3 @@ def param(object):
     else:
         print("Unknown changepoint type, must be 'mean', 'variance', 'mean and variance', 'trend', 'meanar' or 'trendar'.")
     return(object)
-
-#line 670

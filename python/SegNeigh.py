@@ -11,6 +11,7 @@ from math import pi
 from numpy import log
 from numpy import add
 from numpy import set_printoptions
+from numpy import subtract
 
 #The hashed out functions have not been tested and are currently not used anywhere in the package.
 
@@ -166,31 +167,32 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
     if Q > ((n/2) + 1):
         print(paste('Q is larger than the maximum number of segments',(n/2)+1))
     all_seg = zeros((n,n))
-    for i in range(1,n):
+    for i in range(1,n+1):
         ssq = 0
         sumx = 0
-        for j in range(i,n):
+        for j in range(i,n+1):
             length = j - i + 1
-            sumx = sumx + data[j]
-            ssq = ssq + data[j] ** 2
+            sumx = sumx + data[j-1]
+            ssq = ssq + data[j-1] ** 2
             sigmasq = (1/length) * (ssq - (sumx ** 2)/length)
             if sigmasq <= 0:
                 sigmasq = 0.00000000001
-            all_seg[i,j] = -(length/2) * (log(2 * pi) + log(sigmasq) + 1)
-    like_Q = zeros((Q,n))
+            all_seg[i-1,j-1] = -(length/2) * (log(2 * pi) + log(sigmasq) + 1)
+    like_Q = zeros((Q,n),int)
     like_Q[0,:] = all_seg[0,:]
     cp = full((Q,n),None)
-    print(all_seg)
-#    for q in range(2,Q):
-#        for j in range(q,n):
-#            like = None
-#            if (j - 2 - q) < 0:
-#                like = -inf                
-#            else:
-#                v = list(range(q,j-2))
-#                like = add(like_Q[q-1,v],all_seg[v+1,j])
-#            like_Q[q,j] = max(like)
+    for q in range(2,Q+1):
+        for j in range(q,n+1):
+            like = None
+            if (j - 2 - q) < 0:
+                like = -inf                
+            else:
+                v = list(range(q,j-1))
+                like = add(like_Q[q-2,subtract(v,1)],all_seg[v,j-1])
+        #Everything above is fine.            
+            print(like.append(-inf))#print(like_Q[q-1,j-1]) #= max(like)
 #            cp[q,j] = which(like == max(like))[0] + (q - 1)
+#    print(like_Q)
 #    cps_Q = full((Q,Q),None)
 #    for q in range(2,Q):
 #        cps_Q[q,0] = cp[q,n]

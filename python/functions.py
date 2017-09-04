@@ -231,4 +231,11 @@ def twoD_to_oneD(list):
                     return(list[0])
             else:
                 return(list)
-    
+
+#max vectors
+def max_vectors(a):
+    if len(a) > 1:
+        return(max(a))
+    else:
+        b = [a]
+        return(max(b))

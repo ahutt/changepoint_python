@@ -243,7 +243,12 @@ def max_vector(a):
 #which_element
 def which_element(a,b):
     l = []
-    for i in range(0,len(a)):
-        if a[i] == b:
-            l.append(i+1)
+    if isinstance(a,list) == True:
+        for i in range(0,len(a)):
+            if a[i] == b:
+                l.append(i+1)
+    elif a == b:
+        l = [1]
+    else:
+        l = []
     return(l)

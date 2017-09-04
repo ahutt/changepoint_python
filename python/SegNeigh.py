@@ -19,6 +19,7 @@ from numpy import sort
 from numpy import array
 from sys import exit
 
+
 #The hashed out functions have not been tested and are currently not used anywhere in the package.
 
 #def segneigh_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):

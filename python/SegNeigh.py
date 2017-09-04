@@ -13,6 +13,7 @@ from numpy import add
 from numpy import set_printoptions
 from numpy import subtract
 from functions import max_vector
+from functions import which_element
 
 #The hashed out functions have not been tested and are currently not used anywhere in the package.
 
@@ -192,7 +193,7 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
                 like = list(add(like_Q[q-2,subtract(v,1)],all_seg[v,j-1]))
         #Everything above is fine.            
             like_Q[q-1,j-1] = max_vector(like)
-            cp[q,j] = which(like == max_vector(like))[0] + (q - 1)
+            cp[q,j] = which_element(like,max_vector(like))[0] + (q - 1)
     print(cp)
 #    cps_Q = full((Q,Q),None)
 #    for q in range(2,Q):

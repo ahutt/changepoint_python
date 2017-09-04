@@ -239,3 +239,11 @@ def max_vector(a):
     else:
         b = [a]
         return(max(b))
+
+#which_element
+def which_element(a,b):
+    l = []
+    for i in range(0,len(a)):
+        if a[i] == b:
+            l.append(i+1)
+    return(l)

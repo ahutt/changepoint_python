@@ -1,9 +1,7 @@
 from numpy import size
-from functions import paste
 from numpy import zeros
 from numpy import full
 #from statistics import mean
-from shutil import which
 from numpy import inf
 from warnings import warn
 from numpy import matrix
@@ -14,6 +12,14 @@ from numpy import set_printoptions
 from numpy import subtract
 from functions import max_vector
 from functions import which_element
+from numpy import multiply
+from functions import greater_than
+from functions import truefalse
+from numpy import append
+from numpy import sort
+from numpy import array
+from numpy import sum
+from sys import exit
 
 #The hashed out functions have not been tested and are currently not used anywhere in the package.
 
@@ -165,9 +171,9 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
     set_printoptions(threshold=inf)
     n = len(data)
     if n < 4:
-        print ('Data must have at least 4 observations to fit a changepoint model.')
+        exit('Data must have at least 4 observations to fit a changepoint model.')
     if Q > ((n/2) + 1):
-        print(paste('Q is larger than the maximum number of segments',(n/2)+1))
+        exit('Q is larger than the maximum number of segments.')
     all_seg = zeros((n,n))
     for i in range(1,n+1):
         ssq = 0
@@ -193,21 +199,33 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
                 like = list(add(like_Q[q-2,subtract(v,1)],all_seg[v,j-1]))
         #Everything above is fine.            
             like_Q[q-1,j-1] = max_vector(like)
-            cp[q,j] = which_element(like,max_vector(like))[0] + (q - 1)
-    print(cp)
-#    cps_Q = full((Q,Q),None)
-#    for q in range(2,Q):
-#        cps_Q[q,0] = cp[q,n]
-#        for i in range(1, q-1):
-#            cps_Q[q,i+1] = cp[q-i,cps_Q[q,i]]
+            cp[q-1,j-1] = which_element(like,max_vector(like))[0] + (q - 1)
+#    print(cp[18,20])
+    cps_Q = full((Q,Q),None)
+    for q in range(2,Q+1):
+        cps_Q[q-1,0] = cp[q-1,n-1]
+        for i in range(1, q):
+            cps_Q[q-1,i] = cp[(q-i-1),cps_Q[q-1,i-1]]
+    print(cps_Q)
 #    op_cps = None
-#    k = range(0,Q-1)
-#    for i in range(1,size(pen)):
-#        criterion = -2 * like_Q[:,n] + k * pen[i]
-#        op_cps = matrix([op_cps,which(criterion == min(criterion,na_rm = True)) - 1])
+#    k = list(range(0,Q))
+#    if isinstance(pen,list) == True:
+#        for i in range(1,size(pen)):
+#            criterion = add(multiply(-2,like_Q[:,n-1]),multiply(k,pen[i-1]))
+#            op_cps = subtract(which_element(criterion,min(criterion)),1)
+#    else:
+#        criterion = list(add(multiply(-2,like_Q[:,n-1]),multiply(k,pen)))
+#        op_cps = subtract(which_element(criterion,min(criterion)),1)
 #    if op_cps == Q-1:
 #        warn('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
 #    if op_cps == 0:
 #        cpts = n
-#    else: cpts = [sorted(cps_Q[op_cps + 1,:][cps_Q[op_cps + 1,:] > 0]),n]
-#    return(list(cps = cps_Q.sort(axis = 1), cpts = cpts,op_cpts = op_cps,pen = pen,like = criterion[op_cps + 1],like_Q = -2 * like_Q[:,n]))
+#    else:
+#        cpts = list(append(sorted(truefalse(cps_Q[op_cps,:],greater_than(cps_Q[op_cps,:][0],0))),[n]))
+#    cps = sort(array(cps_Q),axis=1)
+#    op_cpts = op_cps
+#    like = criterion[op_cps]
+#    like_Q = multiply(-2,like_Q[:,n-1])
+#    A = list((cps, cpts, list(op_cpts), pen, like, like_Q))
+#    return(A)
+#    print(cps_Q)

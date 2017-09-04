@@ -12,6 +12,7 @@ from numpy import log
 from numpy import add
 from numpy import set_printoptions
 from numpy import subtract
+from functions import max_vector
 
 #The hashed out functions have not been tested and are currently not used anywhere in the package.
 
@@ -178,7 +179,7 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
             if sigmasq <= 0:
                 sigmasq = 0.00000000001
             all_seg[i-1,j-1] = -(length/2) * (log(2 * pi) + log(sigmasq) + 1)
-    like_Q = zeros((Q,n),int)
+    like_Q = zeros((Q,n),float)
     like_Q[0,:] = all_seg[0,:]
     cp = full((Q,n),None)
     for q in range(2,Q+1):
@@ -188,11 +189,11 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
                 like = -inf                
             else:
                 v = list(range(q,j-1))
-                like = add(like_Q[q-2,subtract(v,1)],all_seg[v,j-1])
+                like = list(add(like_Q[q-2,subtract(v,1)],all_seg[v,j-1]))
         #Everything above is fine.            
-            print(like.append(-inf))#print(like_Q[q-1,j-1]) #= max(like)
-#            cp[q,j] = which(like == max(like))[0] + (q - 1)
-#    print(like_Q)
+            like_Q[q-1,j-1] = max_vector(like)
+            cp[q,j] = which(like == max_vector(like))[0] + (q - 1)
+    print(cp)
 #    cps_Q = full((Q,Q),None)
 #    for q in range(2,Q):
 #        cps_Q[q,0] = cp[q,n]

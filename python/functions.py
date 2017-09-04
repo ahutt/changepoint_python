@@ -250,5 +250,5 @@ def which_element(a,b):
     elif a == b:
         l = [1]
     else:
-        l = []
+        l = [None]
     return(l)

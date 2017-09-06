@@ -33,21 +33,27 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
     -------
     PLEASE ENTER DETAILS.
     """
+    ans = list()
     if method == "BinSeg" or method == "SegNeigh" or penalty == "CROPS":
-        ans = "cpt_range".__new__
+        name = ['cpt_range']
+        named_ans = dict(zip(name, ans))
     else:
-        ans = "cpt".__new__
+        name = ['cpt']
+        named_ans = dict(zip(name, ans))
 
-    ans.data_set = data
-    ans.cpttype = cpttype
-    ans.method = method
-    ans.test_stat = test_stat
-    ans.pen_type = penalty
-    ans.pen_value = pen_value
-    ans.minseglen = minseglen
+    ans.append(data)
+    ans.append(cpttype)
+    ans.append(method)
+    ans.append(test_stat)
+    ans.append(penalty)
+    ans.append(pen_value)
+    ans.append(minseglen)
+
     if penalty != "CROPS":
-        ans.cpts = out[[1]]
-
+        if size(out) == 0:
+            ans.append(out)
+        else:
+            ans.append(out[[1]])
         if param_estimates == True:
             if test_stat == "Gamma":
                 ans = param(ans, shape)
@@ -55,31 +61,32 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
                 ans = param(ans)
 
     if method == "PELT":
-        ans.ncpts_max = inf
+        ans.append(inf)
     elif method == "AMOC":
-        ans.ncpts_max = 1
+        ans.append(1)
     else:
-        ans.ncpts_max = Q
+        ans.append(Q)
 
     if method == "BinSeg":
         l = list()
-        for i in range(1, size(out.cps)/2):
-            l[[i]] = out.cps[1,range(1,i)]
+        for i in range(1, size(out.cps)/2 + 1):
+            l[[i-1]] = out.cps[0,list(range(0,i))]
         f = lapply(l, len)
-        m = sapply(out[[2]], range(1,max(f)))
+        m = (sapply(l, list(range(1,max(f))))).T
 
-        ans.cpts_full = m
-        ans.pen_value_full = out.cps[2,:]
+        ans.append(m)
+        ans.append(out.cps[1,:])
     elif method == "SegNeigh":
-        ans.cpts_full = out.cps[-1,:]
-        ans.pen_value_full = -diff(out.like_Q)
+        ans.append(out.cps[-1,:])
+        ans.append(-diff(out.like_Q))
     elif penalty == "CROPS":
-        f = lapply(out[[2]], len)
-        m = sapply(out[[2]], range(1, max(f)))
+        f = lapply(out[[1]], len)
+        m = sapply(out[[1]], range(1, max(f)+1)).T
 
-        ans.cpts_full = m
-        ans.pen_value_full = out[[1]][1,:]
+        ans.append(m)
+        ans.append(out[[0]][0,:])
         if test_stat == "Gamma":
-            (ans.param_est).shape = shape
+            ans.append([])
+            ans[11].append(shape)
 
     return(ans)

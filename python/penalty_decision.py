@@ -6,6 +6,7 @@ from math import gamma
 from math import exp
 from functions import paste
 from parse import parse
+from sys import exit
 
 def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
     """
@@ -55,13 +56,13 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
     elif penalty != "Manual" and penalty != "Asymptotic":
         return "unknown penalty"
 
-    if penalty == "Manual" and isinstance(pen_value, (int, float, complex)) == False:
+    if penalty == "Manual" and isinstance(pen_value, (int, float)) == False:
         try:
             pen_value = eval(parse(text = paste(pen_value)))
-        except type(pen_value) != 'try-error':
-            print('Your manual penalty cannot be evaluated')
-        else:
-            pen_return = pen_value
+        except:
+            exit('Your manual penalty cannot be evaluated')
+    else:
+        pen_return = pen_value
     if penalty == "Asymptotic":
         if pen_value <= 0 or pen_value > 1:
             return ('Asymptotic penalty values must be > 0 and <= 1')

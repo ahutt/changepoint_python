@@ -10,13 +10,13 @@ from parse import parse
 def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
     """
     penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method)
-    
+
     Evaluates the arguments to give a numeric value for the penalty.
 
     This function is called by cpt_mean, cpt_var and cpt_meanvar. This is not intended for use by regular users of the package. It is exported for developers to call directly for speed increases or to fit alternative cost functions.
-    
+
     WARNING: No checks on arguments are performed!
-    
+
     Parameters
     ----------
     penalty : Choice of "None", "SIC", "BIC", "MBIC", AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the pen_value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen_value parameter. The predefined penalties listed DO count the changepoint as a parameter, postfix a 0 e.g."SIC0" to NOT count the changepoint as a parameter.
@@ -25,7 +25,7 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
     diffparam : The difference in the number of parameters (degrees of freedom) when a change is added, required for the SIC, BIC, AIC, Hanna-Quinn and possibly Manual penalties. Do NOT include the changepoint when calculating this number as this is automatically added.
     asymcheck : A text string which translates to the asymptotic formula for a specific cost function. Currently implemented values are: mean_norm, var_norm, meanvar_norm, reg_norm, var_css, mean_cusum, meanvar_gamma, meanvar_exp, meanvar_poisson.
     method : Choice of "AMOC", "PELT", "SegNeigh" or "BinSeg".
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS
@@ -54,9 +54,9 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
         pen_return = 0
     elif penalty != "Manual" and penalty != "Asymptotic":
         return "unknown penalty"
-    
+
     if penalty == "Manual" and isinstance(pen_value, (int, float, complex)) == False:
-        try: 
+        try:
             pen_value = eval(parse(text = paste(pen_value)))
         except type(pen_value) != 'try-error':
             print('Your manual penalty cannot be evaluated')
@@ -67,22 +67,22 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
             return ('Asymptotic penalty values must be > 0 and <= 1')
         if method != "AMOC":
             warn('Asymptotic penalty value is not accurate for multiple changes, it should be treated the same as a manual penalty choice.')
-        if asymcheck == "mean.norm":
+        if asymcheck == "mean_norm":
             alpha = pen_value
             alogn = (2 * log(log(n)))**(-1/2)
             blogn = alogn**(-1) + (1/2) * alogn * log(log(log(n)))
             pen_return = (-alogn * log(log((1 - alpha + exp(-2 * pi ^ (1/2) * exp(blogn/alogn))) ** (-1/(2 * pi ** (1/2))))) + blogn) ** 2
-        elif asymcheck == "var.norm":
+        elif asymcheck == "var_norm":
             alpha = pen_value
             alogn = sqrt(2 * log(log(n)))
             blogn = 2 * log(log(n)) + (log(log(log(n))))/2 - log(gamma(1/2))
             pen_return = (-(log(log((1 - alpha + exp(-2 * exp(blogn))) ** (-1/2))))/alogn + blogn/alogn) ** 2
-        elif asymcheck == "meanvar.norm":
+        elif asymcheck == "meanvar_norm":
             alpha = pen_value
             alogn = sqrt(2 * log(log(n)))
             blogn = 2 * log(log(n)) + log(log(log(n)))
             pen_return = (-(log(log((1 - alpha + exp(-2 * exp(blogn))) ** (-1/2))))/alogn + blogn/alogn) ** 2
-        elif asymcheck == "reg.norm":
+        elif asymcheck == "reg_norm":
             alpha = pen_value
             top = -(log(log((1 - alpha + exp(-2 * exp(2 * (log(log(n))) + (diffparam/2) * (log(log(log(n)))) - log(gamma(diffparam/2))))) ** (-1/2))))  +  2 * (log(log(n))) + (diffparam/2) * (log(log(log(n)))) - log(gamma(diffparam/2))
             bottom = (2 * log(log(n))) ** (1/2)
@@ -106,21 +106,21 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
                 pen_return = 0.520
             else:
                 print('only alpha values of 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95 are valid for css')
-        elif asymcheck == "mean.cusum":
+        elif asymcheck == "mean_cusum":
             print('Asymptotic penalties have not been implemented yet for CUSUM')
-        elif asymcheck == "meanvar.gamma":
+        elif asymcheck == "meanvar_gamma":
             print('Asymptotic penalties for the Gamma test statistic are not defined, please choose an alternative penalty type')
-        elif asymcheck == "meanvar.exp":
+        elif asymcheck == "meanvar_exp":
             alpha = pen_value
             an = (2 * log(log(n))) ** (1/2)
             bn = 2 * log(log(n)) + (1/2) * log(log(log(n))) - (1/2) * log(pi)
             pen_return = (-1/an) * log(-0.5 * log(1 - alpha)) + bn
             if alpha == 1:
                 pen_return = 1.42417 #value of 1 gives log(0), this is alpha=0.99999999999999993
-        elif asymcheck == "meanvar.poisson":
+        elif asymcheck == "meanvar_poisson":
             print('Asymptotic penalties for the Poisson test statistic are not available yet, please choose an alternative penalty type')
-    
+
     if pen_return < 0 :
-        print('pen.value cannot be negative, please change your penalty value')
+        print('pen_value cannot be negative, please change your penalty value')
     else:
         print(pen_return)

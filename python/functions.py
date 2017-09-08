@@ -1,89 +1,146 @@
-#checkData
+from sys import exit
+from numpy import asarray, size, ndim
+
 def checkData(data):
+    """
+    checkData(data)
+
+    Checks if all elements of 'data' are numeric.
+
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+
+    Returns
+    -------
+    If data isn't an int, float or list or if any elements of data are None checkData prints an error message. Otherwise, there is no output.
+
+    Usage
+    -----
+    Called by cpt.
+    """
     if isinstance(data, (int, float, list)) == False:
         exit("Only numeric data allowed.")
     for i in data:
         if i == None:
             exit("Missing value: None is not allowed in the data as changepoint methods are only sensible for regularly spaced data.")
 
-#paste and paste0 functions
-from functools import reduce
-from functools import partial
-
-def function_1(a, b = " "):
-    return(reduce(lambda a, c: str(a) + b + str(c), a))
-
-def paste(a, b = " ", c = None):
-    x = map(lambda a: function_1(a, b = b), zip(a))
-    if c is not None:
-        return function_1(x, b = c)
-    return list(x)
-
-paste0 = partial(paste, b = "")
-
-#which_max
 def which_max(a,b):
-    if a >= b:
-        return(1)
+    """
+    which_max(a,b)
+
+    If a >= b, 1 is returned. Otherwise, 2 is returned.
+
+    Parameters
+    ----------
+    a : Any int or float.
+    b : Any int or float.
+
+    Returns
+    -------
+    If a >= b, 1 is returned. Otherwise, 2 is returned. If one of a or b aren't numeric, an error message is returned.
+
+    Usage
+    -----
+    PLEASE ENTER DETAILS
+    """
+    if isinstance(a, (int, float)) == True and isinstance(b, (int, float)) == True:
+        if a >= b:
+            return(1)
+        else:
+            return(2)
     else:
-        return(2)
+        exit('Both inputs need to be either integers or floats.')
 
 #which_min
 def which_min(a,b):
-    if a <= b:
-        return(1)
-    else:
-        return(2)
+    """
+    which_min(a,b)
 
-#lapply
+    If a <= b, 1 is returned. Otherwise, 2 is returned.
+
+    Parameters
+    ----------
+    a : Any int or float.
+    b : Any int or float.
+
+    Returns
+    -------
+    If a <= b, 1 is returned. Otherwise, 2 is returned. If one of a or b aren't numeric, an error message is returned.
+    """
+    if isinstance(a, (int, float)) == True and isinstance(b, (int, float)) == True:
+        if a <= b:
+            return(1)
+        else:
+            return(2)
+    else:
+        exit('Both inputs need to be either integers or floats.')
+
 def lapply(x,y):
+    """
+    lapply(x,y)
+
+    Applies the function y to every element of the list x.
+
+    Parameters
+    ----------
+    x : Any list.
+    y : Any function.
+
+    Returns
+    -------
+    List containing y(x[i]) for all i in x.
+
+    Usage
+    -----
+    PLEASE ENTER DETAILS
+    """
     l = list()
     for i in x:
         l.append(y(i))
     return(l)
 
-# second_element
 def second_element(x):
+    """
+    PLEASE ENTER DETAILS
+    """
     n = len(x)
     v = []
     for i in range(0,n):
         v.append(x[i][1])
     return(v)
 
-#is_equal
-def is_equal(a,b):
-    if a == b:
-        return(True)
-    else:
-        return(False)
-
-#first_element
-def first_element(x):
-    n = len(x)
-    v = []
-    for i in range(0,n):
-        v.append(x[i][0])
-    return(v)
-
-#length of element in a list
-def length_of(x):
-    v = []
-    for i in x:
-        v.append(len(i))
-    print(v)
-
-#sapply
-from numpy import asarray
-
 def sapply(x,y):
+    """
+    PLEASE ENTER DETAILS
+    """
     v = list()
     for i in y:
         v.append(x[i])
     b = asarray(v)
     return(b)
 
-#greater_than, less_than, greater_than_equal, less_than_equal
 def greater_than(a,b):
+    """
+    greater_than(a,b)
+
+    Compares every element of a with b.
+
+    Parameters
+    ----------
+    a : Any list or numeric (int or float).
+    b : Integer or float.
+
+    Returns
+    -------
+    If a is numeric, then either True or Flase is returned. If a > b then True is returned. Otherwise, False is returned.
+
+    If a is a list, then a list of True's and False's is returned E.g. If a[i] > b then output_list[i] = True.
+
+    Usage
+    -----
+    PLEASE ENTER DETAILS
+    """
     if isinstance(a,int) == True or isinstance(a,float) == True:
         if a > b:
             return(True)
@@ -100,6 +157,26 @@ def greater_than(a,b):
         return(l)
 
 def less_than(a,b):
+    """
+    less_than(a,b)
+
+    Compares every element of a with b.
+
+    Parameters
+    ----------
+    a : Any list or numeric (int or float).
+    b : Integer or float.
+
+    Returns
+    -------
+    If a is numeric, then either True or Flase is returned. If a < b then True is returned. Otherwise, False is returned.
+
+    If a is a list, then a list of True's and False's is returned E.g. If a[i] > b then output_list[i] = False.
+
+    Usage
+    -----
+    PLEASE ENTER DETAILS
+    """
     if isinstance(a,int) == True or isinstance(a,float) == True:
         if a < b:
             return(True)
@@ -116,6 +193,26 @@ def less_than(a,b):
         return(l)
 
 def greater_than_equal(a,b):
+    """
+    greater_than_equal(a,b)
+
+    Compares every element of a with b.
+
+    Parameters
+    ----------
+    a : Any list or numeric (int or float).
+    b : Integer or float.
+
+    Returns
+    -------
+    If a is numeric, then either True or Flase is returned. If a >= b then True is returned, otherwise, False is returned.
+
+    If a is a list, then a list of True's and False's is returned E.g. If a[i] >= b then output_list[i] = True.
+
+    Usage
+    -----
+    PLEASE ENTER DETAILS
+    """
     if isinstance(a,int) == True or isinstance(a,float) == True:
         if a >= b:
             return(True)
@@ -132,6 +229,26 @@ def greater_than_equal(a,b):
         return(l)
 
 def less_than_equal(a,b):
+    """
+    greater_than_equal(a,b)
+
+    Compares every element of a with b.
+
+    Parameters
+    ----------
+    a : Any list or numeric (int or float).
+    b : Integer or float.
+
+    Returns
+    -------
+    If a is numeric, then either True or Flase is returned. If a <= b then True is returned, otherwise, False is returned.
+
+    If a is a list, then a list of True's and False's is returned E.g. If a[i] <= b then output_list[i] = True.
+
+    Usage
+    -----
+    PLEASE ENTER DETAILS
+    """
     if isinstance(a,int) == True or isinstance(a,float) == True:
         if a <= b:
             return(True)
@@ -147,10 +264,31 @@ def less_than_equal(a,b):
             l.append(c)
         return(l)
 
-#compare
-from numpy import size
-
 def compare(a,b):
+    """
+    compare(a,b)
+
+    Compares every element of a with every element of b.
+
+    Parameters
+    ----------
+    a : Any list or numeric (int or float).
+    b : Any list or numeric (int or float).
+
+    Returns
+    -------
+    If a and b are both numeric and if a = b, then True is returned. Otherwise, False is returned.
+
+    If a is numeric and b is a list (and vise versa) then a list of True's and False's is returned. E.g. If a = b[i] then output_list[i] = True.
+
+    If a and b are both lists then a list of True's and False's is returned. E.g. If a[i] = b[i] then output_list[i] = True.
+
+    WARNING: If a and b are both lists, the only the elements in respective positions are compared, i.e. the result of a[i] == b[k] (for i != k) won't be in the output list.
+
+    Usage
+    -----
+    PLEASE ENTER DETAILS
+    """
     if size(a) == 1 and size(b) == 1:
         return(a == b)
     elif size(a) != size(b):
@@ -171,7 +309,7 @@ def compare(a,b):
                     l.append(False)
             return(l)
         else:
-            return("lengths of inputs are not applicable")
+            exit("lengths of inputs are not applicable")
     else:
         l = []
         for i in range(0,size(a)):
@@ -181,8 +319,10 @@ def compare(a,b):
                 l.append(False)
         return(l)
 
-#truefalse
 def truefalse(a,b):
+    """
+    PLEASE ENTER DETAILS
+    """
     if size(a) == 1 and size(b) == 1:
         if b == True:
             return(a)
@@ -200,8 +340,10 @@ def truefalse(a,b):
                 l.append(a[i])
         return(l)
 
-#truefalse2
 def truefalse2(a,b,c):
+    """
+    PLEASE ENTER DETAILS
+    """
     if size(b) == 1:
         if b == True:
             a = c
@@ -215,10 +357,10 @@ def truefalse2(a,b,c):
                 a[i] = a[i]
     return(a)
 
-#first element list
-from numpy import ndim
-
 def twoD_to_oneD(list):
+    """
+    PLEASE ENTER DETAILS
+    """
     if isinstance(list,(int,float)) == True:
         return(list)
     else:
@@ -240,16 +382,10 @@ def twoD_to_oneD(list):
             else:
                 return(list)
 
-#max vectors
-def max_vector(a):
-    if isinstance(a,list) == True:
-        return(max(a))
-    else:
-        b = [a]
-        return(max(b))
-
-#which_element
 def which_element(a,b):
+    """
+    PLEASE ENTER DETAILS
+    """
     l = []
     if isinstance(a,list) == True:
         for i in range(0,len(a)):

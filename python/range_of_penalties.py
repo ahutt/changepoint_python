@@ -4,7 +4,6 @@ from numpy import multiply
 from functions import which_min
 from numpy import repeat
 from numpy import vstack
-from numpy import divide
 from PELT import PELT_meanvar_norm
 from numpy import subtract
 from numpy import power
@@ -98,7 +97,7 @@ def range_of_penalties(sumstat, minseglen, cost = "mean_norm", PELT = True, shap
 
     nb = size(test_penalties)
     beta_int = repeat(0,nb)
-    beta_e = repeat(0,nb)
+    beta_e = list(repeat(0,nb))
     for k in range(1,nb+1):
         if k == 1:
             beta_int[0] = test_penalties[0]
@@ -107,8 +106,10 @@ def range_of_penalties(sumstat, minseglen, cost = "mean_norm", PELT = True, shap
         if k == nb:
             beta_e[k-1] = test_penalties[k-1]
         else:
-            print((penal[k-1] - penal[k])/(numberofchangepoints[k]-numberofchangepoints[k-1]))
-#            beta_e[k-1] = divide(subtract(penal[k-1],penal[k]),(subtract(numberofchangepoints[k],numberofchangepoints[k-1])))
-#
-#    return(list(cpt_out = vstack(beta_interval = beta_int, numberofchangepoints = numberofchangepoints, penalised_cost = penal), changepoints = segmentations))
-#
+            beta_e[k-1] = (penal[k-1] - penal[k])/(numberofchangepoints[k]-numberofchangepoints[k-1])
+    beta_interval = beta_int
+    penalised_cost = penal
+    cpt_out = vstack((beta_interval, numberofchangepoints, penalised_cost))
+    changepoints = segmentations
+
+    return(list((cpt_out, changepoints)))

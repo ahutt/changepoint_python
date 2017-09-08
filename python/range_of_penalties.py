@@ -1,16 +1,6 @@
-from math import log
-from numpy import size
-from numpy import multiply
+from numpy import log,size,multiply,repeat,vstack,subtract,power,abs,delete,unique,append
 from functions import which_min
-from numpy import repeat
-from numpy import vstack
 from PELT import PELT_meanvar_norm
-from numpy import subtract
-from numpy import power
-from numpy import abs
-from numpy import delete
-from numpy import unique
-from numpy import append
 
 def range_of_penalties(sumstat, minseglen, cost = "mean_norm", PELT = True, shape = 1):
     """

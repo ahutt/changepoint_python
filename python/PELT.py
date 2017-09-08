@@ -1,26 +1,7 @@
-from math import pi
+from numpy import pi, size, cumsum, square, subtract, add, log, append, full, array, multiply, power, ndim, divide, transpose
 #from statistics import mean
-from numpy import size
-from numpy import cumsum
-from numpy import square
-from numpy import subtract
-#from numpy import empty
-from numpy import add
-from numpy import log
-from numpy import append
-from functions import compare
-from functions import truefalse
-from numpy import full
-from numpy import array
-from functions import twoD_to_oneD
-from numpy import multiply
-from numpy import power
-from functions import truefalse2
-from functions import less_than_equal
-from numpy import ndim
-from numpy import divide
+from functions import compare, truefalse, twoD_to_oneD, truefalse2, less_than_equal
 from warnings import warn
-from numpy import transpose
 
 #The hashed out functions have not been tested and are currently not used anywhere in the package.
 
@@ -34,7 +15,7 @@ from numpy import transpose
 #        mu = mean(data)
 #    n = size(data)
 #    y2 = [0, cumsum(square(subtract(data, mu)))]
-#    
+#
 #    lastchangecpts = empty([n,2])
 #    lastchangelike = empty([n,2])
 #    checklist = None
@@ -73,12 +54,12 @@ from numpy import transpose
 
 #def mll_mean_EFK(x2,x,n):
 #    return(x2 - (x ** 2)/n)
-#    
+#
 #def PELT_mean_norm(data, pen = 0, nprune = False):
 #    n = size(data)
 #    y2 = [0, cumsum(square(data))]
 #    y = [0, cumsum(data)]
-#    
+#
 #    lastchangecpts = empty([n,2])
 #    lastchangelike = empty([n,2])
 #    checklist = None
@@ -127,20 +108,20 @@ def mll_meanvar_EFK(x2,x,n):
 def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
     """
     PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False)
-    
+
     Implements the PELT (Pruned Exact Linear Time) method for identifying changepoints in a given set of summary statistics for a specified cost function and penalty.
-    
+
     This function is called by cpt_mean, cpt_var and cpt_meanvar when method="PELT". This is not intended for use by regular users of the package. It is exported for developers to call directly for speed increases or to fit alternative cost functions.
-    
+
     WARNING: No checks on arguments are performed!
-    
+
     Parameters
     ----------
     data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
     minseglen : Minimum segment length used in the analysis (positive integer).
     pen : Default choice is 0, this should be evaluated elsewhere and a numerical value entered. This should be positive - this isn't checked but results are meaningless if it isn't.
     nprune : PLEASE ENTER DETAILS.
-        
+
     Returns
     -------
     PLEASE ENTER DETAILS.

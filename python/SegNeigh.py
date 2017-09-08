@@ -1,22 +1,6 @@
-from numpy import size
-from numpy import zeros
-from numpy import full
+from numpy import size, zeros, full, inf, pi, log, add, set_printoptions, subtract, multiply, append, sort, array
 #from statistics import mean
-from numpy import inf
-from warnings import warn
-from math import pi
-from numpy import log
-from numpy import add
-from numpy import set_printoptions
-from numpy import subtract
-from functions import max_vector
-from functions import which_element
-from numpy import multiply
-from functions import greater_than
-from functions import truefalse
-from numpy import append
-from numpy import sort
-from numpy import array
+from functions import max_vector,which_element,greater_than,truefalse
 from sys import exit
 
 
@@ -25,9 +9,9 @@ from sys import exit
 #def segneigh_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
 #    """
 #    segneigh_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None)
-#    
+#
 #    Calculates the optimal positioning and number of changepoints for Normal data using Segment Neighbourhood method. Note that this gives the same results as PELT method but takes more computational time.
-#    
+#
 #    Parameters
 #    ----------
 #    data : A vector containing the data within which you wish to find changepoints.
@@ -35,7 +19,7 @@ from sys import exit
 #    pen : Numeric value of the linear penalty function. This value is used in the final decision as to the optimal number of changepoints, used as k*pen where k is the number of changepoints to be tested.
 #    know_mean : Logical, if True then the mean is assumed known and mu is taken as its value. If False, and mu=-1000 (default value) then the mean is estimated via maximum likelihood. If False and the value of mu is supplied, mu is not estimated but is counted as an estimated parameter for decisions.
 #    mu : Numerical value of the true mean of the data. Either single value or vector of length len(data). If data is a matrix and mu is a single value, the same mean is used for each row.
-#    
+#
 #    Returns
 #    -------
 #    PLEASE INSERT DETAILS.
@@ -80,7 +64,7 @@ from sys import exit
 #    for i in range(1,size(pen)):
 #        criterion = - 2 * like_Q[:,n] + k * pen[i]
 #        op_cps = [op_cps, which(criterion == min(criterion, na_rm = True)), -1]
-#    if op_cps == Q - 1: 
+#    if op_cps == Q - 1:
 #        warn('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
 #    if op_cps == 0:
 #        cpts = n
@@ -90,15 +74,15 @@ from sys import exit
 #def segneigh_mean_norm(data, Q = 5, pen = 0):
 #    """
 #    segneigh_mean_norm(data, Q = 5, pen = 0)
-#    
+#
 #    Calculates the optimal positioning and number of changepoints for Normal data using Segment Neighbourhood method. Note that this gives the same results as PELT method but takes more computational time.
-#    
+#
 #    Parameters
 #    ----------
 #    data : A vector containing the data within which you wish to find changepoints.
 #    Q : Numeric value of the maximum number of segments (number of changepoints +1) you wish to search for, default is 5.
 #    pen : Numeric value of the linear penalty function. This value is used in the final decision as to the optimal number of changepoints, used as k*pen where k is the number of changepoints to be tested.
-#    
+#
 #    Returns
 #    -------
 #    PLEASE ENTER DETAILS.
@@ -106,7 +90,7 @@ from sys import exit
 #    n = size(data)
 #    if n < 2:
 #        print('Data must have at least 2 observations to fit a changepoint model.')
-#    
+#
 #    if Q > ((n/2) + 1):
 #        print(paste('Q is larger than the maximum number of segments', (n/2) + 1))
 #    all_seg = zeros(n,n)
@@ -126,7 +110,7 @@ from sys import exit
 #            like = None
 #            v = range(q-1,j-1)
 #            like = like_Q[q-1,v] + all_seg[v+1,j]
-#            
+#
 #            like_Q[q,j] = max(like)
 #            cp[q,j] = which(like == max(like))[1] + (q - 2)
 #    cps_Q = empty(Q,Q)
@@ -134,13 +118,13 @@ from sys import exit
 #        cps_Q[q,1] = cp[q,n]
 #        for i in range(1,q-1):
 #            cps_Q[q,i+1] = cp[q-i,cps_Q[q,i]]
-#    
+#
 #    op_cps = None
 #    k = range(0,Q-1)
-#    
+#
 #    for i in range(1,size(pen)):
 #        criterion = -2 * like_Q[:,n] + k * pen[i]
-#        
+#
 #        op_cps = [op_cps, which(criterion == min(criterion)) - 1]
 #    if op_cps == Q -1:
 #        warn('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
@@ -148,21 +132,21 @@ from sys import exit
 #        cpts = n
 #    else:
 #        cpts = [sorted(cps_Q[op_cps + 1,:][cps_Q[op_cps + 1,:] > 0]), n]
-#        
+#
 #    return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = -2 * like_Q[:,n]))
 
 def segneigh_meanvar_norm(data, Q = 5, pen = 0):
     """
     segneigh_meanvar_norm(data, Q = 5, pen = 0)
-    
+
     Calculates the optimal positioning and number of changepoints for Normal data using Segment Neighbourhood method. Note that this gives the same results as PELT method but takes more computational time.
-    
+
     Parameters
     ----------
     data : A vector containing the data within which you wish to find changepoints.
     Q : Numeric value of the maximum number of segments (number of changepoints +1) you wish to search for, default is 5.
     pen : Numeric value of the linear penalty function.  This value is used in the final decision as to the optimal number of changepoints, used as k*pen where k is the number of changepoints to be tested.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
@@ -192,10 +176,10 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
         for j in range(q,n+1):
             like = None
             if (j - 2 - q) < 0:
-                like = -inf                
+                like = -inf
             else:
                 v = list(range(q,j-1))
-                like = list(add(like_Q[q-2,subtract(v,1)],all_seg[v,j-1]))         
+                like = list(add(like_Q[q-2,subtract(v,1)],all_seg[v,j-1]))
             like_Q[q-1,j-1] = max_vector(like)
             cp[q-1,j-1] = which_element(like,max_vector(like))[0] + (q - 1)
     cps_Q = full((Q,Q),None)

@@ -1,20 +1,11 @@
-from numpy import size
-from numpy import cumsum
-from math import log
-from shutil import which
-from numpy import shape
-from numpy import repeat
-from numpy import zeros
+from numpy import size, cumsum, repeat, zeros, full, apply_over_axes, log
 from penalty_decision import penalty_decision
 from decision import decision
-from functions import paste
-from numpy import empty
 from warnings import warn
-from numpy import apply_over_axes
-from functions import lapply
-from functions import second_element
+from functions import lapply, second_element, which_element, less_than_equal
 from class_input import class_input
 from data_input import data_input
+from sys import exit
 
 def singledim(data, shape, minseglen, extrainf = True):
     """
@@ -25,7 +16,7 @@ def singledim(data, shape, minseglen, extrainf = True):
     null = 2 * n * shape * log(y[n + 1]) - 2 * n * shape * log(n * shape)
     taustar = range(minseglen, n - minseglen)
     tmp = 2 * taustar * shape * log(y[taustar + 1]) - 2 * taustar * shape * log(taustar * shape) + 2 * (n - taustar) * shape * log((y[n + 1] - y[taustar + 1])) - 2 * (n - taustar) * shape * log((n - taustar) * shape)
-    tau = which(tmp == min(tmp))[1]
+    tau = which_element(tmp,min(tmp))[1]
     taulike = tmp[tau]
     tau = tau + minseglen - 1 #correcting for the fact that we are starting at minseglen
     if extrainf == True:
@@ -37,16 +28,16 @@ def singledim(data, shape, minseglen, extrainf = True):
 def single_meanvar_gamma_calc(data, minseglen, shape = 1, extrainf = True):
     """
     single_meanvar_gamma_calc(data, minseglen, shape = 1, extrainf = True)
-    
+
     Calculates the scaled log-likelihood (assuming the data is Gamma distributed) for all possible changepoint locations and returns the single most probable (max).
-    
+
     Parameters
     ----------
     data : A vector or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
     minseglen : Minimum segment length used in the analysis (positive integer).
     shape : Numerical value of the true shape parameter for the data. Either single value or vector of length len(data). If data is a matrix and shape is a single value, the same shape parameter is used for each row.
     extrainf : Logical, if True the test statistic is returned along with the changepoint location. If False, only the changepoint location is returned.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
@@ -74,9 +65,9 @@ def single_meanvar_gamma_calc(data, minseglen, shape = 1, extrainf = True):
 def single_meanvar_gamma(data, minseglen, shape = 1, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True):
     """
     single_meanvar_gamma(data, minseglen, shape = 1, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True)
-    
+
     Calculates the scaled log-likelihood (assuming the data is Gamma distributed) for all possible changepoint locations and returns the single most probable (max).
-    
+
     Parameters
     ----------
     data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
@@ -86,22 +77,22 @@ def single_meanvar_gamma(data, minseglen, shape = 1, penalty = "MBIC", pen_value
     pen_value : The value of the penalty when using the Manual penalty option. This can be a numeric value or text giving the formula to use. Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
     Class : Logical. If True then an object of class cpt is returned. If False a vector is returned.
     param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
-    if sum(data <= 0) > 0:
-        print('Gamma test statistic requires positive data')
+    if sum(less_than_equal(data,0)) > 0:
+        exit('Gamma test statistic requires positive data')
     if shape(data) == ((0,0) or (0,) or () or None):
         #single dataset
         n = size(data)
     else:
         n = len(data.T)
     if n < 4:
-        print('Data must have atleast 4 observations to fit a changepoint model.')
+        exit('Data must have atleast 4 observations to fit a changepoint model.')
     if n < (2 * minseglen):
-        print('Minimum segment legnth is too large to include a change in this data')
+        exit('Minimum segment legnth is too large to include a change in this data')
     pen_value = penalty_decision(penalty, pen_value, n, diffparam = 1, asymcheck = "meanvar_gamma", method = "AMOC")
     if shape(data) == ((0,0) or (0,) or () or None):
         tmp = single_meanvar_gamma_calc(data, shape, minseglen, extrainf = True)
@@ -129,28 +120,28 @@ def single_meanvar_gamma(data, minseglen, shape = 1, penalty = "MBIC", pen_value
 def segneigh_meanvar_gamma(data, shape = 1, Q = 5, pen = 0):
     """
     segneigh_meanvar_gamma(data, shape = 1, Q = 5, pen = 0)
-    
+
     Calculates the optimal positioning and number of changepoints for Gamma data using Segment Neighbourhood method. Note that this gives the same results as PELT method but takes more computational time.
-    
+
     Parameters
     ----------
     data : A vector containing the data within which you wish to find changepoints.
     shape : Numerical value of the true shape parameter for the data. Either single value or vector of length len(data). If data is a matrix and shape is a single value, the same shape parameter is used for each row.
     Q : Numeric value of the maximum number of segments (number of changepoints +1) you wish to search for, default is 5.
     pen : Numeric value of the linear penalty function. This value is used in the final decision as to the optimal number of changepoints, used as k*pen where k is the number of changepoints to be tested.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
-    if sum(data <= 0) > 0:
-        print('Gamma test statistic requires positive data')
-    
+    if sum(less_than_equal(data,0)) > 0:
+        exit('Gamma test statistic requires positive data')
+
     n = size(data)
     if n < 4:
-        print('Data must have atleast 4 observations to fit a changepoint model.')
+        exit('Data must have atleast 4 observations to fit a changepoint model.')
     if Q > ((n/2) + 1):
-        print(paste('Q is larger than the maximum number of segments',(n/2)+1))
+        exit('Q is larger than the maximum number of segments')
     all_seg = zeros(n,n)
     for i in range(1,n):
         sumx = 0
@@ -160,7 +151,7 @@ def segneigh_meanvar_gamma(data, shape = 1, Q = 5, pen = 0):
             all_seg[i-1,j-1] = Len * shape * log(Len * shape) - Len * shape * log(sumx)
     like_Q = zeros(Q,n)
     like_Q[1,:] = all_seg[1,:]
-    cp = empty([Q,n])
+    cp = full((Q,n),None)
     for q in range(2,Q):
         for j in range(q,n):
             like = None
@@ -169,8 +160,8 @@ def segneigh_meanvar_gamma(data, shape = 1, Q = 5, pen = 0):
             else:
                 v = range(q,j - 2)
             like = like_Q[q - 1, v] + all_seg[v + 1, j]
-            like_Q[q,j] = which(like == max(like))[0] + (q - 1)
-    cps_Q = empty([Q,Q])
+            like_Q[q,j] = which_element(like,max(like))[0] + (q - 1)
+    cps_Q = full((Q,Q),None)
     for q in range(2,Q):
         cps_Q[q-1,0] = cp[q-1,n-1]
         for i in range(1,q-1):
@@ -179,7 +170,7 @@ def segneigh_meanvar_gamma(data, shape = 1, Q = 5, pen = 0):
     k = range(0, Q-1)
     for i in range(1, size(pen)):
         criterion = -2 * like_Q[:,n] + k * pen[i]
-        op_cps = [op_cps, which(criterion == min(criterion)) - 1]
+        op_cps = [op_cps, which_element(criterion,min(criterion)) - 1]
     if op_cps == (Q - 1):
         warn('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
     if op_cps == 0:
@@ -191,9 +182,9 @@ def segneigh_meanvar_gamma(data, shape = 1, Q = 5, pen = 0):
 def multiple_meanvar_gamma(data, minseglen, shape = 1, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
     """
     multiple_meanvar_gamma(data, minseglen, shape = 1, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
-    
+
     Calculates the optimal positioning and number of changepoints for Gamma data using the user specified method.
-    
+
     Parameters
     ----------
     data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
@@ -205,19 +196,19 @@ def multiple_meanvar_gamma(data, minseglen, shape = 1, mul_method = "PELT", pena
     Q : The maximum number of changepoints to search for using the "BinSeg" method. The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
     Class : Logical. If True then an object of class cpt is returned.
     param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
-    if sum(data <= 0) > 0:
-        print('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
+    if sum(less_than_equal(data,0)) > 0:
+        exit('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
     if not((mul_method == "PELT") or (mul_method == "BinSeg") or (mul_method == "SegNeigh")):
-        print("Multiple Method is not recognised")
+        exit("Multiple Method is not recognised")
     costfunc = "meanvar_gamma"
     if penalty == "MBIC":
         if mul_method == "SegNeigh":
-            print('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
+            exit('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
         costfunc = "meanvar_gamma_mbic"
     diffparam = 1
     if shape(data) == ((0,0) or (0,) or () or None):
@@ -227,7 +218,7 @@ def multiple_meanvar_gamma(data, minseglen, shape = 1, mul_method = "PELT", pena
     else:
         n = len(data.T)
     if n < (2 * minseglen):
-        print('Minimum segment legnth is too large to include a change in this data')
+        exit('Minimum segment legnth is too large to include a change in this data')
     pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
     if shape(data) == ((0,0) or (0,) or () or None):
         #single dataset

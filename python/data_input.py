@@ -1,11 +1,8 @@
-from numpy import mean
+from numpy import mean, subtract, size
 from PELT import PELT_meanvar_norm
 from BinSeg import binseg_meanvar_norm
 from SegNeigh import segneigh_meanvar_norm
-from numpy import subtract
-from numpy import size
-from functions import greater_than
-from functions import truefalse
+from functions import greater_than, truefalse
 
 def data_input(data, method, pen_value, costfunc, minseglen, Q, var=0, shape=1):
     """

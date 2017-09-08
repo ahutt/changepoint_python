@@ -1,43 +1,34 @@
-from numpy import size
-from functions import paste
-from numpy import cumsum
-from numpy import zeros
-from numpy import empty
-from math import sqrt
-from shutil import which
+from numpy import size, cumsum, zeros, empty, inf, repeat, shape,sqrt
 from warnings import warn
-from math import inf
-from numpy import repeat
-from functions import which_max
-from numpy import shape
+from functions import which_max, which_element
 from penalty_decision import penalty_decision
 from class_input import class_input
 
 def segneigh_var_css(data, Q = 5, pen = 0):
     """
     segneigh_var_css(data, Q = 5, pen = 0)
-    
+
     Calculates the optimal positioning and number of changepoints for Cumulative Sums of Sqaures test statistic using Segment Neighbourhood method.
-    
+
     Parameters
     ----------
     data : A vector containing the data within which you wish to find changepoints.
     Q : Numeric value of the maximum number of segments (number of changepoints +1) you wish to search for, default is 5.
     pen : Numeric value of the linear penalty function.  This value is used in the final decision as to the optimal number of changepoints.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS
     """
     n = size(data)
     if n < 4:
-        print('Data must have atleast 4 observations to fit a changepoint model.')
+        exit('Data must have atleast 4 observations to fit a changepoint model.')
     if Q > ((n/2) + 1):
-        print(paste('Q is larger than the maximum number of segments',(n/2)+1))
-    
+        exit('Q is larger than the maximum number of segments')
+
     y2 = [0, cumsum(data ** 2)]
     oldmax = 1000
-    
+
     test = None
     like_Q = zeros(Q,n)
     cp = empty(Q,n)
@@ -50,14 +41,14 @@ def segneigh_var_css(data, Q = 5, pen = 0):
             else:
                 like = like_Q[q-1,v] + abs(sqrt((j - cp[q-1,v])/2) * ((y2[v+1] - y2[cp[q-1,v] + 1])/(y2[j+1] - y2[cp[q-1,v]+ 1]) - (v - cp[q-1,v])/(j - cp[q-1,v])))
             like_Q[q,j] = max(like)
-            cp[q,j] = which(like == max(like))[1] + (q - 2)
-    
+            cp[q,j] = which_element(like,max(like))[1] + (q - 2)
+
     cps_Q = empty(Q,Q)
     for q in range(2,Q):
         cps_Q[q,1] = cp[q,n]
         for i in range(1,q-1):
             cps_Q[q,i+1] = cp[q-i,cps_Q[q,i]]
-    
+
     op_cps = 0
     flag = 0
     for q in range(2,Q):
@@ -76,37 +67,37 @@ def segneigh_var_css(data, Q = 5, pen = 0):
         cpts = n
     else:
         cpts = [sorted(cps_Q[op_cps+1,:][cps_Q[op_cps+1,:] > 0]), n]
-    
+
     return(list(cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = like_Q[:,n]))
 
 def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
     """
     binseg_var_css(data, Q = 5, pen = 0, minseglen = 2)
-    
+
     Calculates the optimal positioning and number of changepoints for the cumulative sums of squares test statistic using Binary Segmentation method. Note that this is an approximate method.
-    
+
     Parameters
     ----------
     data : A vector containing the data within which you wish to find changepoints.
     Q : Numeric value of the maximum number of changepoints you wish to search for, default is 5.
     pen : Numeric value of the linear penalty function.  This value is used in the decision as to the optimal number of changepoints.
     minseglen : Minimum segment length used in the analysis (positive integer).
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
     n = size(data)
     if n < 4:
-        print('Data must have atleast 4 observations to fit a changepoint model.')
+        exit('Data must have atleast 4 observations to fit a changepoint model.')
     if Q > ((n/2) + 1):
-        print(paste('Q is larger than the maximum number of segments',(n/2)+1))
-    
+        exit('Q is larger than the maximum number of segments')
+
     y2 = [0, cumsum(data ** 2)]
     tau = [0,n]
     cpt = zeros(2,Q)
     oldmax = inf
-    
+
     for q in range(1,Q):
         Lambda = repeat(0,n-1)
         i = 1
@@ -135,20 +126,20 @@ def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
             op_cps = [op_cps, max(which((criterion) == True))]
     if op_cps == Q:
         warn('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
-    
+
     if op_cps == 0:
         cpts = n
     else:
         cpts = [sorted(cpt[1,range(1,op_cps)]), n]
-    
+
     return(list(cps = cpt, cpts = cpts, op_cpts = op_cps, pen = pen))
 
 def multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
     """
     multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
-    
+
     Calculates the optimal positioning and number of changepoints for the cumulative sums of squares test statistic using the user specified method.
-    
+
     Parameters
     ----------
     data : A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
@@ -159,19 +150,19 @@ def multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", p
     Q : The maximum number of changepoints to search for using the "BinSeg" method. The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
     Class : Logical. If True then an object of class cpt is returned.
     param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS
     """
     if mul_method == "PELT":
-        print("CSS does not satisfy the assumptions of PELT, use SegNeigh or BinSeg instead.")
+        exit("CSS does not satisfy the assumptions of PELT, use SegNeigh or BinSeg instead.")
     elif not(mul_method == "BinSeg" or mul_method == "SegNeigh"):
-        print("Multiple Method is not recognised")
+        exit("Multiple Method is not recognised")
     if penalty != "MBIC":
         costfunc = "var_css"
     else:
-        print("MBIC penalty is not valid for nonparametric test statistics.")
+        exit("MBIC penalty is not valid for nonparametric test statistics.")
     diffparam = 1
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset
@@ -179,8 +170,8 @@ def multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", p
     else:
         n = len(data.T)
     if n < (2 * minseglen):
-        print('Minimum segment legnth is too large to include a change in this data')
-    
+        exit('Minimum segment legnth is too large to include a change in this data')
+
     pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset
@@ -217,28 +208,28 @@ def multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", p
 def segneigh_mean_cusum(data, Q = 5, pen = 0):
     """
     segneigh_mean_cusum(data, Q = 5, pen = 0)
-    
+
     Calculates the optimal positioning and number of changepoints for Cumulative Sums test statistic using Segment Neighbourhood method.
-    
+
     Parameters
     ----------
     data : A vector containing the data within which you wish to find changepoints.
     Q : Numeric value of the maximum number of segments (number of changepoints +1) you wish to search for, default is 5.
     pen : Numeric value of the linear penalty function. This value is used in the final decision as to the optimal number of changepoints.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
     n = size(data)
     if n < 2:
-        print('Data must have atleast 2 observations to fit a changepoint model.')
+        exit('Data must have atleast 2 observations to fit a changepoint model.')
     if Q > ((n/2) + 1):
-        print(paste('Q is larger than the maximum number of segments',(n/2)+1))
-    
+        exit('Q is larger than the maximum number of segments')
+
     y = [0, cumsum(data)]
     oldmax = 1000
-    
+
     test = None
     like_Q = zeros(Q,n)
     cp = empty(Q,n)
@@ -251,14 +242,14 @@ def segneigh_mean_cusum(data, Q = 5, pen = 0):
             else:
                 like = like_Q[q-1,v] + abs(((y[v+1] - y[cp[q-1,v]+1]) - ((v - cp[q-1,v])/(j - cp[q-1,v])) * (y[j+1] - y[cp[q-1,v]+1]))/(j - cp[q-1,v]))
             like_Q[q,j] = max(like)
-            cp[q,j] = which(like == max(like))[1] + (q - 2)
-    
+            cp[q,j] = which_element(like,max(like))[1] + (q - 2)
+
     cps_Q = empty(Q,Q)
     for q in range(2,Q):
         cps_Q[q,1] = cp[q,n]
         for i in range(1,q-1):
             cps_Q[q,i+1] = cp[q-1,cps_Q[q,i]]
-    
+
     op_cps = 0
     flag = 0
     for q in range(2,Q):
@@ -271,45 +262,45 @@ def segneigh_mean_cusum(data, Q = 5, pen = 0):
         if flag == 1:
             break
         op_cps = op_cps +1
-        
+
     if op_cps == Q - 1:
         warn('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
     if op_cps == 0:
         cpts = n
     else:
         cpts = [sorted(cps_Q[op_cps+1,:][cps_Q[op_cps+1,:] > 0]), n]
-    
+
     return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps+1], like_Q = like_Q[:,n]))
 
 def binseg_mean_cusum(data, minseglen, Q = 5, pen = 0):
     """
     binseg_mean_cusum(data, minseglen ,Q = 5, pen = 0)
-    
+
     Calculates the optimal positioning and number of changepoints for the cumulative sums test statistic using Binary Segmentation method. Note that this is an approximate method.
-    
+
     Parameters
     ----------
     data : A vector containing the data within which you wish to find changepoints.
     minseglen : Minimum segment length used in the analysis (positive integer).
     Q : Numeric value of the maximum number of changepoints you wish to search for, default is 5.
     pen : Numeric value of the linear penalty function.  This value is used in the decision as to the optimal number of changepoints.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
     n = size(data)
     if n < 2:
-        print('Data must have atleast 2 observations to fit a changepoint model.')
-    
+        exit('Data must have atleast 2 observations to fit a changepoint model.')
+
     if Q > (n/2) + 1:
-        print(paste('Q is larger than the maximum number of segments',(n/2)+1))
-    
+        exit('Q is larger than the maximum number of segments')
+
     y = [0, cumsum(data)]
     tau = [0,n]
     cpt = zeros([2,Q])
     oldmax = inf
-    
+
     for q in range(1,Q):
         Lambda = repeat(0, n - 1)
         i = 1
@@ -337,20 +328,20 @@ def binseg_mean_cusum(data, minseglen, Q = 5, pen = 0):
             op_cps = [op_cps, max(which((criterion) == True))]
     if op_cps == Q:
         warn('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
-    
+
     if op_cps == 0:
         cpts = n
     else:
         cpts = [sorted(cpt[0,range(0,op_cps - 1)]), n]
-    
+
     return(list(cps = cpt, cpts = cpts, op_cpts = op_cps, pen = pen))
 
 def multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymptotic", pen_value = 0.05, Q = 5, Class = True, param_estimates = True):
     """
     multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymptotic", pen_value = 0.05, Q = 5, Class = True, param_estimates = True)
-    
+
     Calculates the optimal positioning and number of changepoints for the cumulative sums test statistic using the user specified method.
-    
+
     Parameters
     ----------
     data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
@@ -361,17 +352,17 @@ def multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymp
     Q : The maximum number of changepoints to search for using the "BinSeg" method. The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
     Class : Logical. If True then an object of class cpt is returned.
     param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS
     """
     if mul_method == "PELT":
-        print("Multiple Method is not recognised")
+        exit("Multiple Method is not recognised")
     if penalty != "MBIC":
         costfunc = "mean_cumsum"
     else:
-        print("MBIC penalty is not valid for nonparametric test statistics.")
+        exit("MBIC penalty is not valid for nonparametric test statistics.")
     diffparam = 1
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset
@@ -379,8 +370,8 @@ def multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymp
     else:
         n = len(data.T)
     if n < (2 * minseglen):
-        print('Minimum segment legnth is too large to include a change in this data')
-    
+        exit('Minimum segment legnth is too large to include a change in this data')
+
     pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset

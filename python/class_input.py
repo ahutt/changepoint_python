@@ -1,8 +1,5 @@
-from math import inf
-from numpy import size
-from functions import lapply
-from functions import sapply
-from numpy import diff
+from numpy import inf, size, diff, append
+from functions import lapply, sapply
 from param import param
 
 def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = list(), Q = None, shape = None):

@@ -1,11 +1,5 @@
-from math import log
+from math import log,sqrt,pi,gamma,exp
 from warnings import warn
-from math import sqrt
-from math import pi
-from math import gamma
-from math import exp
-from functions import paste
-from parse import parse
 from sys import exit
 
 def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
@@ -38,34 +32,31 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
     elif penalty == "MBIC":
         pen_return = (diffparam + 2) * log(n)
     elif penalty == "SIC1" or penalty == "BIC1":
-        print("SIC1 and BIC1 have been depreciated, use SIC or BIC for the same result.")
+        exit("SIC1 and BIC1 have been depreciated, use SIC or BIC for the same result.")
     elif penalty == "AIC0":
         pen_return = 2 * diffparam
     elif penalty == "AIC":
         pen_return = 2 * (diffparam + 1)
     elif penalty == "AIC1":
-        print ("AIC1 has been depreciated, use AIC for the same result.")
+        exit("AIC1 has been depreciated, use AIC for the same result.")
     elif penalty == "Hannan-Quinn0":
         pen_return = 2 * diffparam * log(log(n))
     elif penalty == "Hannan-Quinn":
         pen_return = 2 * (diffparam + 1) * log(log(n))
     elif penalty == "Hannan_Quinn1":
-        return ("Hannan-Quinn1 has been depreciated, use Hannan-Quinn for the same result.")
+        exit("Hannan-Quinn1 has been depreciated, use Hannan-Quinn for the same result.")
     elif penalty == "None":
         pen_return = 0
     elif penalty != "Manual" and penalty != "Asymptotic":
-        return "unknown penalty"
+        exit("unknown penalty")
 
     if penalty == "Manual" and isinstance(pen_value, (int, float)) == False:
-        try:
-            pen_value = eval(parse(text = paste(pen_value)))
-        except:
-            exit('Your manual penalty cannot be evaluated')
+        exit('Your manual penalty cannot be evaluated')
     else:
         pen_return = pen_value
     if penalty == "Asymptotic":
         if pen_value <= 0 or pen_value > 1:
-            return ('Asymptotic penalty values must be > 0 and <= 1')
+            exit('Asymptotic penalty values must be > 0 and <= 1')
         if method != "AMOC":
             warn('Asymptotic penalty value is not accurate for multiple changes, it should be treated the same as a manual penalty choice.')
         if asymcheck == "mean_norm":
@@ -106,11 +97,11 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
             elif pen_value == 0.95:
                 pen_return = 0.520
             else:
-                print('only alpha values of 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95 are valid for css')
+                exit('only alpha values of 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95 are valid for css')
         elif asymcheck == "mean_cusum":
-            print('Asymptotic penalties have not been implemented yet for CUSUM')
+            exit('Asymptotic penalties have not been implemented yet for CUSUM')
         elif asymcheck == "meanvar_gamma":
-            print('Asymptotic penalties for the Gamma test statistic are not defined, please choose an alternative penalty type')
+            exit('Asymptotic penalties for the Gamma test statistic are not defined, please choose an alternative penalty type')
         elif asymcheck == "meanvar_exp":
             alpha = pen_value
             an = (2 * log(log(n))) ** (1/2)
@@ -119,9 +110,9 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
             if alpha == 1:
                 pen_return = 1.42417 #value of 1 gives log(0), this is alpha=0.99999999999999993
         elif asymcheck == "meanvar_poisson":
-            print('Asymptotic penalties for the Poisson test statistic are not available yet, please choose an alternative penalty type')
+            exit('Asymptotic penalties for the Poisson test statistic are not available yet, please choose an alternative penalty type')
 
     if pen_return < 0 :
-        print('pen_value cannot be negative, please change your penalty value')
+        exit('pen_value cannot be negative, please change your penalty value')
     else:
-        print(pen_return)
+        return(pen_return)

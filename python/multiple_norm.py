@@ -1,20 +1,18 @@
 from statistics import mean
-from numpy import repeat
-from functions import lapply
-from functions import second_element
-from numpy import shape
-from numpy import size
+from numpy import repeat,shape, size
+from functions import lapply,second_element
 from penalty_decision import penalty_decision
 from data_input import data_input
 from class_input import class_input
+from sys import exit
 
 
 def multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, know_mean = False, mu = None, Class = True, param_estimates = True, minseglen = 2):
     """
     multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, know_mean = False, mu = None, Class = True, param_estimates = True, minseglen = 2)
-    
+
     Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
-    
+
     Parameters
     ----------
     data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
@@ -27,17 +25,17 @@ def multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0
     Class : Logical. If True then an object of class cpt is returned.
     param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
     minseglen : Minimum segment length used in the analysis (positive integer).
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
     if not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh"):
-        print ("Multiple Method is not recognised")
+        exit("Multiple Method is not recognised")
     costfunc = "var_norm"
     if penalty == "MBIC":
         if(mul_method == "SegNeigh"):
-            print('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
+            exit('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
         costfunc = "var_norm_mbic"
     diffparam = 1
     if shape(data) == ((0,0) or (0,) or () or None):
@@ -47,9 +45,9 @@ def multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0
     else:
         n = len(data.T)
     if n < 4:
-        print('Data must have atleast 4 observations to fit a changepoint model.')
+        exit('Data must have at least 4 observations to fit a changepoint model.')
     if n < 2 * minseglen:
-        print('Minimum segment legnth is too large to include a change in this data')
+        exit('Minimum segment legnth is too large to include a change in this data')
     pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
     if shape(data) == ((0,0) or (0,) or () or None):
             #single dataset
@@ -84,9 +82,9 @@ def multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0
 def multiple_mean_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
     """
     multiple_mean_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
-    
+
     Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
-    
+
     Parameters
     ----------
     data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
@@ -97,26 +95,26 @@ def multiple_mean_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", p
     Q : The maximum number of changepoints to search for using the "BinSeg" method. The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
     Class : Logical. If True then an object of class cpt is returned.
     param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
     if not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh"):
-        print("Multiple Method is not recognised")
+        exit("Multiple Method is not recognised")
     costfunc = "mean_norm"
     if penalty == "MBIC":
         if mul_method == "SegNeigh":
-            print('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
+            exit('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
         costfunc = "mean_norm_mbic"
     diffparam = 1
     if shape(data) == ((0,0) or (0,) or () or None):
         #single dataset
-        n = size(data) 
+        n = size(data)
     else:
         n = len(data.T)
     if n < (2 * minseglen):
-        print('Minimum segment legnth is too large to include a change in this data')
+        exit('Minimum segment legnth is too large to include a change in this data')
     pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
     if shape(data) == ((0,0) or (0,) or () or None):
         #single dataset
@@ -140,13 +138,13 @@ def multiple_mean_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", p
             return(ans)
         else:
             return(cps)
-    
+
 def multiple_meanvar_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
     """
     multiple_meanvar_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
-    
+
     Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
-    
+
     Parameters
     ----------
     data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
@@ -157,17 +155,17 @@ def multiple_meanvar_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC"
     Q : The maximum number of changepoints to search for using the "BinSeg" method.  The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
     Class : Logical. If True then an object of class cpt is returned.
     param_esimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
     if not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh"):
-        print("Multiple Method is not recognised")
+        exit("Multiple Method is not recognised")
     costfunc = "meanvar_norm"
     if penalty == "MBIC":
         if mul_method == "SegNeigh":
-            print('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
+            exit('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
         costfunc = "meanvar_norm_mbic"
     diffparam = 2
     if shape(data) == ((0,0) or (0,) or () or None):
@@ -176,7 +174,7 @@ def multiple_meanvar_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC"
     else:
         n = len(data.T)
     if n < (2 * minseglen):
-        print('Minimum segment legnth is too large to include a change in this data')
+        exit('Minimum segment legnth is too large to include a change in this data')
     pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
     if shape(data) == ((0,0) or (0,) or () or None):
         #single dataset

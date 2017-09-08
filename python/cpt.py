@@ -1,20 +1,12 @@
 from warnings import warn
 from CROPS import CROPS
-from multiple_norm import multiple_mean_norm
-from multiple_norm import multiple_var_norm
-from single_nonparametric import single_mean_cusum
-from multiple_norm import multiple_meanvar_norm
-from exp import single_meanvar_exp
+from multiple_norm import multiple_mean_norm, multiple_var_norm, multiple_meanvar_norm
+from single_nonparametric import single_mean_cusum, single_var_css
+from exp import single_meanvar_exp, multiple_meanvar_exp
 from numpy import size
-from exp import multiple_meanvar_exp
-from single_norm import single_mean_norm
-from single_norm import single_var_norm
-from single_norm import single_meanvar_norm
-from gamma import single_meanvar_gamma
-from gamma import multiple_meanvar_gamma
-from poisson import single_meanvar_poisson
-from poisson import multiple_meanvar_poisson
-from single_nonparametric import single_var_css
+from single_norm import single_mean_norm, single_var_norm, single_meanvar_norm
+from gamma import single_meanvar_gamma, multiple_meanvar_gamma
+from poisson import single_meanvar_poisson, multiple_meanvar_poisson
 from sys import exit
 from functions import checkData
 
@@ -49,7 +41,7 @@ def cpt_mean(data, penalty = None, pen_value = 0, method = "AMOC", Q = 5, test_s
     if not(test_stat == "Normal" or test_stat == "CUSUM"):
         exit("Invalid test statistic, must be Normal or CUSUM")
     if penalty == "CROPS":
-        if isinstance(pen_value, (int, float)):
+        if isinstance(pen_value, (int, float, list)):
             if size(pen_value) == 2:
                 if pen_value[1] < pen_value[0]:
                     pen_value = reversed(pen_value)
@@ -109,7 +101,7 @@ def cpt_var(data, penalty = "MBIC", pen_value = 0, know_mean = False, mu = None,
         minseglen = 2
         warn("Minimum segment length for a change in variance is 2, automatically changed to be 2.")
     if penalty == "CROPS":
-        if isinstance(pen_value, (int, float)):
+        if isinstance(pen_value, (int, float, list)):
             if size(pen_value) == 2:
                 if pen_value[1] < pen_value[0]:
                     pen_value = reversed(pen_value)
@@ -167,7 +159,7 @@ def cpt_meanvar(data, penalty = "MBIC", pen_value = 0, method = "AMOC", Q = 5, t
             minseglen = 2
             warn('Minimum segment length for a change in mean and variance is 2, automatically changed to be 2.')
     if penalty == "CROPS":
-        if isinstance(pen_value, (int, float)):
+        if isinstance(pen_value, (int, float, list)):
             if size(pen_value) == 2:
                 if pen_value[1] < pen_value[0]:
                     pen_value = reversed(pen_value)

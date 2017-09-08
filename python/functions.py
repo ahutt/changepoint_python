@@ -396,3 +396,13 @@ def which_element(a,b):
     else:
         l = [None]
     return(l)
+
+def max_vector(a):
+    """
+    PLEASE ENTER DETAILS
+    """
+    if isinstance(a,list) == True:
+        return(max(a))
+    else:
+        b = [a]
+        return(max(b))

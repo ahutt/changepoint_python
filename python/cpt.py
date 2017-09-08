@@ -15,14 +15,15 @@ from gamma import multiple_meanvar_gamma
 from poisson import single_meanvar_poisson
 from poisson import multiple_meanvar_poisson
 from single_nonparametric import single_var_css
-
+from sys import exit
+from functions import checkData
 
 def cpt_mean(data, penalty = None, pen_value = 0, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, minseglen = 1):
     """
     cpt_mean(data, penalty = None, pen_value = 0, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, minseglen = 1)
-    
+
     Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
-    
+
     Parameters
     ----------
     data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
@@ -34,55 +35,55 @@ def cpt_mean(data, penalty = None, pen_value = 0, method = "AMOC", Q = 5, test_s
     Class : Logical. If True then an object of class cpt is returned.
     param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
     minseglen : Minimum segment length used in the analysis (positive integer).
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
     checkData(data)
-    if method == "SegNeigh" & minseglen > 1:
-        print("minseglen not yet implemented for SegNeigh method, use PELT instead.")
+    if method == "SegNeigh" and minseglen > 1:
+        exit("minseglen not yet implemented for SegNeigh method, use PELT instead.")
     if minseglen < 1:
         minseglen = 1
         warn('Minimum segment length for a change in mean is 1, automatically changed to be 1.')
     if not(test_stat == "Normal" or test_stat == "CUSUM"):
-        print("Invalid test statistic, must be Normal or CUSUM")
+        exit("Invalid test statistic, must be Normal or CUSUM")
     if penalty == "CROPS":
-        if isinstance(pen_value, (int, float, complex)):
+        if isinstance(pen_value, (int, float)):
             if size(pen_value) == 2:
                 if pen_value[1] < pen_value[0]:
                     pen_value = reversed(pen_value)
                 #run range of penalties
                 return(CROPS(data = data, method = method, pen_value = pen_value, test_stat = test_stat, Class = Class, param_est = param_estimates, minseglen = minseglen, func = "mean"))
             else:
-                print('The length of pen_value must be 2')
+                exit('The length of pen_value must be 2')
         else:
-            print('For CROPS, pen_value must be supplied as a numeric vector and must be of length 2')
+            exit('For CROPS, pen_value must be supplied as a numeric vector and must be of length 2')
     if test_stat == "Normal":
         if method == "AMOC":
-            return(single_mean_norm(data, penalty, pen_value, Class, param_estimates, minseglen))
+            return(single_mean_norm(data = data, minseglen = minseglen, penalty = penalty, pen_value = pen_value, Class = Class, param_estimates = param_estimates))
         elif method == "PELT" or method == "BinSeg":
-            return(multiple_mean_norm(data, penalty, pen_value, Q, Class, param_estimates, minseglen, mul_method = method))
+            return(multiple_mean_norm(data = data, minseglen = minseglen, penalty = penalty, pen_value = pen_value, Q = Q, Class = Class, param_estimates = param_estimates, mul_method = method))
         elif method == "SegNeigh":
             warn("SegNeigh is computationally slow, use PELT instead")
-            return(multiple_mean_norm(data, penalty, pen_value, Q, Class, param_estimates, minseglen, mul_method = method))
+            return(multiple_mean_norm(data = data, minseglen = minseglen, penalty = penalty, pen_value = pen_value, Q = Q, Class = Class, param_estimates = param_estimates, mul_method = method))
         else:
-            print ("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
+            exit("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
     elif test_stat == "CUMSUM":
         warn('Traditional penalty values are not appropriate for the CUMSUM test statistic')
         if method == "AMOC":
-            return(single_mean_cusum(data, penalty, pen_value, Class, param_estimates, minseglen))
+            return(single_mean_cusum(data = data, penalty = penalty, pen_value = pen_value, Class = Class, param_estimates = param_estimates, minseglen = minseglen))
         elif method == "SegNeigh" or method == "BinSeg":
-            return(single_mean_cusum(data, Class, param_estimates, minseglen, mul_method = method, penalty = penalty, pen_value = pen_value, Q = Q))
+            return(single_mean_cusum(data = data, Class = Class, param_estimates = param_estimates, minseglen = minseglen, mul_method = method, penalty = penalty, pen_value = pen_value, Q = Q))
         else:
-            print("Invalid Method, must be AMOC, SegNeigh or BinSeg")
+            exit("Invalid Method, must be AMOC, SegNeigh or BinSeg")
 
 def cpt_var(data, penalty = "MBIC", pen_value = 0, know_mean = False, mu = None, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, minseglen = 2):
     """
     cpt_var(data, penalty = "MBIC", pen_value = 0, know_mean = False, mu = None, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, minseglen = 2)
-    
+
     Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
-    
+
     Parameters
     ----------
     data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
@@ -96,51 +97,51 @@ def cpt_var(data, penalty = "MBIC", pen_value = 0, know_mean = False, mu = None,
     Class : Logical. If True then an object of class cpt is returned.
     param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
     minseglen : Minimum segment length used in the analysis (positive integer).
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
     checkData(data)
     if method == "SegNeigh" and minseglen > 2:
-        print("minseglen not yet implemented for SegNeigh method, use PELT instead.")
+        exit("minseglen not yet implemented for SegNeigh method, use PELT instead.")
     if minseglen < 2:
         minseglen = 2
         warn("Minimum segment length for a change in variance is 2, automatically changed to be 2.")
     if penalty == "CROPS":
-        if isinstance(pen_value, (int, float, complex)):
+        if isinstance(pen_value, (int, float)):
             if size(pen_value) == 2:
                 if pen_value[1] < pen_value[0]:
                     pen_value = reversed(pen_value)
                 return(CROPS(data = data, method = method, pen_value = pen_value, test_stat = test_stat, Class = Class, param_est = param_estimates, minseglen = minseglen, func = "var"))
             else:
-                print('The length of pen_value must be 2')
+                exit('The length of pen_value must be 2')
         else:
-            print('For CROPS, pen_value must be supplied as a numeric vector and must be of length 2')
+            exit('For CROPS, pen_value must be supplied as a numeric vector and must be of length 2')
     if test_stat == "Normal":
         if method == "AMOC":
-            return(single_var_norm(data, penalty, pen_value, know_mean, mu, Class, param_estimates, minseglen))
+            return(single_var_norm(data = data, penalty = penalty, pen_value = pen_value, know_mean = know_mean, mu = mu, Class = Class, param_estimates = param_estimates, minseglen = minseglen))
         elif method == "PELT" or method == "BinSeg":
-            return(multiple_var_norm(data, penalty, pen_value, Q, know_mean, mu, Class, param_estimates, minseglen, mul_method = method))
+            return(multiple_var_norm(data = data, penalty = penalty, pen_value = pen_value, Q = Q, know_mean = know_mean, mu = mu, Class = Class, param_estimates = param_estimates, minseglen = minseglen, mul_method = method))
         else:
-            print("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
+            exit("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
     elif test_stat == "CSS":
         warn('Traditional penalty values are not appropriate for the CSS test statistic')
         if method == "AMOC":
-            return(single_var_css(data, penalty, pen_value, Class, param_estimates, minseglen))
+            return(single_var_css(data = data, penalty = penalty, pen_value = pen_value, Class = Class, param_estimates = param_estimates, minseglen = minseglen))
         elif method == "PELT" or method == "SegNeigh" or method == "BinSeg":
-            return(single_var_css(data, penalty, pen_value, Q, Class, param_estimates, minseglen, mul_method = method))
+            return(single_var_css(data = data, penalty = penalty, pen_value = pen_value, Q = Q, Class = Class, param_estimates = param_estimates, minseglen = minseglen, mul_method = method))
         else:
-            print("Invalid Method, must be AMOC, SegNeigh or BinSeg")
+            exit("Invalid Method, must be AMOC, SegNeigh or BinSeg")
     else:
-        print("Invalid test statistic, must be Normal or CSS")
+        exit("Invalid test statistic, must be Normal or CSS")
 
 def cpt_meanvar(data, penalty = "MBIC", pen_value = 0, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, shape = 1, minseglen = 2):
     """
     cpt_meanvar(data, penalty = "MBIC", pen_value = 0, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, shape = 1, minseglen = 2)
-    
+
     Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
-    
+
     Parameters
     ----------
     data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
@@ -153,69 +154,63 @@ def cpt_meanvar(data, penalty = "MBIC", pen_value = 0, method = "AMOC", Q = 5, t
     param_estimates : Logical. If True and class=True then parameter estimates are returned. If False or class=False no parameter estimates are returned.
     shape : Value of the assumed known shape parameter required when test_stat="Gamma".
     minseglen : Minimum segment length used in the analysis (positive integer).
-    
+
     Returns
     -------
     PLEASE ENTER DETAILS.
     """
     checkData(data)
     if method == "SegNeigh" and minseglen > 2:
-        print("minseglen not yet implemented for SegNeigh method, use PELT instead.")
+        exit("minseglen not yet implemented for SegNeigh method, use PELT instead.")
     if minseglen < 2:
         if not(minseglen == 1 and (test_stat == "Poisson" or test_stat == "Exponential")):
             minseglen = 2
             warn('Minimum segment length for a change in mean and variance is 2, automatically changed to be 2.')
     if penalty == "CROPS":
-        if isinstance(pen_value, int, float, complex):
+        if isinstance(pen_value, (int, float)):
             if size(pen_value) == 2:
                 if pen_value[1] < pen_value[0]:
                     pen_value = reversed(pen_value)
                 #run range of penalties
                 return(CROPS(data = data, method = method, pen_value = pen_value, test_stat = test_stat, Class = Class, param_est = param_estimates, minseglen = minseglen, shape = shape, func = "meanvar"))
             else:
-                print('The length of Pen_value must be 2')
+                exit('The length of Pen_value must be 2')
         else:
-            print('For CROPS, pen_value must be supplied as a numeric vector and must be of length 2')
+            exit('For CROPS, pen_value must be supplied as a numeric vector and must be of length 2')
     if test_stat == "Normal":
         if method == "AMOC":
-            return(single_meanvar_norm(data, penalty, pen_value, Class, param_estimates, minseglen))
+            return(single_meanvar_norm(data = data, penalty = penalty, pen_value = pen_value, Class = Class, param_estimates = param_estimates, minseglen = minseglen))
         elif method == "SegNeigh":
             warn("SegNeigh is computationally slow, use PELT instead")
-            return(multiple_meanvar_norm(data, penalty, pen_value, Q, Class, param_estimates, minseglen, mul_method = method))
+            return(multiple_meanvar_norm(data = data, penalty = penalty, pen_value = pen_value, Q = Q, Class = Class, param_estimates = param_estimates, minseglen = minseglen, mul_method = method))
         else:
-            print("Invalid method, must be AMOC, PELT, SegNeigh or Binseg")
+            exit("Invalid method, must be AMOC, PELT, SegNeigh or Binseg")
     elif test_stat == "Gamma":
         if method == "AMOC":
-            return(single_meanvar_gamma(data, shape, penalty, pen_value, Class, param_estimates, minseglen))
+            return(single_meanvar_gamma(data = data, shape = shape, penalty = penalty, pen_value = pen_value, Class = Class, param_estimates = param_estimates, minseglen = minseglen))
         elif method == "PELT" or method == "BinSeg":
-            return(multiple_meanvar_gamma(data, shape, penalty, pen_value, Q, Class, param_estimates, minseglen, mul_method = method))
+            return(multiple_meanvar_gamma(data = data, shape = shape, penalty = penalty, pen_value = pen_value, Q = Q, Class = Class, param_estimates = param_estimates, minseglen = minseglen, mul_method = method))
         else:
-            print("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
+            exit("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
     elif test_stat == "Exponential":
         if method == "AMOC":
-            return(single_meanvar_exp(data, penalty, pen_value, Class, param_estimates, minseglen))
+            return(single_meanvar_exp(data = data, penalty = penalty, pen_value = pen_value, Class = Class, param_estimates = param_estimates, minseglen = minseglen))
         elif method == "PELT" or method == "BinSeg":
-            return(multiple_meanvar_exp(data, penalty, pen_value, Q, Class, param_estimates, minseglen, mul_method = method))
+            return(multiple_meanvar_exp(data = data, penalty = penalty, pen_value = pen_value, Q = Q, Class = Class, param_estimates = param_estimates, minseglen = minseglen, mul_method = method))
         elif method == "SegNeigh":
             warn("SegNeigh is computationally slow, use PELT instead")
-            return(multiple_meanvar_exp(data, penalty, pen_value, Q, Class, param_estimates, minseglen, mul_method = method))
+            return(multiple_meanvar_exp(data = data, penalty = penalty, pen_value = pen_value, Q = Q, Class = Class, param_estimates = param_estimates, minseglen = minseglen, mul_method = method))
         else:
-            print("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
+            exit("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
     elif test_stat == "Poisson":
         if method == "AMOC":
-            return(single_meanvar_poisson(data, penalty, pen_value, Class, param_estimates, minseglen))
+            return(single_meanvar_poisson(data = data, penalty = penalty, pen_value = pen_value, Class = Class, param_estimates = param_estimates, minseglen = minseglen))
         elif method == "PELT" or method == "BinSeg":
-            return(multiple_meanvar_poisson(data, penalty, pen_value, Q, Class, param_estimates, minseglen, mul_method = method))
+            return(multiple_meanvar_poisson(data = data, penalty = penalty, pen_value = pen_value, Q = Q, Class = Class, param_estimates = param_estimates, minseglen = minseglen, mul_method = method))
         elif method == "SegNeigh":
             warn("SegNeigh is computationally slow, use PELT instead")
-            return(multiple_meanvar_poisson(data, penalty, pen_value, Q, Class, param_estimates, minseglen, mul_method = method))
+            return(multiple_meanvar_poisson(data = data, penalty = penalty, pen_value = pen_value, Q = Q, Class = Class, param_estimates = param_estimates, minseglen = minseglen, mul_method = method))
         else:
-            print("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
+            exit("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
     else:
-        print("Invalid test statistic, must be Normal, Gamma, Exponential or Poisson")
-
-def checkData(data):
-    if not(isinstance(data, int, float, complex)):
-        print("Only numeric data allowed")
-    if not(any(data)):
-        print("Missing value: None is not allowed in the data as changepoint methods are only sensible for regularly spaced data.")
+        exit("Invalid test statistic, must be Normal, Gamma, Exponential or Poisson")

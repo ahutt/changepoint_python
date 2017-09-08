@@ -1,3 +1,11 @@
+#checkData
+def checkData(data):
+    if isinstance(data, (int, float, list)) == False:
+        exit("Only numeric data allowed.")
+    for i in data:
+        if i == None:
+            exit("Missing value: None is not allowed in the data as changepoint methods are only sensible for regularly spaced data.")
+
 #paste and paste0 functions
 from functools import reduce
 from functools import partial
@@ -19,7 +27,7 @@ def which_max(a,b):
         return(1)
     else:
         return(2)
-        
+
 #which_min
 def which_min(a,b):
     if a <= b:
@@ -33,15 +41,15 @@ def lapply(x,y):
     for i in x:
         l.append(y(i))
     return(l)
-    
+
 # second_element
 def second_element(x):
     n = len(x)
     v = []
     for i in range(0,n):
         v.append(x[i][1])
-    return(v)        
-        
+    return(v)
+
 #is_equal
 def is_equal(a,b):
     if a == b:
@@ -106,7 +114,7 @@ def less_than(a,b):
                 c = False
             l.append(c)
         return(l)
-        
+
 def greater_than_equal(a,b):
     if isinstance(a,int) == True or isinstance(a,float) == True:
         if a >= b:
@@ -122,7 +130,7 @@ def greater_than_equal(a,b):
                 c = False
             l.append(c)
         return(l)
-        
+
 def less_than_equal(a,b):
     if isinstance(a,int) == True or isinstance(a,float) == True:
         if a <= b:
@@ -138,7 +146,7 @@ def less_than_equal(a,b):
                 c = False
             l.append(c)
         return(l)
-        
+
 #compare
 from numpy import size
 
@@ -206,7 +214,7 @@ def truefalse2(a,b,c):
             else:
                 a[i] = a[i]
     return(a)
-    
+
 #first element list
 from numpy import ndim
 
@@ -222,7 +230,7 @@ def twoD_to_oneD(list):
             return(list)
         elif ndim(list) == 1:
             if list[0] == None:
-                return(list[1])      
+                return(list[1])
             elif len(list) == 2:
                 if isinstance(list[0], (float, int)) == True:
                     return(list)

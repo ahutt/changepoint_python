@@ -85,15 +85,16 @@ def param_trender(object):
     thetaj = (2 * (2 * seglen + 1) * (cptsumstat[:,1] - beta * cptsumstat[:,2]) -6 * (cptsumstat[:,4] - beta * cptsumstat[:,5]))/(seglen - 1)
     return(vstack((beta,thetajpo,thetaj)))
 
-def param(object):
+def param(object, shape):
     """
-    param(object)
+    param(object, shape)
 
     Generic function that returns parameter estimates.
 
     Parameters
     ----------
     object : Depending on the class of object depends on the method used to find the parameter estimates (and if one exists).
+    shape :
 
     Returns
     -------
@@ -107,7 +108,7 @@ def param(object):
         if object[3] == "Normal":
             object[11] = list(param_mean(object), param_var(object))
         elif object[3] == "Gamma":
-            object[11] = list(param_scale(object, shape), shape)
+            object[11] = list(param_scale(object, shape = shape), shape = shape)
         elif object[3] == "Exponential":
             object[11] = list(divide(1,param_mean(object)))
         elif object[3] == "Poisson":

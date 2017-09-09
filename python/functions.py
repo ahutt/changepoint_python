@@ -406,3 +406,22 @@ def max_vector(a):
     else:
         b = [a]
         return(max(b))
+
+#def paste_str(a,b):
+    """
+    paste_str(a,b)
+
+    Stitches two strings together to make a longer string.
+
+    Parameters
+    ----------
+    a : Any string.
+    b : Any string.
+
+    Returns
+    -------
+    A string. E.g. If a = "Hello" and b = "World!" the output is "Hello_World!"
+    """
+#    if isinstance(a, str) == False or isinstance(b, str) == False:
+#        exit('Both inputs must be string types.')
+#    else:

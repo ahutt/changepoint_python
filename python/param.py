@@ -1,5 +1,4 @@
-from statistics import mean, variance
-from numpy import cumsum, append, size, vstack, multiply, matrix, divide, square
+from numpy import cumsum, append, size, vstack, multiply, matrix, divide, square, mean, var
 from sys import exit
 
 def param_mean(object):
@@ -22,7 +21,7 @@ def param_var(object):
     seglen = object.seg_len
     tmpvar = None
     for j in range(1,object.nseg+1):
-        tmpvar[j] = variance(data[range(cpts[j] + 1, cpts[j + 1])])
+        tmpvar[j] = var(data[range(cpts[j] + 1, cpts[j + 1])])
     tmpvar = tmpvar * (seglen - 1)/seglen
     return(tmpvar)
 

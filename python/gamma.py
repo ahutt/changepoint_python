@@ -1,7 +1,7 @@
 from numpy import size, cumsum, repeat, zeros, full, apply_over_axes, log
 from penalty_decision import penalty_decision
 from decision import decision
-from warnings import warn
+from _warnings import warn
 from functions import lapply, second_element, which_element, less_than_equal
 from class_input import class_input
 from data_input import data_input

@@ -1,7 +1,7 @@
 from numpy import pi, size, cumsum, square, subtract, add, log, append, full, array, multiply, power, ndim, divide, transpose
 #from statistics import mean
 from functions import compare, truefalse, twoD_to_oneD, truefalse2, less_than_equal
-from warnings import warn
+from _warnings import warn
 
 #The hashed out functions have not been tested and are currently not used anywhere in the package.
 

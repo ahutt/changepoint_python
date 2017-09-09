@@ -1,6 +1,6 @@
 from numpy import cumsum, log, shape, pi, exp, sqrt, vstack, size, zeros, full
 from penalty_decision import penalty_decision
-from warnings import warn
+from _warnings import warn
 from functions import lapply, which_element, second_element, less_than
 from class_input import class_input
 from decision import decision

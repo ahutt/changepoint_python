@@ -1,5 +1,5 @@
 from math import log,sqrt,pi,gamma,exp
-from warnings import warn
+from _warnings import warn
 from sys import exit
 
 def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):

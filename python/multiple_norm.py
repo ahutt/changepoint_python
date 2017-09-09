@@ -1,5 +1,4 @@
-from statistics import mean
-from numpy import repeat,shape, size
+from numpy import repeat,shape, size,mean
 from functions import lapply,second_element
 from penalty_decision import penalty_decision
 from data_input import data_input

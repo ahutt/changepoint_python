@@ -1,4 +1,4 @@
-from warnings import warn
+from _warnings import warn
 from CROPS import CROPS
 from multiple_norm import multiple_mean_norm, multiple_var_norm, multiple_meanvar_norm
 from single_nonparametric import single_mean_cusum, single_var_css

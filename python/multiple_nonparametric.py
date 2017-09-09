@@ -1,5 +1,5 @@
 from numpy import size, cumsum, zeros, empty, inf, repeat, shape,sqrt
-from warnings import warn
+from _warnings import warn
 from functions import which_max, which_element
 from penalty_decision import penalty_decision
 from class_input import class_input

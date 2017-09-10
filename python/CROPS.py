@@ -1,7 +1,6 @@
 from numpy import mean, cumsum, vstack, transpose
 from class_input import class_input
 from range_of_penalties import range_of_penalties
-from functions import paste_str
 from sys import exit
 
 def CROPS(data, pen_value, minseglen, shape, func, penalty = "CROPS", method = "PELT", test_stat = "Normal", Class = True, param_est = True):
@@ -23,7 +22,8 @@ def CROPS(data, pen_value, minseglen, shape, func, penalty = "CROPS", method = "
         stat == "poisson"
     else:
         exit("Only Normal, Exponential, Gamma and Poisson are valid test statistics")
-    costfunc = paste_str(func, ".", stat)
+    func = func + "_"
+    costfunc = func + test_stat
     out = range_of_penalties(sumstat, cost = costfunc, min_pen = pen_value[0], max_pen = pen_value[1], minseglen = minseglen)
 
     if func == "var":

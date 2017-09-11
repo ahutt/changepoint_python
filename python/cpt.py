@@ -10,9 +10,9 @@ from poisson import single_meanvar_poisson, multiple_meanvar_poisson
 from sys import exit
 from functions import checkData
 
-def cpt_mean(data, penalty = None, pen_value = 0, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, minseglen = 1):
+def cpt_mean(data, penalty = "None", pen_value = 0, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, minseglen = 1):
     """
-    cpt_mean(data, penalty = None, pen_value = 0, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, minseglen = 1)
+    cpt_mean(data, penalty = "None", pen_value = 0, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, minseglen = 1)
 
     Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
 

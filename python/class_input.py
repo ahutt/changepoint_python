@@ -30,7 +30,7 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
     -------
     PLEASE ENTER DETAILS.
     """
-    ans = list()
+    ans = []
     if method == "BinSeg" or method == "SegNeigh" or penalty == "CROPS":
         name = ['cpt_range']
         named_ans = dict(zip(name, ans))

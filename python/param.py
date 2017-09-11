@@ -7,9 +7,9 @@ def param_mean(object):
     """
     cpts = append([0],object[7])
     data = object[0]
-    tmpmean = None
-    for j in range(1,object.nseg+1):
-        tmpmean[j] = mean(data[range(cpts[j] + 1, cpts[j + 1])])
+    tmpmean = [] * (len(object[7]) - 1)
+    for j in range(1,len(object[7])):
+        tmpmean[j-1] = mean(data[range(cpts[j-1] + 1, cpts[j])])
     return(tmpmean)
 
 def param_var(object):
@@ -20,7 +20,7 @@ def param_var(object):
     data = object[0]
     seglen = object.seg_len
     tmpvar = None
-    for j in range(1,object.nseg+1):
+    for j in range(1,len(object[7])):
         tmpvar[j] = var(data[range(cpts[j] + 1, cpts[j + 1])])
     tmpvar = tmpvar * (seglen - 1)/seglen
     return(tmpvar)
@@ -33,7 +33,7 @@ def param_scale(object, shape):
     data = object[0]
     y = append([0], cumsum(data))
     tmpscale = None
-    for j in range(1,object.nseg+1):
+    for j in range(1,len(object[7])):
         tmpscale[j] = (y[cpts[j + 1] + 1] - y[cpts[j] + 1])/((cpts[j + 1] - cpts[j]) * shape)
     return(tmpscale)
 
@@ -84,7 +84,7 @@ def param_trender(object):
     thetaj = (2 * (2 * seglen + 1) * (cptsumstat[:,1] - beta * cptsumstat[:,2]) -6 * (cptsumstat[:,4] - beta * cptsumstat[:,5]))/(seglen - 1)
     return(vstack((beta,thetajpo,thetaj)))
 
-def param(object, shape):
+def param(object, shape = "None"):
     """
     param(object, shape)
 
@@ -100,7 +100,7 @@ def param(object, shape):
     PLEASE ENTER DETAILS.
     """
     if object[1] == "mean":
-        object[11] = list(param_mean(object))
+        object[11] = [param_mean(object)]
     elif object[1] == "variance":
         object[11] = list(param_var(object))
     elif object[1] == "mean and variance":

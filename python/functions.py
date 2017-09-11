@@ -1,5 +1,5 @@
 from sys import exit
-from numpy import asarray, size, ndim
+from numpy import asarray, size, ndim, ndarray, transpose, full
 
 def checkData(data):
     """
@@ -84,21 +84,33 @@ def lapply(x,y):
 
     Parameters
     ----------
-    x : Any list.
+    x : Any list or matrix.
     y : Any function.
 
     Returns
     -------
-    List containing y(x[i]) for all i in x.
+    List containing y(x[i]) for all i in x. (If x is a list).
+    Matrix containing y(x[i][j]) for all i,j in x. (If x is a matrix).
 
     Usage
     -----
     PLEASE ENTER DETAILS
     """
-    l = list()
-    for i in x:
-        l.append(y(i))
-    return(l)
+    if isinstance(x, list) == True:
+        l = list()
+        for i in x:
+            l.append(y(i))
+        return(l)
+    elif isinstance(x, ndarray) == True:
+        p = len(x) #num of cols
+        q = len(transpose(x)) # num of rows
+        A = full((q,p),0)
+        for i in range(0,p):
+            for j in range(0,q):
+                A[i][j] = y(x[i,j])
+        return(A)
+    else:
+        exit("Input is not a list or numpy array/matrix.")
 
 def second_element(x):
     """
@@ -406,22 +418,3 @@ def max_vector(a):
     else:
         b = [a]
         return(max(b))
-
-#def paste_str(a,b):
-    """
-    paste_str(a,b)
-
-    Stitches two strings together to make a longer string.
-
-    Parameters
-    ----------
-    a : Any string.
-    b : Any string.
-
-    Returns
-    -------
-    A string. E.g. If a = "Hello" and b = "World!" the output is "Hello_World!"
-    """
-#    if isinstance(a, str) == False or isinstance(b, str) == False:
-#        exit('Both inputs must be string types.')
-#    else:

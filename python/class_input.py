@@ -1,8 +1,29 @@
-from numpy import inf, size, diff, append
-from functions import lapply, sapply
-from param import param
+from numpy import inf, subtract, transpose, delete, diff, multiply
+from functions import sapply
 
-def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = list(), Q = None, shape = None):
+class param_est:
+    def __init__(self, shape):
+        self.shape = None
+
+class ans:
+    def __init__(self, data_set, cpttype, method, test_stat, pen_type, pen_value, minseglen, cpts, ncpts_max, cpts_full, pen_value_full, param_est):
+        self.name = None
+        self.cpt_range = None
+        self.cpt = None
+        self.data_set = None
+        self.cpttype = None
+        self.method = None
+        self.test_stat = None
+        self.pen_type = None
+        self.pen_value = None
+        self.minseglen = None
+        self.cpts = None
+        self.ncpts_max = None
+        self.cpts_full = None
+        self.pen_value_full = None
+        self.param_est = None
+
+def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = [], Q = None, shape = None):
     """
     class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = list(), Q = None, shape = None)
 
@@ -30,60 +51,53 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
     -------
     PLEASE ENTER DETAILS.
     """
-    ans = []
     if method == "BinSeg" or method == "SegNeigh" or penalty == "CROPS":
-        name = ['cpt_range']
-        named_ans = dict(zip(name, ans))
+        from param_cpt_range import param
     else:
-        name = ['cpt']
-        named_ans = dict(zip(name, ans))
+        from param_cpt import param
 
-    ans.append(data)
-    ans.append(cpttype)
-    ans.append(method)
-    ans.append(test_stat)
-    ans.append(penalty)
-    ans.append(pen_value)
-    ans.append(minseglen)
+    ans.data_set = data
+    ans.cpttype = cpttype
+    ans.method = method
+    ans.test_stat = test_stat
+    ans.pen_type = penalty
+    ans.pen_value = pen_value
+    ans.minseglen = minseglen
 
     if penalty != "CROPS":
-        if size(out) == 0:
-            ans.append(out)
-        else:
-            ans.append(out[[1]])
+        ans.cpts = out[1]
+
         if param_estimates == True:
             if test_stat == "Gamma":
                 ans = param(ans, shape)
             else:
                 ans = param(ans)
-
     if method == "PELT":
-        ans.append(inf)
+        ans.ncpts_max = inf
     elif method == "AMOC":
-        ans.append(1)
+        ans.ncpts_max = 1
     else:
-        ans.append(Q)
+        ans.ncpts_max = Q
 
     if method == "BinSeg":
-        l = list()
-        for i in range(1, size(out.cps)/2 + 1):
-            l[[i-1]] = out.cps[0,list(range(0,i))]
-        f = lapply(l, len)
-        m = (sapply(l, list(range(1,max(f))))).T
+        l = []
+        for i in range(1, len(out.cps)/2 + 1):
+            l[i-1] = out.cps[0,list(subtract(range(1,i+1),1))]
 
-        ans.append(m)
-        ans.append(out.cps[1,:])
+        m = transpose(sapply(l, list(range(1,max(sapply(1,len)) + 1))))
+
+        ans.cpts_full = m
+        ans.pen_value_full = out[0][0,:]
+
     elif method == "SegNeigh":
-        ans.append(out.cps[-1,:])
-        ans.append(-diff(out.like_Q))
+        ans.cpts_full = delete(out.cps[0,:])
+        ans.pen_value_full = multiply(diff(out.like_Q), -1)
+
     elif penalty == "CROPS":
-        f = lapply(out[[1]], len)
-        m = sapply(out[[1]], range(1, max(f)+1)).T
+        m = transpose(sapply(out[1], list(range(1,max(sapply(out[1], len)) + 1))))
 
-        ans.append(m)
-        ans.append(out[[0]][0,:])
+        ans.cpts_full = m
+        ans.pen_value_full = out[0][0,:]
         if test_stat == "Gamma":
-            ans.append([])
-            ans[11].append(shape)
-
+            (ans.param_est).shape = shape
     return(ans)

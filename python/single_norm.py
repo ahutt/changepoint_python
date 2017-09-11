@@ -1,4 +1,4 @@
-from numpy import cumsum, square,shape, zeros, size, log, exp, sqrt, pi, vstack, repeat,append, add, subtract, divide
+from numpy import cumsum, square,shape, full, size, log, exp, sqrt, pi, vstack, repeat,append, add, subtract, divide, seterr
 from penalty_decision import penalty_decision
 from decision import decision
 from statistics import mean
@@ -14,12 +14,13 @@ def singledim(data, minseglen, extrainf = True):
     n = size(data)
     y = append([0], cumsum(data))
     y2 = append([0], cumsum(square(data)))
-    null = y2[n] - (y[n] ** (2/n))
-    taustar = list(range(minseglen, n - minseglen + 1))
+    null = y2[n] - ((y[n] ** 2)/n)
+    taustar = list(range(minseglen, n - minseglen + 2))
+    seterr(divide='ignore', invalid='ignore')
     tmp = list(add(subtract(y2[taustar],divide((y[taustar] ** 2),taustar)),subtract((y2[n] - y2[taustar]),((y[n] - y[taustar]) ** 2)/subtract(n,taustar))))
 
     tau = which_element(tmp,min(tmp))[0]
-    taulike = tmp[tau]
+    taulike = tmp[tau-1]
     tau = tau + minseglen - 1 #correcting for the fact that we are starting at minseglen
     if extrainf == True:
         out = append(append(tau, [null]), taulike)
@@ -53,16 +54,15 @@ def single_mean_norm_calc(data, minseglen, extrainf = True):
         return(cpt)
     else:
         rep = len(data)
-        n = shape(data)[1]
+        n = len(data.T)
         cpt = None
         if extrainf == False:
             for i in range(1, rep+1):
-                cpt[i-1]=singledim(data[i-1,:],extrainf,minseglen)
+                cpt[i-1]=singledim(data[i-1,:],extrainf = extrainf, minseglen = minseglen)
         else:
-            cpt = zeros(rep,3)
+            cpt = full((rep,3),0)
             for i in range(1,rep+1):
-                cpt[i-1,:] = singledim(data[i-1,:], minseglen, extrainf)
-            cpt.columns({'cpt', 'null' , 'alt'})
+                cpt[i-1,:] = singledim(data[i-1,:], minseglen = minseglen, extrainf = extrainf)
         return(cpt)
 
 def single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True):
@@ -90,7 +90,7 @@ def single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = T
         shape1 = None
     if shape1 == None:
         #single dataset
-        n = size(data)
+        n = len(data)
     else:
         n = shape(data)[1]
     if n < 2:

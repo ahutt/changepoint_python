@@ -1,4 +1,4 @@
-from numpy import append, mean, subtract, delete, var, power, multiply, divide, add, cumsum, transpose, vstack, array
+from numpy import append, mean, subtract, delete, var, power, multiply, divide, add, cumsum, transpose, vstack, array, size, full
 from sys import exit
 
 def cpts(object):
@@ -18,13 +18,29 @@ def cpts(object):
     param_meanar
     param_trendar
     """
-    return(object.cpts[subtract(delete(object.cpts, len(object.cpts)-1),1)])
+    if isinstance(object.cpts, (float, int)) == True:
+        return([])
+    else:
+        a = subtract(delete(object.cpts, size(object.cpts)-1),1)
+        if isinstance(a, list) == True:
+            return(object.cpts[a])
+        else:
+            if a >= 0:
+                return(object.cpts[a])
+            else:
+                a = -a
+                b = delete(object.cpts, a)
+                if len(b) == 1:
+                    b = int(b)
+                    return(object.cpts[b])
+                else:
+                    return(object.cpts[b])
 
 def seg_len(object):
     """
     PLEASE ENTER DETAILS
     """
-    return(subtract(object.cpts, append([0], delete(object.cpts, len(object.cpts)-1))))
+    return(subtract(object.cpts, append([0], delete(object.cpts, size(object.cpts)-1))))
 
 def ncpts(object):
     """
@@ -36,7 +52,7 @@ def nseg(object):
     """
     PLEASE ENTER DETAILS
     """
-    return(ncpts(object) + 1)
+    return(int(add(ncpts(object),1)))
 
 def cpttype(object):
     """
@@ -58,11 +74,11 @@ def param_mean(object):
     """
     PLEASE ENTER DETAILS
     """
-    cpts = append([0], object.cpts)
-    data = object.data_set
-    tmpmean = [None] * nseg(object)
+    object.cpts = append([0], object.cpts)
+    data = array(object.data_set)
+    tmpmean = full((nseg(object)+1,1),None)
     for j in range(1, nseg(object)+1):
-        tmpmean[j-1] = mean(data[subtract(list(range(cpts[j-1]+1,cpts[j])),1)])
+        tmpmean[j-1] = mean(data[array(subtract(list(range(int(object.cpts[j-1]+1),int(object.cpts[j]))),1))])
     return(tmpmean)
 
 def param_var(object):

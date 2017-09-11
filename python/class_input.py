@@ -1,27 +1,28 @@
 from numpy import inf, subtract, transpose, delete, diff, multiply
 from functions import sapply
 
-class param_est:
-    def __init__(self, shape):
-        self.shape = None
+class class1:
+    def __init__(self, shape = None):
+        self.shape = shape
+param_est = class1()
 
-class ans:
-    def __init__(self, data_set, cpttype, method, test_stat, pen_type, pen_value, minseglen, cpts, ncpts_max, cpts_full, pen_value_full, param_est):
-        self.name = None
-        self.cpt_range = None
-        self.cpt = None
-        self.data_set = None
-        self.cpttype = None
-        self.method = None
-        self.test_stat = None
-        self.pen_type = None
-        self.pen_value = None
-        self.minseglen = None
-        self.cpts = None
-        self.ncpts_max = None
-        self.cpts_full = None
-        self.pen_value_full = None
-        self.param_est = None
+class class2:
+    def __init__(self, data_set = None, cpttype = None, method = None, test_stat = None, pen_type = None, pen_value = None, minseglen = None, cpts = None, ncpts_max = None, cpts_full = None, pen_value_full = None, param_est = None):
+        self.data_set = data_set
+        self.cpttype = cpttype
+        self.method = method
+        self.test_stat = test_stat
+        self.pen_type = pen_type
+        self.pen_value = pen_value
+        self.minseglen = minseglen
+        self.cpts = cpts
+        self.ncpts_max = ncpts_max
+        self.cpts_full = cpts_full
+        self.pen_value_full = pen_value_full
+        self.param_est = param_est
+
+    def __repr__(self):
+        return('ans("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")' % (self.data_set, self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.cpts, self.ncpts_max, self.cpts_full, self.pen_value_full, self.param_est))
 
 def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = [], Q = None, shape = None):
     """
@@ -56,6 +57,7 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
     else:
         from param_cpt import param
 
+    ans = class2()
     ans.data_set = data
     ans.cpttype = cpttype
     ans.method = method

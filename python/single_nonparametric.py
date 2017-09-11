@@ -3,7 +3,7 @@ from functions import which_max
 from numpy import cumsum, shape, size, square, zeros, sqrt, subtract
 from decision import decision
 from statistics import mean
-from param import param
+from param_cpt import param
 
 def singledim(data, minseglen, extrainf = True):
     """

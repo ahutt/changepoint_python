@@ -90,7 +90,33 @@ from functions import truefalse2, less_than_equal, greater_than_equal
 
 def mll_meanvar(x2,x,n):
     """
-    PLEASE ENTER DETAILS.
+    mll_meanvar(x2,x,n)
+
+    Description
+    -----------
+    Subfunction of binseg_meanvar_norm.
+
+    This is not intended for use by regular users of the package.
+
+    Parameters
+    ----------
+    x2 : List, int or float.
+    x : List, int or float.
+    n : List, int or float.
+
+    Returns
+    -------
+    If any of the parameters is a list, then a list is returned.
+    If all of the parameters are floats then a float is returned.
+
+    Usage
+    -----
+    binseg_meanvar_norm
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
     """
     sigmasq = multiply(divide(1,n),subtract(x2,multiply((power(x,2)),divide(1,n))))
     b = truefalse2(sigmasq,less_than_equal(sigmasq, 0),0.00000000001)
@@ -101,11 +127,9 @@ def binseg_meanvar_norm(data, Q = 5, pen = 0):
     """
     binseg_meanvar_norm(data, Q = 5, pen = 0)
 
-    Implements the Binary Segmentation method for identifying changepoints in a given set of summary statistics for a specified cost function and penalty.
-
-    This function is called by cpt_mean, cpt_var and cpt_meanvar when method="BinSeg". This is not intended for use by regular users of the package. It is exported for developers to call directly for speed increases or to fit alternative cost functions.
-
-    WARNING: No checks on arguments are performed!
+    Description
+    -----------
+    Calculates the optimal positioning and number of changepoints for Normal data using Binary Segmentation method. Note that this is an approximate method.
 
     Parameters
     ----------
@@ -115,6 +139,25 @@ def binseg_meanvar_norm(data, Q = 5, pen = 0):
 
     Returns
     -------
+    A list is returned containing the following items
+	cps : 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op.cpts : The optimal changepoint locations for the penalty supplied.
+	pen : Penalty used to find the optimal number of changepoints.
+
+    Usage
+    -----
+    data_input
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    Examples
+    --------
     PLEASE ENTER DETAILS.
     """
     n = size(data)

@@ -100,6 +100,8 @@ def mll_meanvar_EFK(x2,x,n):
     """
     mll_meanvar_EFK(x2,x,n)
 
+    Description
+    -----------
     A subfunction for PELT_meanvar_norm.
 
     This is not intended for use by regular users of the package.

@@ -141,12 +141,16 @@ def binseg_meanvar_norm(data, Q = 5, pen = 0):
     -------
     A list is returned containing the following items
 	cps : 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
-	op.cpts : The optimal changepoint locations for the penalty supplied.
+	op_cpts : The optimal changepoint locations for the penalty supplied.
 	pen : Penalty used to find the optimal number of changepoints.
 
     Usage
     -----
     data_input
+
+    Details
+    -------
+    This function is used to find a multiple changes in mean and variance for data that is assumed to be normally distributed. The value returned is the result of finding the optimal location of up to Q changepoints using the log of the likelihood ratio statistic. Once all changepoint locations have been calculated, the optimal number of changepoints is decided using pen as the penalty function.
 
     Author(s)
     ---------

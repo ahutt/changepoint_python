@@ -2,9 +2,9 @@ from numpy import size, zeros, full, inf, pi, log, add, set_printoptions, subtra
 #from statistics import mean
 from functions import max_vector,which_element,greater_than,truefalse
 from sys import exit
+from _warnings import warn
 
-
-#The hashed out functions have not been tested and are currently not used anywhere in the package.
+#The hashed out functions have not been tested, documented and are currently not used anywhere in the package.
 
 #def segneigh_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
 #    """
@@ -139,6 +139,8 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
     """
     segneigh_meanvar_norm(data, Q = 5, pen = 0)
 
+    Description
+    -----------
     Calculates the optimal positioning and number of changepoints for Normal data using Segment Neighbourhood method. Note that this gives the same results as PELT method but takes more computational time.
 
     Parameters
@@ -149,6 +151,29 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
 
     Returns
     -------
+    A list is returned containing the following items:
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts:The optimal changepoint locations for the penalty supplied.
+	like: Value of the -2*log(likelihood ratio) + penalty for the optimal number of changepoints selected.
+
+    Usage
+    -----
+    data_input
+
+    Details
+    -------
+    This function is used to find a multiple changes in mean and variance for data that is assumed to be normally distributed.  The value returned is the result of finding the optimal location of up to Q changepoints using the log of the likelihood ratio statistic.  Once all changepoint locations have been calculated, the optimal number of changepoints is decided using k*pen as the penalty function where k is the number of changepoints tested (k in (1,Q)).
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Normal mean and variance: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    Examples
+    --------
     PLEASE ENTER DETAILS.
     """
     set_printoptions(threshold=inf)

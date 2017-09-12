@@ -1,4 +1,4 @@
-from numpy import inf,log, shape, zeros,empty, apply_over_axes, size, cumsum
+from numpy import inf, log, shape, full, apply_over_axes, size, cumsum, subtract
 from functions import which_element,lapply,second_element
 from penalty_decision import penalty_decision
 from _warnings import warn
@@ -141,7 +141,7 @@ def segneigh_meanvar_poisson(data, Q = 5, pen = 0):
         exit('Data must have atleast 4 observations to fit a changepoint model.')
     if Q > ((n/2) + 1):
         exit('Q is larger than the maximum number of segments')
-    all_seg = zeros(n,n)
+    all_seg = full((n,n),0,dtype=float)
     for i in range(1,n):
         sumx = 0
         for j in range(i,n):
@@ -151,9 +151,9 @@ def segneigh_meanvar_poisson(data, Q = 5, pen = 0):
                 all_seg[i,j] = -inf
             else:
                 all_seg[i,j] = sumx * log(sumx) - sumx * log(Len)
-    like_Q = zeros(Q,n)
+    like_Q = full((Q,n),0,dtype=float)
     like_Q[0,:] = all_seg[0,:]
-    cp = empty(shape = [Q, n])
+    cp = full((Q, n),None,dtype=None)
     for q in range(2,Q):
         for j in range(q,n):
             like = None
@@ -164,9 +164,9 @@ def segneigh_meanvar_poisson(data, Q = 5, pen = 0):
             like = like_Q[q - 1,v] + all_seg[v + 1,j]
 
             like_Q[q,j] = max(like)
-            cp[q,j] = which(like == max(like))[0] + (q - 1)
+            cp[q,j] = which_element(like,max(like))[0] + (q - 1)
 
-    cps_Q = empty(Q,Q)
+    cps_Q = full((Q,Q), None, dtype=None)
     for q in range(2,Q):
         cps_Q[q,1] = cp[q,n]
         for i in range(1,q-1):

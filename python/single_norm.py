@@ -1,7 +1,6 @@
-from numpy import cumsum, square,shape, full, size, log, exp, sqrt, pi, vstack, repeat,append, add, subtract, divide, seterr
+from numpy import cumsum, square, shape, full, size, log, exp, sqrt, pi, vstack, repeat, append, add, subtract, divide, seterr, mean
 from penalty_decision import penalty_decision
 from decision import decision
-from statistics import mean
 from math import gamma
 from class_input import class_input
 from functions import which_element, less_than_equal

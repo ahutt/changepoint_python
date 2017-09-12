@@ -1,4 +1,4 @@
-from numpy import cumsum, log, shape, pi, exp, sqrt, vstack, size, zeros, full
+from numpy import cumsum, log, shape, pi, exp, sqrt, vstack, size, full
 from penalty_decision import penalty_decision
 from _warnings import warn
 from functions import lapply, which_element, second_element, less_than

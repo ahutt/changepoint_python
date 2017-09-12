@@ -1,4 +1,4 @@
-from numpy import size, cumsum, repeat, zeros, full, apply_over_axes, log
+from numpy import size, cumsum, repeat, full, apply_over_axes, log
 from penalty_decision import penalty_decision
 from decision import decision
 from _warnings import warn

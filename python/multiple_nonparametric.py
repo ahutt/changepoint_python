@@ -1,6 +1,6 @@
-from numpy import size, cumsum, zeros, empty, inf, repeat, shape,sqrt
+from numpy import size, cumsum, full, inf, repeat, shape, sqrt
 from _warnings import warn
-from functions import which_max, which_element
+from functions import which_max, which_element, greater_than_equal
 from penalty_decision import penalty_decision
 from class_input import class_input
 
@@ -30,8 +30,8 @@ def segneigh_var_css(data, Q = 5, pen = 0):
     oldmax = 1000
 
     test = None
-    like_Q = zeros(Q,n)
-    cp = empty(Q,n)
+    like_Q = full((Q,n),0,dtype=float)
+    cp = full((Q,n),None,dtype=None)
     for q in range(2,Q): # no of segments
         for j in range(q,n):
             like = None
@@ -43,7 +43,7 @@ def segneigh_var_css(data, Q = 5, pen = 0):
             like_Q[q,j] = max(like)
             cp[q,j] = which_element(like,max(like))[1] + (q - 2)
 
-    cps_Q = empty(Q,Q)
+    cps_Q = full((Q,Q),None,dtype=None)
     for q in range(2,Q):
         cps_Q[q,1] = cp[q,n]
         for i in range(1,q-1):
@@ -95,7 +95,7 @@ def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
 
     y2 = [0, cumsum(data ** 2)]
     tau = [0,n]
-    cpt = zeros(2,Q)
+    cpt = full((2,Q),None,dtype=None)
     oldmax = inf
 
     for q in range(1,Q):
@@ -119,11 +119,11 @@ def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
     op_cps = None
     p = range(1,Q-1)
     for i in range(1,size(pen)):
-        criterion = (cpt[2,:] >= pen[i])
+        criterion = greater_than_equal(cpt[2,:],pen[i])
         if sum(criterion) == 0:
             op_cps = 0
         else:
-            op_cps = [op_cps, max(which((criterion) == True))]
+            op_cps = [op_cps, max(which_element(criterion,True))]
     if op_cps == Q:
         warn('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
 
@@ -231,8 +231,8 @@ def segneigh_mean_cusum(data, Q = 5, pen = 0):
     oldmax = 1000
 
     test = None
-    like_Q = zeros(Q,n)
-    cp = empty(Q,n)
+    like_Q = full((Q,n),0,dtype=float)
+    cp = full((Q,n),None,dtype=None)
     for q in range(2,Q): #no of segments
         for j in range(q,n):
             like = None
@@ -244,7 +244,7 @@ def segneigh_mean_cusum(data, Q = 5, pen = 0):
             like_Q[q,j] = max(like)
             cp[q,j] = which_element(like,max(like))[1] + (q - 2)
 
-    cps_Q = empty(Q,Q)
+    cps_Q = full((Q,Q),None,dtype=None)
     for q in range(2,Q):
         cps_Q[q,1] = cp[q,n]
         for i in range(1,q-1):
@@ -321,11 +321,11 @@ def binseg_mean_cusum(data, minseglen, Q = 5, pen = 0):
     op_cps = None
     p = range(1,Q-1)
     for i in range(1, len(pen)):
-        criterion = (cpt[2,:]) >= pen[i]
+        criterion = greater_than_equal(cpt[2,:],pen[i])
         if sum(criterion) == 0:
             op_cps = 0
         else:
-            op_cps = [op_cps, max(which((criterion) == True))]
+            op_cps = [op_cps, max(which_element(criterion,True))]
     if op_cps == Q:
         warn('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
 

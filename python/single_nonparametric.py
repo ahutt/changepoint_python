@@ -1,8 +1,7 @@
 from penalty_decision import penalty_decision
 from functions import which_max
-from numpy import cumsum, shape, size, square, zeros, sqrt, subtract
+from numpy import cumsum, shape, size, square, full, sqrt, subtract, mean
 from decision import decision
-from statistics import mean
 from param_cpt import param
 
 def singledim(data, minseglen, extrainf = True):

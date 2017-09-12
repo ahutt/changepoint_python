@@ -121,7 +121,7 @@ def mll_meanvar_EFK(x2,x,n):
 
     Author(s)
     ---------
-    Alix Hutt with credit to Rebbeca Killick for her work on the R package 'changepoint'.
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     sigmasq = multiply(divide(1,n),subtract(x2,multiply((power(x,2)),divide(1,n))))
     b = truefalse2(sigmasq,less_than_equal(sigmasq, 0),0.00000000001)
@@ -159,7 +159,7 @@ def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
 
     Author(s)
     ---------
-    Alix Hutt with credit to Rebbeca Killick for her work on the R package 'changepoint'.
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
 
     References
     ----------

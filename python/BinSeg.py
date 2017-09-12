@@ -2,7 +2,7 @@ from numpy import log, pi, size, cumsum, square, subtract, zeros, repeat, multip
 #from statistics import mean
 from functions import truefalse2, less_than_equal, greater_than_equal
 
-#The hashed out functions have not been tested and are currently not used anywhere in the package.
+#The hashed out functions have not been tested, documented and are currently not used anywhere in the package.
 
 #def mll_var(x,n):
 #    neg = x <= 0

@@ -3,7 +3,7 @@ from numpy import pi, size, cumsum, square, subtract, add, log, append, full, ar
 from functions import compare, truefalse, twoD_to_oneD, truefalse2, less_than_equal
 from _warnings import warn
 
-#The hashed out functions have not been tested and are currently not used anywhere in the package.
+#The hashed out functions have not been tested, documented and are currently not used anywhere in the package.
 
 #def mll_var_EFK(x,n):
 #    neg = less_than_equal(x,0)
@@ -98,7 +98,30 @@ from _warnings import warn
 
 def mll_meanvar_EFK(x2,x,n):
     """
-    PLEASE ENTER DETAILS.
+    mll_meanvar_EFK(x2,x,n)
+
+    A subfunction for PELT_meanvar_norm.
+
+    This is not intended for use by regular users of the package.
+
+    Parameters
+    ----------
+    x2 : List, int or float.
+    x : List, int or float.
+    n : List, int or float.
+
+    Returns
+    -------
+    A list if any of the parameters is a list.
+    A float if all of the parameters are floats.
+
+    Usage
+    -----
+    PELT_meanvar_norm
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebbeca Killick for her work on the R package 'changepoint'.
     """
     sigmasq = multiply(divide(1,n),subtract(x2,multiply((power(x,2)),divide(1,n))))
     b = truefalse2(sigmasq,less_than_equal(sigmasq, 0),0.00000000001)
@@ -109,11 +132,9 @@ def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
     """
     PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False)
 
-    Implements the PELT (Pruned Exact Linear Time) method for identifying changepoints in a given set of summary statistics for a specified cost function and penalty.
-
-    This function is called by cpt_mean, cpt_var and cpt_meanvar when method="PELT". This is not intended for use by regular users of the package. It is exported for developers to call directly for speed increases or to fit alternative cost functions.
-
-    WARNING: No checks on arguments are performed!
+    Description
+    -----------
+    Calculates the optimal positioning and number of changepoints for Normal data using PELT pruned method.
 
     Parameters
     ----------
@@ -124,7 +145,31 @@ def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    A vector of the changepoint locations is returned:
+    Vector containing the changepoint locations for the penalty supplied. This always ends with n = length of data.
+
+    Usage
+    -----
+    data_input
+    range_of_penalties
+
+    Details
+    -------
+    This function is used to find a multiple changes in mean and variance for data that is assumed to be normally distributed. The value returned is the result of testing H0:existing number of changepoints against H1: one extra changepoint using the log of the likelihood ratio statistic coupled with the penalty supplied. The PELT method keeps track of the optimal number and location of changepoints as it passes through the data.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebbeca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Normal mean and variance: Chen, J. and Gupta, A. K. (2000), Parametric statistical change point analysis, Birkhauser
+
+    PELT Algorithm: Killick R, Fearnhead P, Eckley IA (2012) Optimal detection of changepoints with a linear computational cost, JASA 107(500), 1590--1598
+
+    Example
+    -------
+    PLEASE ENTER DETAILS
     """
     if minseglen == 1:
         minseglen = 1
@@ -134,8 +179,8 @@ def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
     n = size(data)
     y2 = append([0], cumsum(square(data)))
     y = append([0], cumsum(data))
-    lastchangecpts = full((n,2), None)
-    lastchangelike = full((n,2), None)
+    lastchangecpts = full((n,2), None, dtype = None)
+    lastchangelike = full((n,2), None, dtype = None)
     lastchangelike[0,:] = append(mll_meanvar_EFK(y2[1], y[1], 1), add(mll_meanvar_EFK(y2[n] - y2[1], y[n] - y[1], n - 1),pen))
     lastchangecpts[0,:] = [0,1]
     lastchangelike[1,:] = append(mll_meanvar_EFK(y2[2], y[2], 2), add(mll_meanvar_EFK(y2[n] - y2[2], y[n] - y[2], n - 2),pen))
@@ -170,8 +215,8 @@ def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
         fcpt = []
         last = n
         while last != 0:
-            fcpt = append(fcpt,lastchangecpts[last - 1, 1])
-            last = lastchangecpts[last - 1, 0]
+            fcpt = append(fcpt,int(lastchangecpts[last - 1, 1]))
+            last = int(lastchangecpts[last - 1, 0])
         print(fcpt)
         cpt = sorted(fcpt)
         return(transpose(cpt))

@@ -6,9 +6,11 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
     """
     penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method)
 
+    Details
+    -------
     Evaluates the arguments to give a numeric value for the penalty.
 
-    This function is called by cpt_mean, cpt_var and cpt_meanvar. This is not intended for use by regular users of the package. It is exported for developers to call directly for speed increases or to fit alternative cost functions.
+    This is not intended for use by regular users of the package. It is exported for developers to call directly for speed increases or to fit alternative cost functions.
 
     WARNING: No checks on arguments are performed!
 
@@ -23,7 +25,48 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
 
     Returns
     -------
-    PLEASE ENTER DETAILS
+    The numeric value of the penalty.
+
+    Usage
+    -----
+    single_var_css
+    single_mean_cusum
+    single_meanvar_gamma
+    multiple_meanvar_gamma
+    multiple_var_css
+    multiple_mean_cusum
+    single_meanvar_exp
+    multiple_meanvar_exp
+    single_mean_norm
+    single_var_norm
+    single_meanvar_poisson
+    multiple_meanvar_poisson
+    multiple_var_norm
+    multiple_mean_norm
+    multiple_meanvar_norm
+
+    Details
+    -------
+    This function takes the text string input and converts it to a numerical value for the specific length of data specified by n.
+
+    This function is exported for developer use only. It does not perform any checks on inputs and is included for convenience and speed for those who are developing their own cost functions.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    SIC/BIC: Schwarz, G. (1978) Estimating the Dimension of a Model, The Annals of Statistics 6(2), 461--464
+
+    MBIC: Zhang, N. R. and Siegmund, D. O. (2007) A Modified Bayes Information Criterion with Applications to the Analysis of Comparative Genomic Hybridization Data. Biometrics 63, 22-32.
+
+    AIC: Akaike, H. (1974) A new look at the statistical model identification, Automatic Control, IEEE Transactions on 19(6), 716--723
+
+    Hannan-Quinn: Hannan, E. J. and B. G. Quinn (1979) The Determination of the Order of an Autoregression, Journal of the Royal Statistical Society, 41, 190--195
+
+    Examples
+    --------
     """
     if penalty == "SIC0" or penalty == "BIC0":
         pen_return = diffparam * log(n)

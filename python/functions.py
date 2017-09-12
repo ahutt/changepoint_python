@@ -5,6 +5,8 @@ def checkData(data):
     """
     checkData(data)
 
+    Description
+    -----------
     Checks if all elements of 'data' are numeric.
 
     Parameters
@@ -17,7 +19,10 @@ def checkData(data):
 
     Usage
     -----
-    Called by cpt.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     if isinstance(data, (int, float, list)) == False:
         exit("Only numeric data allowed.")
@@ -29,6 +34,8 @@ def which_max(a,b):
     """
     which_max(a,b)
 
+    description
+    -----------
     If a >= b, 1 is returned. Otherwise, 2 is returned.
 
     Parameters
@@ -38,11 +45,20 @@ def which_max(a,b):
 
     Returns
     -------
+    1 or 0.
     If a >= b, 1 is returned. Otherwise, 2 is returned. If one of a or b aren't numeric, an error message is returned.
 
     Usage
     -----
     PLEASE ENTER DETAILS
+
+    Author(s)
+    ---------
+    Alix Hutt
+
+    References
+    ----------
+    See R function 'which.max'.
     """
     if isinstance(a, (int, float)) == True and isinstance(b, (int, float)) == True:
         if a >= b:
@@ -57,6 +73,8 @@ def which_min(a,b):
     """
     which_min(a,b)
 
+    Description
+    -----------
     If a <= b, 1 is returned. Otherwise, 2 is returned.
 
     Parameters
@@ -66,7 +84,19 @@ def which_min(a,b):
 
     Returns
     -------
+    1 or 0.
     If a <= b, 1 is returned. Otherwise, 2 is returned. If one of a or b aren't numeric, an error message is returned.
+
+    Usage
+    -----
+
+    Author(s)
+    ---------
+    Alix Hutt
+
+    References
+    ----------
+    See R function 'which.min'.
     """
     if isinstance(a, (int, float)) == True and isinstance(b, (int, float)) == True:
         if a <= b:
@@ -80,6 +110,8 @@ def lapply(x,y):
     """
     lapply(x,y)
 
+    Description
+    -----------
     Applies the function y to every element of the list x.
 
     Parameters
@@ -94,7 +126,14 @@ def lapply(x,y):
 
     Usage
     -----
-    PLEASE ENTER DETAILS
+
+    Author(s)
+    ---------
+    Alix Hutt
+
+    References
+    ----------
+    See R function 'lapply'.
     """
     if isinstance(x, list) == True:
         l = list()
@@ -114,7 +153,24 @@ def lapply(x,y):
 
 def second_element(x):
     """
-    PLEASE ENTER DETAILS
+    second_element(x)
+
+    Description
+    -----------
+
+    Parameters
+    ----------
+    x :
+
+    Returns
+    -------
+
+    Usage
+    -----
+
+    Author(s)
+    ---------
+    Alix Hutt
     """
     n = len(x)
     v = []
@@ -124,7 +180,29 @@ def second_element(x):
 
 def sapply(x,y):
     """
-    PLEASE ENTER DETAILS
+    sapply(x,y)
+
+    Description
+    -----------
+
+    Parameters
+    ----------
+    x :
+    y :
+
+    Returns
+    -------
+
+    Usage
+    -----
+
+    Author(s)
+    ---------
+    Alix Hutt
+
+    References
+    ----------
+    See R function 'sapply'.
     """
     v = list()
     for i in y:
@@ -136,6 +214,8 @@ def greater_than(a,b):
     """
     greater_than(a,b)
 
+    Description
+    -----------
     Compares every element of a with b.
 
     Parameters
@@ -151,7 +231,10 @@ def greater_than(a,b):
 
     Usage
     -----
-    PLEASE ENTER DETAILS
+
+    Author
+    ------
+    Alix Hutt
     """
     if isinstance(a,int) == True or isinstance(a,float) == True:
         if a > b:
@@ -172,6 +255,8 @@ def less_than(a,b):
     """
     less_than(a,b)
 
+    Description
+    -----------
     Compares every element of a with b.
 
     Parameters
@@ -187,7 +272,10 @@ def less_than(a,b):
 
     Usage
     -----
-    PLEASE ENTER DETAILS
+
+    Author(s)
+    ---------
+    Alix Hutt
     """
     if isinstance(a,int) == True or isinstance(a,float) == True:
         if a < b:
@@ -208,6 +296,8 @@ def greater_than_equal(a,b):
     """
     greater_than_equal(a,b)
 
+    Description
+    -----------
     Compares every element of a with b.
 
     Parameters
@@ -223,7 +313,10 @@ def greater_than_equal(a,b):
 
     Usage
     -----
-    PLEASE ENTER DETAILS
+
+    Author(s)
+    ---------
+    Alix Hutt
     """
     if isinstance(a,int) == True or isinstance(a,float) == True:
         if a >= b:
@@ -244,6 +337,8 @@ def less_than_equal(a,b):
     """
     greater_than_equal(a,b)
 
+    Description
+    -----------
     Compares every element of a with b.
 
     Parameters
@@ -259,7 +354,10 @@ def less_than_equal(a,b):
 
     Usage
     -----
-    PLEASE ENTER DETAILS
+
+    Author(s)
+    ---------
+    Alix Hutt
     """
     if isinstance(a,int) == True or isinstance(a,float) == True:
         if a <= b:
@@ -280,6 +378,8 @@ def compare(a,b):
     """
     compare(a,b)
 
+    Description
+    -----------
     Compares every element of a with every element of b.
 
     Parameters
@@ -299,7 +399,10 @@ def compare(a,b):
 
     Usage
     -----
-    PLEASE ENTER DETAILS
+
+    Author(s)
+    ---------
+    Alix Hutt
     """
     if size(a) == 1 and size(b) == 1:
         return(a == b)
@@ -333,7 +436,25 @@ def compare(a,b):
 
 def truefalse(a,b):
     """
-    PLEASE ENTER DETAILS
+    truefalse(a,b)
+
+    Description
+    -----------
+
+    Parameters
+    ----------
+    a :
+    b :
+
+    Returns
+    -------
+
+    Usage
+    -----
+
+    Author(s)
+    ---------
+    Alix Hutt
     """
     if size(a) == 1 and size(b) == 1:
         if b == True:
@@ -354,7 +475,26 @@ def truefalse(a,b):
 
 def truefalse2(a,b,c):
     """
-    PLEASE ENTER DETAILS
+    truefalse2(a,b,c)
+
+    Description
+    -----------
+
+    Parameters
+    ----------
+    a :
+    b :
+    c :
+
+    Returns
+    -------
+
+    Usage
+    -----
+
+    Author(s)
+    ---------
+    Alix Hutt
     """
     if size(b) == 1:
         if b == True:
@@ -371,7 +511,24 @@ def truefalse2(a,b,c):
 
 def twoD_to_oneD(list):
     """
-    PLEASE ENTER DETAILS
+    twoD_to_oneD(list)
+
+    Description
+    -----------
+
+    Parameters
+    ----------
+    list :
+
+    Returns
+    -------
+
+    Usage
+    -----
+
+    Author(s)
+    ---------
+    Alix Hutt
     """
     if isinstance(list,(int,float)) == True:
         return(list)
@@ -396,7 +553,29 @@ def twoD_to_oneD(list):
 
 def which_element(a,b):
     """
-    PLEASE ENTER DETAILS
+    which_element(a,b)
+
+    Description
+    -----------
+
+    Parameters
+    ----------
+    a :
+    b :
+
+    Returns
+    -------
+
+    Usage
+    -----
+
+    Author(s)
+    ---------
+    Alix Hutt
+
+    References
+    ----------
+    See R function 'which'.
     """
     l = []
     if isinstance(a,list) == True:
@@ -411,7 +590,21 @@ def which_element(a,b):
 
 def max_vector(a):
     """
-    PLEASE ENTER DETAILS
+    max_vector(a)
+    -------------
+
+    Parameters
+    ----------
+
+    Returns
+    -------
+
+    Usage
+    -----
+
+    Author(s)
+    ---------
+    Alix Hutt
     """
     if isinstance(a,list) == True:
         return(max(a))

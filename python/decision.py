@@ -15,11 +15,9 @@ def decision(tau, null, alt = None, penalty = "MBIC", n = 0, diffparam = 1, pen_
     """
     decision(tau, null, alt = None, penalty = "MBIC", n = 0, diffparam = 1, pen_value = 0)
 
+    Description
+    -----------
     Uses the function parameters to decide if a proposed changepoint is a true changepoint or due to random variability. Test is conducted using the user specified penalty.
-
-    This function is called by cpt_mean, cpt_var and cpt_meanvar when method="AMOC". This is not intended for use by regular users of the package. It is exported for developers to call directly for speed increases or to fit alternative cost functions.
-
-    WARNING: No checks on arguments are performed!
 
     Parameters
     ----------
@@ -33,7 +31,42 @@ def decision(tau, null, alt = None, penalty = "MBIC", n = 0, diffparam = 1, pen_
 
     Returns
     -------
-    PLEASE ENTER DETAILS
+    A list is returned with two elements, cpt and pen.
+	cpt: If tau is a single value then a single value is returned: Either the value of the true changepoint location or n (length of data) if no changepoint is found.
+
+    Usage
+    -----
+    single_var_css
+    single_mean_cusum
+    single_meanvar_exp
+    single_meanvar_gamma
+    single_meanvar_poisson
+    single_mean_norm
+    single_var_norm
+    single_meanvar_norm
+
+    Details
+    -------
+    This function is used to test whether tau is a true changepoint or not.  This test uses the likelihood ratio as the test statistic and performs the test where the null hypothesis is no change point and the alternative hypothesis is a single changepoint at tau. The test is (null-alt)>=penalty, if True then the changepoint is deemed a true changepoint, if False then n (length of data) is returned.
+
+    If the test statistic is already known then it replaces the null value and the alternative is not required (default None). In this case the test is null>=penalty, if True then the changepoint is deemed a true changepoint, if False then n (length of data) is returned.
+
+    In reality this function should not be used unless you are performing a changepoint test using output from other functions. This function is used in the "see also" functions that perform various changepoint tests, ideally these should be used.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    SIC/BIC: Schwarz, G. (1978) Estimating the Dimension of a Model, The Annals of Statistics 6(2), 461--464
+
+    AIC: Akaike, H. (1974) A new look at the statistical model identification, Automatic Control, IEEE Transactions on 19(6), 716--723
+
+    Hannan-Quinn: Hannan, E. J. and B. G. Quinn (1979) The Determination of the Order of an Autoregression, Journal of the Royal Statistical Society, B 41, 190--195
+
+    Examples
+    --------
     """
     if alt == None:
         if size(tau) != size(null):

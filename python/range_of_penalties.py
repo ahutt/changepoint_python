@@ -4,7 +4,39 @@ from PELT import PELT_meanvar_norm
 
 def range_of_penalties(sumstat, minseglen, cost = "mean_norm", PELT = True, shape = 1):
     """
-    PLEASE ENTER DETAILS
+    range_of_penalties(sumstat, minseglen, cost = "mean_norm", PELT = True, shape = 1)
+
+    Description
+    -----------
+    PLEASE ENTER DETAILS.
+
+    Parameters
+    ----------
+    sumstat :
+    minseglen :
+    cost :
+    PELT :
+    shape :
+
+    Returns
+    -------
+
+    Usage
+    -----
+    CROPS
+
+    Details
+    -------
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+
+    Examples
+    --------
     """
     NCALC = 0
     min_pen = log(size(sumstat)/3 - 1)

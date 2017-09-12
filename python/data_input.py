@@ -6,7 +6,47 @@ from functions import greater_than, truefalse
 
 def data_input(data, method, pen_value, costfunc, minseglen, Q, var=0, shape=1):
     """
-    PLEASE ENTER DETAILS.
+    data_input(data, method, pen_value, costfunc, minseglen, Q, var=0, shape=1)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Parameters
+    ----------
+    data :
+    method :
+    pen_value :
+    costfunc :
+    minseglen :
+    Q :
+    var :
+    shape :
+
+    Returns
+    -------
+
+    Usage
+    -----
+    multiple_meanvar_exp
+    multiple_meanvar_gamma
+    multiple_meanvar_poisson
+    multiple_var_norm
+    multiple_mean_norm
+    multiple_meanvar_norm
+
+    Details
+    -------
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+
+    Examples
+    --------
     """
     if var != 0:
         mu = var

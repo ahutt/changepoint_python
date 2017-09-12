@@ -21,8 +21,11 @@ class class2:
         self.pen_value_full = pen_value_full
         self.param_est = param_est
 
+    def __str__(self):
+        return("Changepoint type : change in %s" '\n' "Method of analysis : %s" '\n' "Test statistic : %s" '\n' "Type of penalty : %s with value, %s" '\n' "Minimum Segment Length : %s" '\n' "Maximum no. of cpts : %s" '\n' "Changepoint Locations : %s" % (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts[1]))
+
     def __repr__(self):
-        return('ans("%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s")' % (self.data_set, self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.cpts, self.ncpts_max, self.cpts_full, self.pen_value_full, self.param_est))
+        return('ans("%s","%s","%s","%s","%s","%s","%s", "%s")' % (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts[1]))
 
 def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = [], Q = None, shape = None):
     """

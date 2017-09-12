@@ -31,6 +31,7 @@ def cpt_mean(data, penalty = "None", pen_value = 0, method = "AMOC", Q = 5, test
     Returns
     -------
     PLEASE ENTER DETAILS.
+
     """
     checkData(data)
     if method == "SegNeigh" and minseglen > 1:

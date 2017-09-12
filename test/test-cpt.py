@@ -18,6 +18,6 @@ a = single_mean_data = [0.40940184,  1.68887329,  1.58658843, -0.33090780, -2.28
 
 from cpt import cpt_mean, cpt_var, cpt_meanvar
 
-cpt_mean(a)
+print(cpt_mean(a))
 
 #result should be:

@@ -162,6 +162,11 @@ def param_trendar(object):
 def param(object, shape = None):
     """
     PLEASE ENTER DETAILS
+
+    Usage
+    -----
+    class_input
+    single_nonparametric
     """
     if cpttype(object) == "mean":
         mean = param_mean(object)

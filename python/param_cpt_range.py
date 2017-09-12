@@ -148,6 +148,9 @@ def param_trendar(object):
 
 def param(object, shape, ncpts = None):
     """
+    Usage
+    -----
+    class_input
     """
     if ncpts == None:
         cpts = append([0],object.cpts)

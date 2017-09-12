@@ -29,11 +29,13 @@ class class2:
 
 def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = [], Q = None, shape = None):
     """
-    class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = list(), Q = None, shape = None)
+    class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = [], Q = None, shape = None)
 
+    Description
+    -----------
     This function helps to input all the necessary information into the correct format for cpt and cpt_range classes.
 
-    This function is called by cpt_mean, cpt_var and cpt_meanvar when class=TRUE. This is not intended for use by regular users of the package. It is exported for developers to call directly for speed and convenience.
+    This is not intended for use by regular users of the package. It is exported for developers to call directly for speed and convenience.
 
     WARNING: No checks on arguments are performed!
 
@@ -53,7 +55,39 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    An object of class cpt or cpt_range as appropriate filled with the given attributes.
+
+    Usage
+    -----
+    CROPS
+    multiple_var_css
+    multiple_mean_cusum
+    single_meanvar_exp
+    multiple_meanvar_exp
+    single_meanvar_gamma
+    multiple_meanvar_gamma
+    single_meanvar_poisson
+    multiple_meanvar_poisson
+    multiple_var_norm
+    multiple_mean_norm
+    multiple_meanvar_norm
+    single_mean_norm
+    single_var_norm
+    single_meanvar_norm
+
+    Details
+    -------
+    This function takes all the input required for the cpt or cpt_range classes and enters it into the object.
+
+    This function is exported for developer use only. It does not perform any checks on inputs and is simply a convenience function for converting the output of the worker functions into a nice format for the cpt and cpt_range classes.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    Examples
+    --------
+    This function should only be used by developers, see its use in cpt_mean, cpt_var and cpt_meanvar.
     """
     if method == "BinSeg" or method == "SegNeigh" or penalty == "CROPS":
         from param_cpt_range import param

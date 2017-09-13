@@ -138,6 +138,7 @@ def lapply(x,y):
     multiple_meanvar_poisson
     multiple_meanvar_exp
     multiple_meanvar_gamma
+    param
 
     Author(s)
     ---------
@@ -616,6 +617,7 @@ def which_element(a,b):
     binseg_var_css
     segneigh_mean_cusum
     binseg_mean_cusum
+    param
 
     Author(s)
     ---------

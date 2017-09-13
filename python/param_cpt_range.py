@@ -5,11 +5,37 @@ from param_cpt import seg_len, cpts, cpttype, test_stat
 
 def cpts_full(object):
     """
+    cpts_full(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     return(object.cpts_full)
 
 def data_set(object):
     """
+    data_set(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param_mean
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     return(object.data_set)
 
@@ -62,6 +88,19 @@ def sum_function(x):
 
 def param_mean(object, cpts):
     """
+    param_mean(object, cpts)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     nseg = len(cpts) - 1
     data = data_set(object)
@@ -72,6 +111,19 @@ def param_mean(object, cpts):
 
 def param_var(object, cpts):
     """
+    param_var(object, cpts)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     nseg = len(cpts)
     data = data_set(object)
@@ -84,6 +136,19 @@ def param_var(object, cpts):
 
 def param_scale(object, cpts, shape):
     """
+    param_scale(object, cpts, shape)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     nseg = len(cpts) - 1
     data = data_set(object)
@@ -95,7 +160,19 @@ def param_scale(object, cpts, shape):
 
 def param_trend(object):
     """
-    PLEASE ENTER DETAILS
+    param_trend(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     cpts = append([0], object.cpts)
     seglen = seg_len(object)
@@ -113,7 +190,19 @@ def param_trend(object):
 
 def param_meanar(object):
     """
-    PLEASE ENTER DETAILS
+    param_meanar(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     seglen = seg_len(object)
     data = object.data_set
@@ -128,7 +217,19 @@ def param_meanar(object):
 
 def param_trendar(object):
     """
-    PLEASE ENTER DETAILS
+    param_trendar(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     seglen = seg_len(object)
     data = object.data_set
@@ -148,9 +249,37 @@ def param_trendar(object):
 
 def param(object, shape, ncpts = None):
     """
+    param(object, shape = None, ncpts = None)
+
+    Description
+    -----------
+    Generic function that returns parameter estimates.
+
+    Parameters
+    ----------
+    object : Depending on the class of object depends on the method used to find the parameter estimates (and if one exists)
+    shape : Numerical value of the true shape parameter for the data. Either single value or vector of length len(data). If data is a matrix and shape is a single value, the same shape parameter is used for each row.
+    ncpts : Number of changepoints
+
+    Returns
+    -------
+    Depends on the class of object, see individual methods.
+
     Usage
     -----
     class_input
+
+    Details
+    -------
+    Generic function that returns parameter estimates.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if ncpts == None:
         cpts = append([0],object.cpts)

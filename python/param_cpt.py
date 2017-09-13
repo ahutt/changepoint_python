@@ -3,13 +3,11 @@ from sys import exit
 
 def cpts(object):
     """
-    PLEASE ENTER DETAILS
-    Parameters
-    ----------
-    object :
+    cpts(object)
 
-    Returns
-    -------
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
 
     Usage
     -----
@@ -17,6 +15,10 @@ def cpts(object):
     param_trend
     param_meanar
     param_trendar
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     if isinstance(object.cpts, (float, int)) == True:
         return([])
@@ -38,41 +40,115 @@ def cpts(object):
 
 def seg_len(object):
     """
-    PLEASE ENTER DETAILS
+    seg_len(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param_var
+    param_trend
+    param_meanvar
+    param_trendar
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     return(subtract(object.cpts, append([0], delete(object.cpts, size(object.cpts)-1))))
 
 def ncpts(object):
     """
-    PLEASE ENTER DETAILS
+    ncpts(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    nseg
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     return(cpts(object))
 
 def nseg(object):
     """
-    PLEASE ENTER DETAILS
+    nseg(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param_var
+    param_mean
+    param_scale
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     return(int(add(ncpts(object),1)))
 
 def cpttype(object):
     """
-    PLEASE ENTER DETAILS
+    cpttype(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
 
     Usage
     -----
-    Param
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     return(object.cpttype)
 
 def test_stat(object):
     """
-    PLEASE ENTER DETAILS
+    test_stat(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     return(object.test_stat)
 
 def param_mean(object):
     """
-    PLEASE ENTER DETAILS
+    param_mean(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     object.cpts = append([0], object.cpts)
     data = array(object.data_set)
@@ -83,7 +159,19 @@ def param_mean(object):
 
 def param_var(object):
     """
-    PLEASE ENTER DETAILS
+    param_var(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     cpts = append([0], object.cpts)
     data = object.data_set
@@ -96,7 +184,19 @@ def param_var(object):
 
 def param_scale(object, shape):
     """
-    PLEASE ENTER DETAILS
+    param_scale(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     cpts = append([0], object.cpts)
     data = object.data_set
@@ -108,7 +208,19 @@ def param_scale(object, shape):
 
 def param_trend(object):
     """
-    PLEASE ENTER DETAILS
+    param_trend(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     cpts = append([0], object.cpts)
     seglen = seg_len(object)
@@ -126,7 +238,19 @@ def param_trend(object):
 
 def param_meanar(object):
     """
-    PLEASE ENTER DETAILS
+    param_meanar(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     seglen = seg_len(object)
     data = object.data_set
@@ -141,7 +265,19 @@ def param_meanar(object):
 
 def param_trendar(object):
     """
-    PLEASE ENTER DETAILS
+    param_trendar(object)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    param
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     seglen = seg_len(object)
     data = object.data_set
@@ -161,12 +297,37 @@ def param_trendar(object):
 
 def param(object, shape = None):
     """
-    PLEASE ENTER DETAILS
+    param(object, shape = None)
+
+    Description
+    -----------
+    Generic function that returns parameter estimates.
+
+    Parameters
+    ----------
+    object : Depending on the class of object depends on the method used to find the parameter estimates (and if one exists)
+    shape : Numerical value of the true shape parameter for the data. Either single value or vector of length len(data). If data is a matrix and shape is a single value, the same shape parameter is used for each row.
+
+    Returns
+    -------
+    Depends on the class of object, see individual methods.
 
     Usage
     -----
     class_input
     single_nonparametric
+
+    Details
+    -------
+    Generic function that returns parameter estimates.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if cpttype(object) == "mean":
         mean = param_mean(object)

@@ -1,4 +1,4 @@
-from numpy import size, zeros, full, inf, pi, log, add, set_printoptions, subtract, multiply, append, sort, array
+from numpy import size, full, inf, pi, log, add, set_printoptions, subtract, multiply, append, sort, array
 #from statistics import mean
 from functions import max_vector,which_element,greater_than,truefalse
 from sys import exit
@@ -182,7 +182,7 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
         exit('Data must have at least 4 observations to fit a changepoint model.')
     if Q > ((n/2) + 1):
         exit('Q is larger than the maximum number of segments.')
-    all_seg = zeros((n,n))
+    all_seg = full((n,n),0, dtype = float)
     for i in range(1,n+1):
         ssq = 0
         sumx = 0
@@ -194,9 +194,9 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
             if sigmasq <= 0:
                 sigmasq = 0.00000000001
             all_seg[i-1,j-1] = -(length/2) * (log(2 * pi) + log(sigmasq) + 1)
-    like_Q = zeros((Q,n),float)
+    like_Q = full((Q,n),0, dtype=float)
     like_Q[0,:] = all_seg[0,:]
-    cp = full((Q,n),None)
+    cp = full((Q,n),None, dtype = 'O')
     for q in range(2,Q+1):
         for j in range(q,n+1):
             like = None
@@ -207,7 +207,7 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
                 like = list(add(like_Q[q-2,subtract(v,1)],all_seg[v,j-1]))
             like_Q[q-1,j-1] = max_vector(like)
             cp[q-1,j-1] = which_element(like,max_vector(like))[0] + (q - 1)
-    cps_Q = full((Q,Q),None)
+    cps_Q = full((Q,Q),None, dtype='O')
     for q in range(2,Q+1):
         cps_Q[q-1,0] = cp[q-1,n-1]
         for i in range(1, q):

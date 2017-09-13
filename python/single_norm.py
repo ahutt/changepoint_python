@@ -116,7 +116,7 @@ def single_mean_norm_calc(data, minseglen, extrainf = True):
             for i in range(1, rep+1):
                 cpt[i-1]=singledim(data[i-1,:],extrainf = extrainf, minseglen = minseglen)
         else:
-            cpt = full((rep,3),0)
+            cpt = full((rep,3),0, dtype=float)
             for i in range(1,rep+1):
                 cpt[i-1,:] = singledim(data[i-1,:], minseglen = minseglen, extrainf = extrainf)
         return(cpt)

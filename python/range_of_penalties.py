@@ -1,4 +1,4 @@
-from numpy import log,size,multiply,repeat,vstack,subtract,power,abs,delete,unique,append
+from numpy import log, add, size, multiply, argsort, repeat, vstack, subtract, power, abs, delete, unique, append
 from functions import which_min
 from PELT import PELT_meanvar_norm
 
@@ -92,34 +92,33 @@ def range_of_penalties(sumstat, minseglen, cost = "mean_norm", PELT = True, shap
             ls[l-1] = size(new_cpts[l-1])
 
         ls1 = list(reversed(sorted(ls)))
-#        ls1 = ls1.index()
-        segmentations = new_cpts[[ls1]]
+        ls1 = add(argsort(ls1),1)
+        segmentations = new_cpts[[ls1-1]]
 
-        pen_interval = []
-        tmppen_interval = None
+        tmppen_interval = [None] * (size(test_penalties) -1)
 
-        for i in range(1,size(test_penalties) - 1):
-            if abs(subtract(numberofchangepoints[i],numberofchangepoints[i+1])) > 1: #only need to add a beta if difference in cpts>1
+        for i in range(1,size(test_penalties)):
+            if abs(subtract(numberofchangepoints[i-1],numberofchangepoints[i])) > 1: #only need to add a beta if difference in cpts>1
                 j = i + 1
-                tmppen_interval = multiply(subtract(penal[j],penal[i]),(power(subtract(numberofchangepoints[i],numberofchangepoints[j]),(-1))))
-                pen_interval = [pen_interval, tmppen_interval]
+                tmppen_interval = multiply(subtract(penal[j-1],penal[i-1]),(power(subtract(numberofchangepoints[i-1],numberofchangepoints[j-1]),(-1))))
+                pen_interval = append(pen_interval, tmppen_interval)
 
         if size(pen_interval) > 0:
-            for k in range(size(pen_interval), 1):
-                index = which_min(abs(subtract(pen_interval[k],test_penalties)))
-                if pen_interval[k] == test_penalties[index]:
-                    pen_interval = pen_interval[-k]
+            for k in range(size(pen_interval), 2):
+                index = which_min(abs(subtract(pen_interval[k-1],test_penalties)))
+                if pen_interval[k-1] == test_penalties[index-1]:
+                    pen_interval = delete(pen_interval, k-1)
 
-    for j in range(size(test_penalties),2):
-        if numberofchangepoints[j] == numberofchangepoints[j-1]:
-            numberofchangepoints = numberofchangepoints[-j]
-            test_penalties = test_penalties[-j]
-            penal = penal[-j]
-            segmentations = segmentations[-j]
+    for j in range(size(test_penalties),3):
+        if numberofchangepoints[j-1] == numberofchangepoints[j-2]:
+            numberofchangepoints = delete(numberofchangepoints,j-1)
+            test_penalties = delete(test_penalties,j-1)
+            penal = delete(penal,j-1)
+            segmentations = delete(segmentations,j-1)
 
     nb = size(test_penalties)
     beta_int = repeat(0,nb)
-    beta_e = list(repeat(0,nb))
+    beta_e = repeat(0,nb)
     for k in range(1,nb+1):
         if k == 1:
             beta_int[0] = test_penalties[0]

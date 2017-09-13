@@ -113,7 +113,7 @@ def single_meanvar_gamma_calc(data, minseglen, shape = 1, extrainf = True):
             for i in range(1,rep):
                 cpt[i] = singledim(data[i,:], shape[i], extrainf,minseglen)
         else:
-            cpt = zeros(rep,3)
+            cpt = full((rep,3),0,dtype=float)
             for i in range(1,rep):
                 cpt[i,:] = singledim(data[i,:], shape[i], extrainf, minseglen)
             cpt.rename(columns = {'cpt', 'null', 'alt'}, inplace = True)
@@ -253,14 +253,14 @@ def segneigh_meanvar_gamma(data, shape = 1, Q = 5, pen = 0):
         exit('Data must have atleast 4 observations to fit a changepoint model.')
     if Q > ((n/2) + 1):
         exit('Q is larger than the maximum number of segments')
-    all_seg = zeros(n,n)
+    all_seg = full((n,n),0,dtype=float)
     for i in range(1,n):
         sumx = 0
         for j in range(i,n):
             Len = j - i + 1
             sumx = sumx + data[j-1]
             all_seg[i-1,j-1] = Len * shape * log(Len * shape) - Len * shape * log(sumx)
-    like_Q = zeros(Q,n)
+    like_Q = full((Q,n),0,dtype=float)
     like_Q[1,:] = all_seg[1,:]
     cp = full((Q,n),None)
     for q in range(2,Q):

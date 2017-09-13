@@ -262,7 +262,7 @@ def segneigh_meanvar_exp(data, Q = 5, pen = 0):
             all_seg[i,j] = Len * log(Len) - Len * log(sumx)
     like_Q = full((Q, n),0,dtype=float)
     like_Q[1,:] = all_seg[1,:]
-    cp = full((Q, n),None)
+    cp = full((Q, n),None, dtype='O')
     for q in range(2, Q):
         for j in range(q, n):
             like = None
@@ -275,7 +275,7 @@ def segneigh_meanvar_exp(data, Q = 5, pen = 0):
             like_Q[q,j] = max(like)
             cp[q,j] = which_element(like,max(like))[1] + (q - 1)
 
-    cps_Q = full((Q, Q),None)
+    cps_Q = full((Q, Q),None,dtype='O')
     for q in range(2, Q):
         cps_Q[q,1] = cp[q,n]
         for i in range(1, (q - 1)):

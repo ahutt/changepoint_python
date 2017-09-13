@@ -202,7 +202,7 @@ def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = Tru
             out = len()
             for i in range(1,rep):
                 out[[i-1]] = "cpt".__new__
-                out[[i-1]].data_set = ts(data[i-1,:])
+                out[[i-1]].data_set = data[i-1,:]
                 out[[i-1]].cpttype = "variance"
                 out[[i-1]].method = "AMOC"
                 out[[i-1]].test_stat = "CSS"
@@ -415,7 +415,7 @@ def single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", 
             out = list()
             for i in range(1,rep):
                 out[[i]] = "cpt".__new__
-                out[[i]].data_set = ts(data[i,:])
+                out[[i]].data_set = data[i,:]
                 out[[i]].cpttype = "mean"
                 out[[i]].method = "AMOC"
                 out[[i]].test_stat = "CUSUM"

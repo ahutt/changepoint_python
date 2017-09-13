@@ -1,4 +1,4 @@
-from numpy import log, pi, size, cumsum, square, subtract, zeros, repeat, multiply, add, divide, power, append, float64
+from numpy import log, pi, size, cumsum, square, subtract, full, repeat, multiply, add, divide, power, append, float64
 #from statistics import mean
 from functions import truefalse2, less_than_equal, greater_than_equal
 
@@ -168,7 +168,7 @@ def binseg_meanvar_norm(data, Q = 5, pen = 0):
     y2 = append([0], cumsum(square(data)))
     y = append([0], cumsum(data))
     tau = [0,n]
-    cpt = zeros((2,Q))
+    cpt = full((2,Q), 0, dtype = float)
     oldmax = 1000
 
     for q in range(1,Q+1):

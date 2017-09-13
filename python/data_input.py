@@ -1,10 +1,10 @@
-from numpy import mean, subtract, size
+from numpy import mean, size, append
 from PELT import PELT_meanvar_norm
 from BinSeg import binseg_meanvar_norm
 from SegNeigh import segneigh_meanvar_norm
-from functions import greater_than, truefalse
+from functions import greater_than
 
-def data_input(data, method, pen_value, costfunc, minseglen, Q, var=0, shape=1):
+def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", shape=1):
     """
     data_input(data, method, pen_value, costfunc, minseglen, Q, var=0, shape=1)
 
@@ -53,19 +53,21 @@ def data_input(data, method, pen_value, costfunc, minseglen, Q, var=0, shape=1):
     else:
         mu = mean(data)
     if method == "PELT":
-        out = PELT_meanvar_norm(data, pen_value)
-        cpts = out[[1]]
+        out = PELT_meanvar_norm(data = data, pen = pen_value, minseglen = minseglen)
+        cpts = out[1]
     elif method == "BinSeg":
-        cpts = out[[1]]
-        out = binseg_meanvar_norm(data, Q, pen_value)
+        cpts = out[1]
+        out = binseg_meanvar_norm(data = data, Q = Q, pen = pen_value)
+        n = size(data)
         if out.op_cpts == 0:
-            cpts = size(data)
+            cpts = n
         else:
-            cpts = [sorted(out.cps[0,subtract(list(range(1,out.op_cpts + 1)),1)]),size(data)]
+            cpts = append(sorted(out.cps[0,list(range(1,out.cpts+1))]),n)
     elif method == "SegNeigh":
-        out = segneigh_meanvar_norm(data, Q, pen_value)
+        out = segneigh_meanvar_norm(data = data, Q = Q, pen = pen_value)
+        n = size(data)
         if out.op_cpts == 0:
-            cpts = size(data)
+            cpts = n
         else:
-            cpts = [sorted(out.op_cps[out.op_cpts,:][truefalse(subtract(out.cps[out.op_cpts,:],1),greater_than(subtract(out.cps[out.op_cpts,:],1),0))]),size(data)]
+            cpts = append(sorted(out.cps[out.op_cpts,:][greater_than(out.cps[out.op_cpts,:],0)]),n)
     return(out)

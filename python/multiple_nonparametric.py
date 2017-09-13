@@ -59,7 +59,7 @@ def segneigh_var_css(data, Q = 5, pen = 0):
 
     test = None
     like_Q = full((Q,n),0,dtype=float)
-    cp = full((Q,n),None,dtype=None)
+    cp = full((Q,n),None,dtype='O')
     for q in range(2,Q): # no of segments
         for j in range(q,n):
             like = None
@@ -71,7 +71,7 @@ def segneigh_var_css(data, Q = 5, pen = 0):
             like_Q[q,j] = max(like)
             cp[q,j] = which_element(like,max(like))[1] + (q - 2)
 
-    cps_Q = full((Q,Q),None,dtype=None)
+    cps_Q = full((Q,Q),None,dtype='O')
     for q in range(2,Q):
         cps_Q[q,1] = cp[q,n]
         for i in range(1,q-1):
@@ -152,7 +152,7 @@ def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
 
     y2 = [0, cumsum(data ** 2)]
     tau = [0,n]
-    cpt = full((2,Q),None,dtype=None)
+    cpt = full((2,Q),None,dtype='O')
     oldmax = inf
 
     for q in range(1,Q):
@@ -355,8 +355,8 @@ def segneigh_mean_cusum(data, Q = 5, pen = 0):
     oldmax = 1000
 
     test = None
-    like_Q = full((Q,n),0,dtype=float)
-    cp = full((Q,n),None,dtype=None)
+    like_Q = full((Q,n),0,dtype='O')
+    cp = full((Q,n),None,dtype='O')
     for q in range(2,Q): #no of segments
         for j in range(q,n):
             like = None
@@ -451,7 +451,7 @@ def binseg_mean_cusum(data, minseglen, Q = 5, pen = 0):
 
     y = [0, cumsum(data)]
     tau = [0,n]
-    cpt = zeros([2,Q])
+    cpt = full((2,Q),0,dtype=float)
     oldmax = inf
 
     for q in range(1,Q):

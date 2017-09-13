@@ -152,7 +152,7 @@ def param_mean(object):
     """
     object.cpts = append([0], object.cpts)
     data = array(object.data_set)
-    tmpmean = full((nseg(object)+1,1),None)
+    tmpmean = full((nseg(object)+1,1),None, dtype='O')
     for j in range(1, nseg(object)+1):
         tmpmean[j-1] = mean(data[array(subtract(list(range(int(object.cpts[j-1]+1),int(object.cpts[j]))),1))])
     return(tmpmean)

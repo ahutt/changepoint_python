@@ -156,7 +156,7 @@ def lapply(x,y):
     elif isinstance(x, ndarray) == True:
         p = len(x) #num of cols
         q = len(transpose(x)) # num of rows
-        A = full((q,p),0)
+        A = full((q,p),0,dtype=float)
         for i in range(0,p):
             for j in range(0,q):
                 A[i][j] = y(x[i,j])

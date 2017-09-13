@@ -181,8 +181,8 @@ def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
     n = size(data)
     y2 = append([0], cumsum(square(data)))
     y = append([0], cumsum(data))
-    lastchangecpts = full((n,2), None, dtype = None)
-    lastchangelike = full((n,2), None, dtype = None)
+    lastchangecpts = full((n,2), None, dtype = 'O')
+    lastchangelike = full((n,2), None, dtype = 'O')
     lastchangelike[0,:] = append(mll_meanvar_EFK(y2[1], y[1], 1), add(mll_meanvar_EFK(y2[n] - y2[1], y[n] - y[1], n - 1),pen))
     lastchangecpts[0,:] = [0,1]
     lastchangelike[1,:] = append(mll_meanvar_EFK(y2[2], y[2], 2), add(mll_meanvar_EFK(y2[n] - y2[2], y[n] - y[2], n - 2),pen))

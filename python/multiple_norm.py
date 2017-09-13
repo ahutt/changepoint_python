@@ -302,7 +302,7 @@ def multiple_meanvar_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC"
         #single dataset
         out = data_input(data = data, method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
         if Class == True:
-            return(class_input(data, cpttype = "mean and variance", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param.estimates, out = out, Q = Q))
+            return(class_input(data, cpttype = "mean and variance", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
         else:
             return(out[[1]])
     else:

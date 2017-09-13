@@ -8,7 +8,29 @@ from sys import exit
 
 def singledim(data, minseglen, extrainf = True):
     """
-    PLEASE ENTER DETAILS
+    singledim(data, minseglen, extrainf = True)
+
+    Description
+    -----------
+    This is a subfunction for single_mean_norm_calc.
+
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    extrainf : Logical, if True the test statistic is returned along with the changepoint location. If False, only the changepoint location is returned.
+
+    Returns
+    -------
+    If extrainf == True, a vector is returned. Otherwise, a value is returned.
+
+    Usage
+    -----
+    single_mean_norm_calc
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     n = size(data)
     y = append([0], cumsum(data))
@@ -31,6 +53,8 @@ def single_mean_norm_calc(data, minseglen, extrainf = True):
     """
     single_mean_norm_calc(data, minseglen, extrainf = True)
 
+    Description
+    -----------
     Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
 
     Parameters
@@ -41,6 +65,39 @@ def single_mean_norm_calc(data, minseglen, extrainf = True):
 
     Returns
     -------
+    If data is a vector (single dataset) and extrainf=False then a single value is returned:
+	cpt: The most probable location of a changepoint (scaled max log likelihood over all possible changepoint locations)
+    If data is a vector (single dataset) and extrainf=TRUE then a vector with three elements is returned:
+	cpt: The most probable location of a changepoint (scaled max log likelihood over all possible changepoint locations)
+	null: The scaled null likelihood (log likelihood of entire data with no change)
+	alt: The scaled alternative liklihood at cpt (log likelihood of entire data with a change at cpt)
+    If data is an mxn matrix (multiple datasets) and extrainf=False then a vector is returned:
+	cpt: Vector of length m containing the most probable location of a changepoint (scaled max log likelihood over all possible changepoint locations for each row in data. cpt[0] is the most probable changepoint of the first row in data and cpt[m-1] is the most probable changepoint for the final row in data.
+    If data is a matrix (multiple datasets) and extrainf=True then a matrix is returned where the first column is the changepoint location for each row in data, the second column is the scaled null likelihood for each row in data, the final column is the scaled maximum of the alternative likelihoods for each row in data.
+
+    Usage
+    -----
+    single_mean_norm
+
+    Details
+    -------
+    This function is used to find a single change in mean for data that is assumed to be normally distributed. The changepoint returned is simply the location where the log likelihood is maximised, there is no test performed as to whether this location is a true changepoint or not.
+
+    The returned likelihoods are scaled so that a test can be directly performed using the log of the likelihood ratio.
+
+    In reality this function should not be used unless you are performing a changepoint test using the output supplied.
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Normal mean: Hinkley, D. V. (1970) Inference About the Change-Point in a Sequence of Random Variables, Biometrika 57, 1--17
+
+    Examples
+    --------
     PLEASE ENTER DETAILS.
     """
     try:
@@ -68,6 +125,8 @@ def single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = T
     """
     single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True)
 
+    Description
+    -----------
     Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
 
     Parameters
@@ -81,6 +140,31 @@ def single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = T
 
     Returns
     -------
+    If class=True then an object of class "cpt" is returned. The slot cpts contains the changepoints that are returned (with p-value) if class=False.  The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a single value is returned:
+	cpt: The most probable location of a changepoint if H0 was rejected or None if H1 was rejected.
+    If data is an mxn matrix (multiple datasets) then a vector is returned:
+	cpt: Vector of length m containing where each element is the result of the test for data[m-1,:].  If cpt[m-1] is a number then it is the most probable location of a changepoint under H1.  Otherwise cpt[m-1] has the value None and indicates that H1 was rejected.
+
+    Usage
+    -----
+    cpt_mean
+
+    Details
+    -------
+    This function is used to find a single change in mean for data that is assumed to be normally distributed.  The value returned is the result of testing H0:no change in mean against H1: single change in mean using the log of the likelihood ratio statistic coupled with the penalty supplied.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Normal mean: Hinkley, D. V. (1970) Inference About the Change-Point in a Sequence of Random Variables, Biometrika 57, 1--17
+
+    Examples
+    --------
     PLEASE ENTER DETAILS.
     """
     try:
@@ -140,6 +224,8 @@ def single_var_norm_calc(data, mu, minseglen, extrainf = True):
     """
     single_var_norm_calc(data, mu, minseglen, extrainf = True)
 
+    Description
+    -----------
     Calculates the scaled negative log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (min).
 
     Parameters
@@ -151,6 +237,37 @@ def single_var_norm_calc(data, mu, minseglen, extrainf = True):
 
     Returns
     -------
+    If data is a vector (single dataset) and extrainf=False then a single value is returned:
+	cpt: The most probable location of a changepoint (scaled max log likelihood over all possible changepoint locations)
+    If data is a vector (single dataset) and extrainf=True then a vector with three elements is returned:
+	null: The scaled null likelihood (negative log likelihood of entire data with no change)
+	alt: The scaled alternative liklihood at cpt (negative log likelihood of entire data with a change at cpt)
+    If data is an mxn matrix (multiple datasets) and extrainf=False then a vector is returned:
+	cpt: Vector of length m containing the most probable location of a changepoint (scaled max log likelihood over all possible changepoint locations for each row in data.  cpt[0] is the most probable changepoint of the first row in data and cpt[m-1] is the most probable changepoint for the final row in data.
+    If data is a matrix (multiple datasets) and extrainf=True then a matrix is returned where the first column is the changepoint location for each row in data, the second column is the scaled null likelihood for each row in data, the final column is the scaled maximum of the alternative likelihoods for each row in data.
+
+    Usage
+    -----
+    single_var_norm
+
+    Details
+    -------
+    This function is used to find a single change in variance for data that is assumed to be normally distributed.  The changepoint returned is simply the location where the log likelihood ratio is maximised, there is no test performed as to whether this location is a true changepoint or not.
+
+    The returned negative log likelihoods are scaled so that a test can be directly performed using the log of the likelihood ratio.
+
+    In reality this function should not be used unless you are performing a changepoint test using the output supplied.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in variance: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    Examples
+    --------
     PLEASE ENTER DETAILS
     """
     n = size(data)
@@ -185,6 +302,8 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
     """
     single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean = False, mu = None, Class = True, param_estimates = True)
 
+    Description
+    -----------
     Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
 
     Parameters
@@ -200,7 +319,32 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
 
     Returns
     -------
-    PLEASE INSERT DETAILS.
+    If class=True then an object of class "cpt" is returned. The slot cpts contains the changepoints that are returned (with p-value) if class=False.  The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a single value is returned:
+	cpt: The most probable location of a changepoint if H0 was rejected or None if H1 was rejected.
+    If data is an mxn matrix (multiple datasets) then a vector is returned:
+	cpt: Vector of length m containing where each element is the result of the test for data[m-1,:].  If cpt[m-1] is a number then it is the most probable location of a changepoint under H1.  Otherwise cpt[m-1] has the value None and indicates that H1 was rejected.
+
+    Usage
+    -----
+    cpt_var
+
+    Details
+    -------
+    This function is used to find a single change in variance for data that is assumed to be normally distributed.  The value returned is the result of testing H0:no change in variance against H1: single change in variance using the log of the likelihood ratio statistic coupled with the penalty supplied.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in variance: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     try:
         shape1 = shape(data)[1]
@@ -242,7 +386,7 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
             return(out)
     else:
         rep = len(data)
-        tmp = zeros(rep, 3)
+        tmp = full((rep, 3), 0, dtype=float)
         if size(mu) != rep:
             mu = repeat(mu, rep)
         for i in range(1, rep+1):
@@ -270,7 +414,29 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
 
 def singledim2(data, minseglen, extrainf = True):
     """
-    PLEASE ENTER DETAILS
+    singledim2(data, minseglen, extrainf = True)
+
+    Description
+    -----------
+    This is a subfunction for single_meanvar_norm_calc.
+
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    extrainf : Logical, if True the test statistic is returned along with the changepoint location. If False, only the changepoint location is returned.
+
+    Returns
+    -------
+    If extrainf == True, a vector is returned. Otherwise, a value is returned.
+
+    Usage
+    -----
+    single_mean_normvar_calc
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     n = size(data)
     y = append([0], cumsum(data))
@@ -300,6 +466,8 @@ def single_meanvar_norm_calc(data, minseglen, extrainf = True):
     """
     single_meanvar_norm_calc(data, minseglen, extrainf = True)
 
+    Description
+    -----------
     Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
 
     Parameters
@@ -310,7 +478,39 @@ def single_meanvar_norm_calc(data, minseglen, extrainf = True):
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If data is a vector (single dataset) and extrainf=False then a single value is returned:
+	cpt: The most probable location of a changepoint (scaled max log likelihood over all possible changepoint locations)
+    If data is a vector (single dataset) and extrainf=True then a vector with three elements is returned:
+	cpt: The most probable location of a changepoint (scaled max log likelihood over all possible changepoint locations)
+	null: The scaled null likelihood (log likelihood of entire data with no change)
+	altlike: The scaled alternative liklihood at cpt (log likelihood of entire data with a change at cpt)
+    If data is an mxn matrix (multiple datasets) and extrainf=False then a vector is returned:
+	cpt: Vector of length m containing the most probable location of a changepoint (scaled max log likelihood over all possible changepoint locations for each row in data.  cpt[0] is the most probable changepoint of the first row in data and cpt[m-1] is the most probable changepoint for the final row in data.
+    If data is a matrix (multiple datasets) and extrainf=True then a matrix is returned where the first column is the changepoint location for each row in data, the second column is the scaled null likelihood for each row in data, the final column is the scaled maximum of the alternative likelihoods for each row in data.
+
+    Usage
+    -----
+    single_meanvar_norm
+
+    Details
+    -------
+    This function is used to find a single change in mean and variance for data that is assumed to be normally distributed.  The changepoint returned is simply the location where the log likelihood is maximised, there is no test performed as to whether this location is a true changepoint or not.
+
+    The returned likelihoods are scaled so that a test can be directly performed using the log of the likelihood ratio.
+
+    In reality this function should not be used unless you are performing a changepoint test using the output supplied.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Normal mean and variance: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     try:
         shape1 = shape(data)[1]
@@ -328,7 +528,7 @@ def single_meanvar_norm_calc(data, minseglen, extrainf = True):
             for i in range(1, rep+1):
                 cpt[i] = singledim2(data[i,:], extrainf, minseglen)
         else:
-            cpt = zeros(rep,3)
+            cpt = full((rep,3), 0, dtype=float)
             for i in range(1, rep+1):
                 cpt[i,:] = singledim(data[i,:], extrainf, minseglen)
             cpt.columns({'cpt', 'null', 'alt'})
@@ -338,6 +538,8 @@ def single_meanvar_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class 
     """
     single_meanvar_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True)
 
+    Description
+    -----------
     Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
 
     Parameters
@@ -351,7 +553,32 @@ def single_meanvar_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class 
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If class=True then an object of class "cpt" is returned.  The slot cpts contains the changepoints that are returned (with p-value) if class=False.  The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a single value is returned:
+	cpt: The most probable location of a changepoint if H0 was rejected or None if H1 was rejected.
+    If data is an mxn matrix (multiple datasets) then a vector is returned:
+	cpt: Vector of length m containing where each element is the result of the test for data[m-1,:].  If cpt[m-1] is a number then it is the most probable location of a changepoint under H1.  Otherwise cpt[m-1] has the value None and indicates that H1 was rejected.
+
+    Usage
+    -----
+    cpt_meanvar
+
+    Details
+    -------
+    This function is used to find a single change in mean and variance for data that is assumed to be normally distributed.  The value returned is the result of testing H0:no change in mean or variance against H1: single change in mean and/or variance using the log of the likelihood ratio statistic coupled with the penalty supplied.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Normal mean and variance: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     try:
         shape1 = shape(data)[1]

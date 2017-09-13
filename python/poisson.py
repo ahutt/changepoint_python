@@ -9,7 +9,29 @@ from sys import exit
 
 def singledim(data, minseglen, extrainf = True):
     """
-    ENTER DETAILS.
+    singledim(data, minseglen, extrainf = True)
+
+    Description
+    -----------
+    This is a subfunction for single_meanvar_poisson_calc.
+
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    extrainf : Logical, if True the test statistic is returned along with the changepoint location. If False, only the changepoint location is returned.
+
+    Returns
+    -------
+    If extrainf == True, a vector is returned. Otherwise, a value is returned.
+
+    Usage
+    -----
+    single_meanvar_poisson_calc
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     n = size(data)
     y = [0, cumsum(data)]
@@ -34,6 +56,8 @@ def single_meanvar_poisson_calc(data, minseglen, extrainf = True):
     """
     single_meanvar_poisson_calc(data, minseglen, extrainf = True)
 
+    Description
+    -----------
     Calculates the scaled log-likelihood (assuming the data is Poisson distributed) for all possible changepoint locations and returns the single most probable (max).
 
     Parameters
@@ -44,7 +68,39 @@ def single_meanvar_poisson_calc(data, minseglen, extrainf = True):
 
     Returns
     -------
-    ENTER DETAILS
+    If data is a vector (single dataset) and extrainf=False then a single value is returned:
+	cpt: The most probable location of a changepoint (scaled max log likelihood over all possible changepoint locations)
+    If data is a vector (single dataset) and extrainf=True then a vector with three elements is returned:
+	cpt: The most probable location of a changepoint (scaled max log likelihood over all possible changepoint locations)
+	null: The scaled null likelihood (log likelihood of entire data with no change)
+	altlike: The scaled alternative liklihood at cpt (log likelihood of entire data with a change at cpt)
+    If data is an mxn matrix (multiple datasets) and extrainf=False then a vector is returned:
+	cpt: Vector of length m containing the most probable location of a changepoint (scaled max log likelihood over all possible changepoint locations for each row in data. cpt[0] is the most probable changepoint of the first row in data and cpt[m-1] is the most probable changepoint for the final row in data.
+    If data is a matrix (multiple datasets) and extrainf=True then a matrix is returned where the first column is the changepoint location for each row in data, the second column is the scaled null likelihood for each row in data, the final column is the scaled maximum of the alternative likelihoods for each row in data.
+
+    Usage
+    -----
+    single_meanvar_poisson
+
+    Details
+    -------
+    This function is used to find a single change in mean and variance for data that is assumed to be Poisson distributed.  The changepoint returned is simply the location where the log likelihood is maximised, there is no test performed as to whether this location is a true changepoint or not.
+
+    The returned likelihoods are scaled so that a test can be directly performed using the log of the likelihood ratio.
+
+    In reality this function should not be used unless you are performing a changepoint test using the output supplied.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Poisson Model: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if shape(data) == (0,0) or (0,) or () or None:
         cpt = singledim(data, minseglen, extrainf)
@@ -63,6 +119,8 @@ def single_meanvar_poisson(data, minseglen, penalty = "MBIC", pen_value = 0, Cla
     """
     single_meanvar_poisson(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True)
 
+    Description
+    -----------
     Calculates the scaled log-likelihood (assuming the data is Poisson distributed) for all possible changepoint locations and returns the single most probable (max).
 
     Parameters
@@ -76,7 +134,32 @@ def single_meanvar_poisson(data, minseglen, penalty = "MBIC", pen_value = 0, Cla
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If class=True then an object of class "cpt" is returned.  The slot cpts contains the changepoints that are solely returned if class=False.  The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a single value is returned:
+	cpt: The most probable location of a changepoint if H0 was rejected or None if H1 was rejected.
+    If data is an mxn matrix (multiple datasets) then a vector is returned:
+	cpt: Vector of length m containing where each element is the result of the test for data[m-1,:].  If cpt[m-1] is a number then it is the most probable location of a changepoint under H1.  Otherwise cpt[m-1] has the value None and indicates that H1 was rejected.
+
+    Usage
+    -----
+    cpt_meanvar
+
+    Details
+    -------
+    This function is used to find a single change in scale parameter (mean and variance) for data that is assumed to be Poisson distributed.  The value returned is the result of testing H0:no change in mean or variance against H1: single change in mean and/or variance using the log of the likelihood ratio statistic coupled with the penalty supplied.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Poisson model: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if sum(data < 0) > 0:
         exit('Poisson test statistic requires positive data')
@@ -130,7 +213,32 @@ def segneigh_meanvar_poisson(data, Q = 5, pen = 0):
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    A list is returned containing the following items
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	like: Value of the -2*log(likelihood ratio) + penalty for the optimal number of changepoints selected.
+
+    Usage
+    -----
+    Currently not called anywhere in the package.
+
+    Details
+    -------
+    This function is used to find a multiple changes in mean and variance for data that is assumed to be Poisson distributed.  The value returned is the result of finding the optimal location of up to Q changepoints using the log of the likelihood ratio statistic.  Once all changepoint locations have been calculated, the optimal number of changepoints is decided using k*pen as the penalty function where k is the number of changepoints tested (k in range(1,Q+1)).
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Poisson model: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if sum(data < 0) > 0:
         exit('Poisson test statistic requires positive data')
@@ -191,6 +299,8 @@ def multiple_meanvar_poisson(data, minseglen, mul_method = "PELT", penalty = "MB
     """
     multiple_meanvar_poisson(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
 
+    Details
+    -------
     Calculates the optimal positioning and number of changepoints for Poisson data using the user specified method.
 
     Parameters
@@ -206,7 +316,46 @@ def multiple_meanvar_poisson(data, minseglen, mul_method = "PELT", penalty = "MB
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If class=True then an object of class "cpt" is returned.  The slot cpts contains the changepoints that are solely returned if class=False.  The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a vector/list is returned depending on the value of mul_method.  If data is a matrix (multiple datasets) then a list is returned where each element in the list is either a vector or list depending on the value of mul_method.
+
+    If mul_method is PELT then a vector is returned:
+	cpt: Vector containing the changepoint locations for the penalty supplied.  This always ends with n.
+    If mul_method is SegNeigh then a list is returned with elements:
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	like: Value of the -2*log(likelihood ratio) + penalty for the optimal number of changepoints selected.
+    If mul_method is BinSeg then a list is returned with elements:
+	cps: 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+
+    Usage
+    -----
+    cpt_meanvar
+
+    Details
+    ------
+    This function is used to find multiple changes in mean and variance for data that is assumed to be Poisson distributed.  The changes are found using the method supplied which can be exact (PELT or SegNeigh) or approximate (BinSeg).
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Poisson model: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    PELT Algorithm: Killick R, Fearnhead P, Eckley IA (2012) Optimal detection of changepoints with a linear computational cost, JASA 107(500), 1590--1598
+
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if sum(data < 0) > 0:
         exit('Poisson test statistic requires positive data')

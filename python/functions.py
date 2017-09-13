@@ -19,6 +19,9 @@ def checkData(data):
 
     Usage
     -----
+    cpt
+    cpt_var
+    cpt_meanvar
 
     Author(s)
     ---------
@@ -50,7 +53,9 @@ def which_max(a,b):
 
     Usage
     -----
-    PLEASE ENTER DETAILS
+    class_input
+    binseg_var_css
+    binseg_mean_cusum
 
     Author(s)
     ---------
@@ -89,6 +94,7 @@ def which_min(a,b):
 
     Usage
     -----
+    range_of_penalties
 
     Author(s)
     ---------
@@ -126,6 +132,12 @@ def lapply(x,y):
 
     Usage
     -----
+    multiple_var_norm
+    multiple_meanvar_norm
+    multiple_mean_norm
+    multiple_meanvar_poisson
+    multiple_meanvar_exp
+    multiple_meanvar_gamma
 
     Author(s)
     ---------
@@ -167,6 +179,12 @@ def second_element(x):
 
     Usage
     -----
+    multiple_var_norm
+    multiple_mean_norm
+    multiple_meanvar_norm
+    multiple_meanvar_poisson
+    multiple_meanvar_exp
+    multiple_meanvar_gamma
 
     Author(s)
     ---------
@@ -195,6 +213,7 @@ def sapply(x,y):
 
     Usage
     -----
+    class_input
 
     Author(s)
     ---------
@@ -231,6 +250,8 @@ def greater_than(a,b):
 
     Usage
     -----
+    segniegh_meanvar_norm
+    data_input
 
     Author
     ------
@@ -272,6 +293,7 @@ def less_than(a,b):
 
     Usage
     -----
+    single_meanvar_exp
 
     Author(s)
     ---------
@@ -313,6 +335,9 @@ def greater_than_equal(a,b):
 
     Usage
     -----
+    binseg_meanvar_norm
+    binseg_var_css
+    binseg_mean_cusum
 
     Author(s)
     ---------
@@ -335,7 +360,7 @@ def greater_than_equal(a,b):
 
 def less_than_equal(a,b):
     """
-    greater_than_equal(a,b)
+    less_than_equal(a,b)
 
     Description
     -----------
@@ -354,6 +379,12 @@ def less_than_equal(a,b):
 
     Usage
     -----
+    mll_meanvar_EFK
+    mll_meanvar
+    singledim2
+    multiple_meanvar_gamma
+    segneigh_meanvar_gamma
+    single_meanvar_gamma
 
     Author(s)
     ---------
@@ -399,6 +430,7 @@ def compare(a,b):
 
     Usage
     -----
+    PELT_meanvar_norm
 
     Author(s)
     ---------
@@ -451,6 +483,9 @@ def truefalse(a,b):
 
     Usage
     -----
+    PELT_meanvar_norm
+    segneigh_meanvar_norm
+    data_input
 
     Author(s)
     ---------
@@ -488,6 +523,8 @@ def truefalse2(a,b,c):
 
     Returns
     -------
+    mll_meanvar_EFK
+    mll_meanvar
 
     Usage
     -----
@@ -525,6 +562,7 @@ def twoD_to_oneD(list):
 
     Usage
     -----
+    PELT_meanvar_norm
 
     Author(s)
     ---------
@@ -568,6 +606,16 @@ def which_element(a,b):
 
     Usage
     -----
+    segneigh_meanvar_norm
+    single_var_norm_calc
+    singledim
+    segneigh_meanvar_poisson
+    segneigh_meanvar_exp
+    segneigh_meanvar_gamma
+    segneigh_var_css
+    binseg_var_css
+    segneigh_mean_cusum
+    binseg_mean_cusum
 
     Author(s)
     ---------
@@ -601,6 +649,7 @@ def max_vector(a):
 
     Usage
     -----
+    segneigh_meanvar_norm
 
     Author(s)
     ---------

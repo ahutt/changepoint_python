@@ -14,6 +14,8 @@ def cpt_mean(data, penalty = "None", pen_value = 0, method = "AMOC", Q = 5, test
     """
     cpt_mean(data, penalty = "None", pen_value = 0, method = "AMOC", Q = 5, test_stat = "Normal", Class = True, param_estimates = True, minseglen = 1)
 
+    Description
+    -----------
     Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
 
     Parameters
@@ -30,8 +32,47 @@ def cpt_mean(data, penalty = "None", pen_value = 0, method = "AMOC", Q = 5, test
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If class=True then an object of class "cpt" is returned.  The slot cpts  contains the changepoints that are returned.  For class=False the structure is as follows.
 
+    If data is a vector (single dataset) then a vector/list is returned depending on the value of method.  If data is a matrix (multiple datasets) then a list is returned where each element in the list is either a vector or list depending on the value of method.
+
+    If method is AMOC then a vector (one dataset) or matrix (multiple datasets) is returned, the columns are:
+	cpt: The most probable location of a changepoint if a change was identified or None if no changepoint.
+        p value: The p-value of the identified changepoint.
+    If method is PELT then a vector is returned containing the changepoint locations for the penalty supplied.  This always ends with n.
+    If method is SegNeigh then a list is returned with elements:
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+        pen: Penalty used to find the optimal number of changepoints.
+	like: Value of the -2*log(likelihood ratio) + penalty for the optimal number of changepoints selected.
+    If method is BinSeg then a list is returned with elements:
+	cps: 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+
+    Details
+    -------
+    This function is used to find changes in mean for data using the test statistic specfified in the test_stat parameter.  The changes are found using the method supplied which can be single changepoint (AMOC) or multiple changepoints using exact (PELT or SegNeigh) or approximate (BinSeg) methods.  A changepoint is denoted as the first observation of the new segment / regime.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Normal mean: Hinkley, D. V. (1970) Inference About the Change-Point in a Sequence of Random Variables, Biometrika 57, 1--17
+
+    CUSUM Test: M. Csorgo, L. Horvath (1997) Limit Theorems in Change-Point Analysis, Wiley
+
+    PELT Algorithm: Killick R, Fearnhead P, Eckley IA (2012) Optimal detection of changepoints with a linear computational cost, JASA 107(500), 1590--1598
+
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     checkData(data)
     if method == "SegNeigh" and minseglen > 1:
@@ -93,7 +134,48 @@ def cpt_var(data, penalty = "MBIC", pen_value = 0, know_mean = False, mu = None,
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If class=True then an object of class "cpt" is returned.  The slot cpts contains the changepoints that are returned.  For class=False the structure is as follows.
+
+    If data is a vector (single dataset) then a vector/list is returned depending on the value of method.  If data is a matrix (multiple datasets) then a list is returned where each element in the list is either a vector or list depending on the value of method.
+
+    If method is AMOC then a vector (one dataset) or matrix (multiple datasets) is returned, the columns are:
+	cpt: The most probable location of a changepoint if a change was identified or None if no changepoint.
+        p value: The p-value of the identified changepoint.
+    If method is PELT then a vector is returned containing the changepoint locations for the penalty supplied.  This always ends with n.
+    If method is SegNeigh then a list is returned with elements:
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+        pen: Penalty used to find the optimal number of changepoints.
+	like: Value of the -2*log(likelihood ratio) + penalty for the optimal number of changepoints selected.
+    If method is BinSeg then a list is returned with elements:
+	cps: 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+
+    Details
+    -------
+    This function is used to find changes in variance for data using the test statistic specified in the test_stat parameter.  The changes are found using the method supplied which can be single changepoint (AMOC) or multiple changepoints using exact (PELT or SegNeigh) or approximate (BinSeg) methods.  A changepoint is denoted as the first observation of the new segment / regime.
+    Note that for the test_stat="CSS" option the preset penalties are log(.) to allow comparison with test_stat="Normal".
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Normal: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    CSS: C. Inclan, G. C. Tiao (1994) Use of Cumulative Sums of Squares for Retrospective Detection of Changes of Variance, Journal of the American Statistical Association 89(427), 913--923
+
+    PELT Algorithm: Killick R, Fearnhead P, Eckley IA (2012) Optimal detection of changepoints with a linear computational cost, JASA 107(500), 1590--1598
+
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     checkData(data)
     if method == "SegNeigh" and minseglen > 2:
@@ -150,7 +232,51 @@ def cpt_meanvar(data, penalty = "MBIC", pen_value = 0, method = "AMOC", Q = 5, t
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If class=True then an object of class "cpt" is returned.  The slot cpts contains the changepoints that are returned.  For class=False the structure is as follows.
+
+    If data is a vector (single dataset) then a vector/list is returned depending on the value of method.  If data is a matrix (multiple datasets) then a list is returned where each element in the list is either a vector or list depending on the value of method.
+
+    If method is AMOC then a vector (one dataset) or matrix (multiple datasets) is returned, the columns are:
+	cpt: The most probable location of a changepoint if a change was identified or NA if no changepoint.
+        p value: The p-value of the identified changepoint.
+    If method is PELT then a vector is returned containing the changepoint locations for the penalty supplied.  This always ends with n.
+    If method is SegNeigh then a list is returned with elements:
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+        pen: Penalty used to find the optimal number of changepoints.
+	like: Value of the -2*log(likelihood ratio) + penalty for the optimal number of changepoints selected.
+    If method is BinSeg then a list is returned with elements:
+	cps: 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op_cpts:The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+
+    Details
+    -------
+    This function is used to find changes in mean and variance for data using the test statistic specified in the test_stat parameter.  The changes are found using the method supplied which can be single changepoint (AMOC) or multiple changepoints using exact (PELT or SegNeigh) or approximate (BinSeg) methods.  A changepoint is denoted as the first observation of the new segment / regime.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Normal mean and variance: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    Change in Gamma shape parameter: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    Change in Exponential model: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    Change in Poisson model: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    PELT Algorithm: Killick R, Fearnhead P, Eckley IA (2012) Optimal detection of changepoints with a linear computational cost, JASA 107(500), 1590--1598
+
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     checkData(data)
     if method == "SegNeigh" and minseglen > 2:

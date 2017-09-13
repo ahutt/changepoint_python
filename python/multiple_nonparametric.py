@@ -8,6 +8,8 @@ def segneigh_var_css(data, Q = 5, pen = 0):
     """
     segneigh_var_css(data, Q = 5, pen = 0)
 
+    Description
+    -----------
     Calculates the optimal positioning and number of changepoints for Cumulative Sums of Sqaures test statistic using Segment Neighbourhood method.
 
     Parameters
@@ -18,6 +20,32 @@ def segneigh_var_css(data, Q = 5, pen = 0):
 
     Returns
     -------
+    A list is returned containing the following items
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+
+    Usage
+    -----
+    multiple_var_css
+
+    Details
+    -------
+    This function is used to find a multiple changes in variance for data that is not assumed to have a particular distribution.  The value returned is the result of finding the optimal location of up to Q changepoints using the cumulative sums of squares test statistic.  Once all changepoint locations have been calculated, the optimal number of changepoints is decided using pen as the penalty function.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    C. Inclan, G. C. Tiao (1994) Use of Cumulative Sums of Squares for Retrospective Detection of Changes of Variance, Journal of the American Statistical Association 89(427), 913--923
+
+    R. L. Brown, J. Durbin, J. M. Evans (1975) Techniques for Testing the Constancy of Regression Relationships over Time, Journal of the Royal Statistical Society B 32(2), 149--192
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    Examples
+    --------
     PLEASE ENTER DETAILS
     """
     n = size(data)
@@ -74,6 +102,8 @@ def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
     """
     binseg_var_css(data, Q = 5, pen = 0, minseglen = 2)
 
+    Description
+    -----------
     Calculates the optimal positioning and number of changepoints for the cumulative sums of squares test statistic using Binary Segmentation method. Note that this is an approximate method.
 
     Parameters
@@ -85,7 +115,34 @@ def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    A list is returned containing the following items
+	cps: 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+
+    Usage
+    -----
+    multiple_var_css
+
+    Details
+    -------
+    This function is used to find a multiple changes in variance for data where no assumption about the distribution is made.  The value returned is the result of finding the optimal location of up to Q changepoints using the cumulative sums of squares test statistic.  Once all changepoint locations have been calculated, the optimal number of changepoints is decided using pen as the penalty function.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    C. Inclan, G. C. Tiao (1994) Use of Cumulative Sums of Squares for Retrospective Detection of Changes of Variance, Journal of the American Statistical Association 89(427), 913--923
+
+    R. L. Brown, J. Durbin, J. M. Evans (1975) Techniques for Testing the Constancy of Regression Relationships over Time, Journal of the Royal Statistical Society B 32(2), 149--192
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     n = size(data)
     if n < 4:
@@ -111,7 +168,7 @@ def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
             else:
                 if ((j - st) >= minseglen) & ((end - j) >= minseglen):
                     Lambda[j] = sqrt((end - st + 1)/2) * ((y2[j+1] - y2[st])/(y2[end+1] - y2[st]) - (j - st + 1)/(end - st + 1))
-        k = which_max(abs(Lambda))
+        k =which_max(abs(Lambda))
         cpt[1,q] = k
         cpt[2,q] = min(oldmax, max(abs(Lambda)))
         oldmax = min(oldmax, max(abs(Lambda)))
@@ -138,6 +195,8 @@ def multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", p
     """
     multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
 
+    Description
+    -----------
     Calculates the optimal positioning and number of changepoints for the cumulative sums of squares test statistic using the user specified method.
 
     Parameters
@@ -153,6 +212,43 @@ def multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", p
 
     Returns
     -------
+    If class=True then an object of class "cpt" is returned.  The slot cpts contains the changepoints that are solely returned if class=False.  The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a vector/list is returned depending on the value of mul_method.  If data is a matrix (multiple datasets) then a list is returned where each element in the list is either a vector or list depending on the value of mul_method.
+
+    If mul_method is SegNeigh then a list is returned with elements:
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+    If mul_method is BinSeg then a list is returned with elements:
+	cps: 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+
+    Usage
+    -----
+    Currently not called anywhere in the package.
+
+    Details
+    -------
+    This function is used to find multiple changes in variance for data where no assumption about the distribution is made.  The changes are found using the method supplied which can be exact (SegNeigh) or approximate (BinSeg).  Note that the penalty values are log(.) to be comparable with the distributional penalties.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    C. Inclan, G. C. Tiao (1994) Use of Cumulative Sums of Squares for Retrospective Detection of Changes of Variance, Journal of the American Statistical Association 89(427), 913--923
+
+    R. L. Brown, J. Durbin, J. M. Evans (1975) Techniques for Testing the Constancy of Regression Relationships over Time, Journal of the Royal Statistical Society B 32(2), 149--192
+
+    Examples
+    --------
     PLEASE ENTER DETAILS
     """
     if mul_method == "PELT":
@@ -209,6 +305,8 @@ def segneigh_mean_cusum(data, Q = 5, pen = 0):
     """
     segneigh_mean_cusum(data, Q = 5, pen = 0)
 
+    Description
+    -----------
     Calculates the optimal positioning and number of changepoints for Cumulative Sums test statistic using Segment Neighbourhood method.
 
     Parameters
@@ -219,7 +317,33 @@ def segneigh_mean_cusum(data, Q = 5, pen = 0):
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    A list is returned containing the following items
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+
+    Usage
+    -----
+    multiple_mean_cusum
+
+    Details
+    -------
+    This function is used to find a multiple changes in mean for data that is not assumed to have a particular distribution.  The value returned is the result of finding the optimal location of up to Q changepoints using the cumulative sums test statistic.  Once all changepoint locations have been calculated, the optimal number of changepoints is decided using pen as the penalty function.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    M. Csorgo, L. Horvath (1997) Limit Theorems in Change-Point Analysis, Wiley
+
+    E. S. Page (1954) Continuous Inspection Schemes, Biometrika 41(1/2), 100--115
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     n = size(data)
     if n < 2:
@@ -276,6 +400,8 @@ def binseg_mean_cusum(data, minseglen, Q = 5, pen = 0):
     """
     binseg_mean_cusum(data, minseglen ,Q = 5, pen = 0)
 
+    Description
+    -----------
     Calculates the optimal positioning and number of changepoints for the cumulative sums test statistic using Binary Segmentation method. Note that this is an approximate method.
 
     Parameters
@@ -287,7 +413,34 @@ def binseg_mean_cusum(data, minseglen, Q = 5, pen = 0):
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    A list is returned containing the following items
+	cps: 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+
+    Usage
+    -----
+    multiple_mean_cusum
+
+    Details
+    -------
+    This function is used to find a multiple changes in mean for data where no assumption about the distribution is made.  The value returned is the result of finding the optimal location of up to Q changepoints using the cumulative sums test statistic.  Once all changepoint locations have been calculated, the optimal number of changepoints is decided using pen as the penalty function.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    M. Csorgo, L. Horvath (1997) Limit Theorems in Change-Point Analysis, Wiley
+
+    E. S. Page (1954) Continuous Inspection Schemes, Biometrika 41(1/2), 100--115
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     n = size(data)
     if n < 2:
@@ -340,6 +493,8 @@ def multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymp
     """
     multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymptotic", pen_value = 0.05, Q = 5, Class = True, param_estimates = True)
 
+    Description
+    -----------
     Calculates the optimal positioning and number of changepoints for the cumulative sums test statistic using the user specified method.
 
     Parameters
@@ -355,6 +510,43 @@ def multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymp
 
     Returns
     -------
+    If class=True then an object of class "cpt" is returned.  The slot cpts contains the changepoints that are solely returned if class=False.  The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a vector/list is returned depending on the value of mul_method.  If data is a matrix (multiple datasets) then a list is returned where each element in the list is either a vector or list depending on the value of mul_method.
+
+    If mul_method is SegNeigh then a list is returned with elements:
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+    If mul_method is BinSeg then a list is returned with elements:
+	cps: 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+
+    Usage
+    -----
+    Currently not called anywhere in the package.
+
+    Details
+    -------
+    This function is used to find multiple changes in mean for data where no assumption about the distribution is made.  The changes are found using the method supplied which can be exact (SegNeigh) or approximate (BinSeg).  Note that the programmed penalty values are not designed to be used with the CUSUM method, it is advised to use Asymptotic or Manual penalties.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    M. Csorgo, L. Horvath (1997) Limit Theorems in Change-Point Analysis, Wiley
+
+    E. S. Page (1954) Continuous Inspection Schemes, Biometrika 41(1/2), 100--115
+
+    Examples
+    --------
     PLEASE ENTER DETAILS
     """
     if mul_method == "PELT":

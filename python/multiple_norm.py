@@ -10,6 +10,8 @@ def multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0
     """
     multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, know_mean = False, mu = None, Class = True, param_estimates = True, minseglen = 2)
 
+    Description
+    -----------
     Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
 
     Parameters
@@ -27,7 +29,46 @@ def multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If class=True then an object of class "cpt" is returned.  The slot cpts contains the changepoints that are solely returned if class=False.  The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a vector/list is returned depending on the value of mul_method.  If data is a matrix (multiple datasets) then a list is returned where each element in the list is either a vector or list depending on the value of mul_method.
+
+    If mul_method is PELT then a vector is returned:
+	cpt: Vector containing the changepoint locations for the penalty supplied.  This always ends with n.
+    If mul_method is SegNeigh then a list is returned with elements:
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	like: Value of the -2*log(likelihood ratio) + penalty for the optimal number of changepoints selected.
+    If mul_method is BinSeg then a list is returned with elements:
+	cps: 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+
+    Usage
+    -----
+    cpt_var
+
+    Details
+    -------
+    This function is used to find multiple changes in variance for data that is assumed to be normally distributed.  The changes are found using the method supplied which can be exact (PELT or SegNeigh) or approximate (BinSeg).
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in variance: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    PELT Algorithm: Killick R, Fearnhead P, Eckley IA (2012) Optimal detection of changepoints with a linear computational cost, JASA 107(500), 1590--1598
+
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh"):
         exit("Multiple Method is not recognised")
@@ -82,6 +123,8 @@ def multiple_mean_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", p
     """
     multiple_mean_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
 
+    Description
+    -----------
     Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
 
     Parameters
@@ -97,7 +140,46 @@ def multiple_mean_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", p
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If class=True then an object of class "cpt" is returned.  The slot cpts contains the changepoints that are solely returned if class=False.  The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a vector/list is returned depending on the value of mul_method. If data is a matrix (multiple datasets) then a list is returned where each element in the list is either a vector or list depending on the value of mul_method.
+
+    If mul_method is PELT then a vector is returned:
+	cpt: Vector containing the changepoint locations for the penalty supplied. This always ends with n.
+    If mul_method is SegNeigh then a list is returned with elements:
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	like: Value of the -2*log(likelihood ratio) + penalty for the optimal number of changepoints selected.
+    If mul_method is BinSeg then a list is returned with elements:
+	cps: 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+
+    Usage
+    -----
+    cpt_mean
+
+    Details
+    -------
+    This function is used to find multiple changes in mean for data that is assumed to be normally distributed.  The changes are found using the method supplied which can be exact (PELT or SegNeigh) or approximate (BinSeg).
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Normal mean: Hinkley, D. V. (1970) Inference About the Change-Point in a Sequence of Random Variables, Biometrika 57, 1--17
+
+    PELT Algorithm: Killick R, Fearnhead P, Eckley IA (2012) Optimal detection of changepoints with a linear computational cost, JASA 107(500), 1590--1598
+
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh"):
         exit("Multiple Method is not recognised")
@@ -142,6 +224,8 @@ def multiple_meanvar_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC"
     """
     multiple_meanvar_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True)
 
+    Description
+    -----------
     Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
 
     Parameters
@@ -157,7 +241,46 @@ def multiple_meanvar_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC"
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If class=True then an object of class "cpt" is returned.  The slot cpts contains the changepoints that are solely returned if class=False.  The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a vector/list is returned depending on the value of mul_method.  If data is a matrix (multiple datasets) then a list is returned where each element in the list is either a vector or list depending on the value of mul_method.
+
+    If mul_method is PELT then a vector is returned:
+	cpt: Vector containing the changepoint locations for the penalty supplied.  This always ends with n.
+    If mul.method is SegNeigh then a list is returned with elements:
+	cps: Matrix containing the changepoint positions for 1,...,Q changepoints.
+	op_cpts: The optimal changepoint locations for the penalty supplied.
+	like: Value of the -2*log(likelihood ratio) + penalty for the optimal number of changepoints selected.
+    If mul_method is BinSeg then a list is returned with elements:
+	cps: 2xQ Matrix containing the changepoint positions on the first row and the test statistic on the second row.
+	op.cpts: The optimal changepoint locations for the penalty supplied.
+	pen: Penalty used to find the optimal number of changepoints.
+
+    Usage
+    -----
+    cpt_meanvar
+
+    Details
+    -------
+    This function is used to find multiple changes in mean and variance for data that is assumed to be normally distributed.  The changes are found using the method supplied which can be exact (PELT or SegNeigh) or approximate (BinSeg).
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    Change in Normal mean and variance: Chen, J. and Gupta, A. K. (2000) Parametric statistical change point analysis, Birkhauser
+
+    PELT Algorithm: Killick R, Fearnhead P, Eckley IA (2012) Optimal detection of changepoints with a linear computational cost, JASA 107(500), 1590--1598
+
+    Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, Biometrics 30(3), 507--512
+
+    Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, Bulletin of Mathematical Biology 51(1), 39--54
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh"):
         exit("Multiple Method is not recognised")

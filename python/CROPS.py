@@ -5,6 +5,49 @@ from sys import exit
 
 def CROPS(data, pen_value, minseglen, shape, func, penalty = "CROPS", method = "PELT", test_stat = "Normal", Class = True, param_est = True):
     """
+    CROPS(data, pen_value, minseglen, shape, func, penalty = "CROPS", method = "PELT", test_stat = "Normal", Class = True, param_est = True)
+
+    Description
+    -----------
+    This is not intended for use by regular users of the package.
+
+    Parameters
+    ----------
+    data :
+    pen_value :
+    minseglen :
+    shape :
+    func :
+    penalty :
+    method :
+    test_stat :
+    Class :
+    param_est :
+
+    Returns
+    -------
+    This is not intended for use by regular users of the package.
+
+    Usage
+    -----
+    cpt_mean
+    cpt_var
+    cpt_meanvar
+
+    Details
+    -------
+    PLEASE ENTER DETAILS.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    PLEASE ENTER DETAILS.
+
+    Examples
+    --------
     PLEASE ENTER DETAILS.
     """
     if method != "PELT":

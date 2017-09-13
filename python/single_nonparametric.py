@@ -6,7 +6,29 @@ from param_cpt import param
 
 def singledim(data, minseglen, extrainf = True):
     """
-    PLEASE ENTER DETAILS.
+    singledim(data, minseglen, extrainf = True)
+
+    Description
+    -----------
+    This is a subfunction for single_var_css_calc.
+
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    extrainf : Logical, if True the test statistic is returned along with the changepoint location. If False, only the changepoint location is returned.
+
+    Returns
+    -------
+    If extrainf == True, a vector is returned. Otherwise, a value is returned.
+
+    Usage
+    -----
+    single_var_css_calc
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     n = size(data)
     y2 = [0, cumsum(square(data))]
@@ -25,6 +47,8 @@ def single_var_css_calc(data, minseglen, extrainf = True):
     """
     single_var_css_calc(data, minseglen, extrainf = True)
 
+    Description
+    -----------
     Calculates the cumulative sums of squares (css) test statistic for all possible changepoint locations and returns the single most probable (max).
 
     Parameters
@@ -35,7 +59,37 @@ def single_var_css_calc(data, minseglen, extrainf = True):
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If data is a vector (single dataset) and extrainf=FALSE then a single value is returned:
+	cpt: The most probable location of a changepoint
+    If data is a vector (single dataset) and extrainf=True then a vector with two elements is returned:
+	test statistic: The cumulative sums of squares test statistic
+    If data is an mxn matrix (multiple datasets) and extrainf=False then a vector is returned:
+	cpt: Vector of length m containing the most probable location of a changepoint for each row in data. cpt[0] is the most probable changepoint of the first row in data and cpt[m-1] is the most probable changepoint for the final row in data.
+    If data is a matrix (multiple datasets) and extrainf=True then a matrix is returned where the first column is the changepoint location for each row in data, the second column is the test statistic for each row in data.
+
+    Usage
+    -----
+    single_var_css
+
+    Details
+    -------
+    This function is used to find a single change in variance for data where no distributional assumption is made.  The changepoint returned is simply the location where the test statistic is maximised, there is no test performed as to whether this location is a true changepoint or not.
+
+    In reality this function should not be used unless you are performing a changepoint test using the output supplied.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    C. Inclan, G. C. Tiao (1994) Use of Cumulative Sums of Squares for Retrospective Detection of Changes of Variance, Journal of the American Statistical Association 89(427), 913--923
+
+    R. L. Brown, J. Durbin, J. M. Evans (1975) Techniques for Testing the Constancy of Regression Relationships over Time, Journal of the Royal Statistical Society B 32(2), 149--192
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset
@@ -49,7 +103,7 @@ def single_var_css_calc(data, minseglen, extrainf = True):
             for i in range(1,rep):
                 cpt[i-1] = singledim(data[i,:], extrainf, minseglen)
         else:
-            cpt = zeros(rep,2)
+            cpt = full((rep,2), 0, dtype=float)
             for i in range(1,rep):
                 cpt[i-1,:] = singledim(data[i,:], extrainf, minseglen)
             cpt.rename(columns = {'cpt', 'test statistic'}, inplace = True)
@@ -59,6 +113,8 @@ def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = Tru
     """
     single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True)
 
+    Description
+    -----------
     A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
 
     Parameters
@@ -72,6 +128,33 @@ def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = Tru
 
     Returns
     -------
+    If Class=True then an object of class "cpt" is returned. The slot cpts contains the changepoints that are solely returned if Class=False. The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a single value is returned:
+	cpt: The most probable location of a changepoint if H0 was rejected or NA if H1 was rejected.
+    If data is an mxn matrix (multiple datasets) then a vector is returned:
+	cpt: Vector of length m containing where each element is the result of the test for data[m-1,:].  If cpt[m-1] is a number then it is the most probable location of a changepoint under H1.  Otherwise cpt[m-1] is None and indicates that H1 was rejected.
+
+    Usage
+    -----
+    cpt_var
+
+    Details
+    -------
+    This function is used to find a single change in variance for data that is is not assumed to follow a specific distribtuion.  The value returned is the result of testing H0:no change in variance against H1: single change in variance using the cumulative sums of squares test statistic coupled with the penalty supplied.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    C. Inclan, G. C. Tiao (1994) Use of Cumulative Sums of Squares for Retrospective Detection of Changes of Variance, Journal of the American Statistical Association 89(427), 913--923
+
+    R. L. Brown, J. Durbin, J. M. Evans (1975) Techniques for Testing the Constancy of Regression Relationships over Time, Journal of the Royal Statistical Society B 32(2), 149--192
+
+    Examples
+    --------
     PLEASE ENTER DETAILS.
     """
     if size(pen_value) > 1:
@@ -138,7 +221,29 @@ def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = Tru
 
 def singledim2(data, minseglen, extrainf = True):
     """
-    PLEASE ENTER DETAILS.
+    singledim2(data, minseglen, extrainf = True)
+
+    Description
+    -----------
+    This is a subfunction for single_mean_calc.
+
+    Parameters
+    ----------
+    data : A vector, ts object or matrix containing the data within which you wish to find a changepoint. If data is a matrix, each row is considered a separate dataset.
+    minseglen : Minimum segment length used in the analysis (positive integer).
+    extrainf : Logical, if True the test statistic is returned along with the changepoint location. If False, only the changepoint location is returned.
+
+    Returns
+    -------
+    If extrainf == True, a vector is returned. Otherwise, a value is returned.
+
+    Usage
+    -----
+    single_mean_cusum_calc
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     n = size(data)
     ybar = mean(data)
@@ -157,6 +262,8 @@ def single_mean_cusum_calc(data, minseglen, extrainf = True):
     """
     single_mean_cusum_calc(data, minseglen, extrainf = True)
 
+    Description
+    -----------
     Calculates the cumulative sums (cusum) test statistic for all possible changepoint locations and returns the single most probable (max).
 
     Parameters
@@ -167,7 +274,37 @@ def single_mean_cusum_calc(data, minseglen, extrainf = True):
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If data is a vector (single dataset) and extrainf=False then a single value is returned:
+	cpt: The most probable location of a changepoint
+    If data is a vector (single dataset) and extrainf=True then a vector with two elements is returned:
+	test statistic: The cumulative sums test statistic
+    If data is an mxn matrix (multiple datasets) and extrainf=False then a vector is returned:
+	cpt: Vector of length m containing the most probable location of a changepoint for each row in data. cpt[0] is the most probable changepoint of the first row in data and cpt[m-1] is the most probable changepoint for the final row in data.
+    If data is a matrix (multiple datasets) and extrainf=True then a matrix is returned where the first column is the changepoint location for each row in data, the second column is the test statistic for each row in data.
+
+    Usage
+    -----
+    single_mean_cusum
+
+    Details
+    -------
+    This function is used to find a single change in mean for data where no distributional assumption is made.  The changepoint returned is simply the location where the test statistic is maximised, there is no test performed as to whether this location is a true changepoint or not.
+
+    In reality this function should not be used unless you are performing a changepoint test using the output supplied.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    M. Csorgo, L. Horvath (1997) Limit Theorems in Change-Point Analysis, Wiley
+
+    E. S. Page (1954) Continuous Inspection Schemes, Biometrika 41(1/2), 100--115
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if shape(data) == (0,0) or (0,) or () or None:
         #single dataset
@@ -187,6 +324,8 @@ def single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", 
     """
     single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", pen_value = 0.05, Class = True)
 
+    Description
+    -----------
     Calculates the cumulative sums (cusum) test statistic for all possible changepoint locations and returns the single most probable (max).
 
     Parameters
@@ -200,7 +339,36 @@ def single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", 
 
     Returns
     -------
-    PLEASE ENTER DETAILS.
+    If class=True then an object of class "cpt" is returned. The slot cpts contains the changepoints that are solely returned if class=False. The structure of cpts is as follows.
+
+    If data is a vector (single dataset) then a single value is returned:
+	cpt: The most probable location of a changepoint if H0 was rejected or NA if H1 was rejected.
+    If data is an mxn matrix (multiple datasets) then a vector is returned:
+	cpt: Vector of length m containing where each element is the result of the test for data[m-1,:]. If cpt[m-1] is a number then it is the most probable location of a changepoint under H1. Otherwise cpt[m-1] is None and indicates that H1 was rejected.
+
+    Usage
+    -----
+    cpt_mean
+
+    Details
+    -------
+    This function is used to find a single change in mean for data that is is not assumed to follow a specific distribtuion. The value returned is the result of testing H0:no change in mean against H1: single change in mean using the cumulative sums test statistic coupled with the penalty supplied.
+
+    Warning: The prescribed penalty values are not defined for use on CUSUM tests.  The values tend to be too large and thus manual penalties are preferred.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+
+    References
+    ----------
+    M. Csorgo, L. Horvath (1997) Limit Theorems in Change-Point Analysis, Wiley
+
+    E. S. Page (1954) Continuous Inspection Schemes, Biometrika 41(1/2), 100--115
+
+    Examples
+    --------
+    PLEASE ENTER DETAILS
     """
     if size(pen_value) > 1:
         print('Only one dimensional penalties can be used for CUSUM')

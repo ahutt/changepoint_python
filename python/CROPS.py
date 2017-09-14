@@ -1,4 +1,4 @@
-from numpy import mean, cumsum, vstack, transpose
+from numpy import mean, cumsum, vstack, transpose, append, square, subtract
 from class_input import class_input
 from range_of_penalties import range_of_penalties
 from sys import exit
@@ -11,23 +11,6 @@ def CROPS(data, pen_value, minseglen, shape, func, penalty = "CROPS", method = "
     -----------
     This is not intended for use by regular users of the package.
 
-    Parameters
-    ----------
-    data :
-    pen_value :
-    minseglen :
-    shape :
-    func :
-    penalty :
-    method :
-    test_stat :
-    Class :
-    param_est :
-
-    Returns
-    -------
-    This is not intended for use by regular users of the package.
-
     Usage
     -----
     cpt_mean
@@ -36,24 +19,16 @@ def CROPS(data, pen_value, minseglen, shape, func, penalty = "CROPS", method = "
 
     Details
     -------
-    PLEASE ENTER DETAILS.
+    This is not intended for use by regular users of the package.
 
     Author(s)
     ---------
     Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
-
-    References
-    ----------
-    PLEASE ENTER DETAILS.
-
-    Examples
-    --------
-    PLEASE ENTER DETAILS.
     """
     if method != "PELT":
         exit('CROPS is a valid penalty choice only if method="PELT", please change your method or your penalty.')
     mu = mean(data)
-    sumstat = transpose(vstack(([0, cumsum(data)],[0, cumsum(data ** 2), cumsum([0, ((data - mu) ** 2)])])))
+    sumstat = transpose(vstack((append(0, cumsum(data)),append(0, cumsum(square(data,2))), cumsum(append(0, square(subtract(data - mu),2))))))
 
     if test_stat == "Normal":
         stat = "norm"
@@ -67,7 +42,7 @@ def CROPS(data, pen_value, minseglen, shape, func, penalty = "CROPS", method = "
         exit("Only Normal, Exponential, Gamma and Poisson are valid test statistics")
     func = func + "_"
     costfunc = func + test_stat
-    out = range_of_penalties(sumstat, cost = costfunc, min_pen = pen_value[0], max_pen = pen_value[1], minseglen = minseglen)
+    out = range_of_penalties(sumstat = sumstat, cost = costfunc, min_pen = pen_value[0], max_pen = pen_value[1], minseglen = minseglen)
 
     if func == "var":
         cpttype = "variance"
@@ -79,7 +54,7 @@ def CROPS(data, pen_value, minseglen, shape, func, penalty = "CROPS", method = "
     if Class == True:
         ans = class_input(data = data, cpttype = cpttype, method = "PELT", test_stat = test_stat, penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_est, out = out, shape = shape)
         if func == "var":
-            ans.param_est = [ans.param_est, mean == mu]
+            ans.param_est = append(ans.param_est, mu)
         return(ans)
     else:
         return(out)

@@ -1,7 +1,7 @@
-from numpy import cumsum, log, shape, pi, exp, sqrt, vstack, size, full
+from numpy import cumsum, log, shape, pi, transpose, exp, sqrt, vstack, size, full, append, subtract
 from penalty_decision import penalty_decision
 from _warnings import warn
-from functions import lapply, which_element, second_element, less_than
+from functions import lapply, which_element, greater_than, truefalse, second_element, less_than, less_than_equal
 from class_input import class_input
 from decision import decision
 from data_input import data_input
@@ -34,16 +34,16 @@ def singledim(data, minseglen, extrainf = True):
     Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     n = size(data)
-    y = [0, cumsum(data)]
+    y = append(0, cumsum(data))
     null = 2 * n * log(y[n]) - 2 * n * log(n)
-    taustar = range(minseglen, n - minseglen)
+    taustar = list(range(minseglen, n - minseglen + 1))
     tmp = 2 * taustar * log(y[taustar]) - 2 * taustar * log(taustar) + 2 * (n - taustar) * log((y[n] - y[taustar])) - 2 * (n - taustar) * log(n - taustar)
 
     tau = which_element(tmp,min(tmp))[0]
-    taulike = tmp[tau]
+    taulike = tmp[tau-1]
     tau = tau + minseglen - 1 #correcting for the fact that we are starting at minseglen
     if extrainf == True:
-        out = [{'cpt':tau, 'null':null, 'alt':taulike}]
+        out = append(append(tau, null), taulike)
         return(out)
     else:
         return(tau)
@@ -98,18 +98,21 @@ def single_meanvar_exp_calc(data, minseglen, extrainf = True):
     --------
     PLEASE ENTER DETAILS
     """
-    if shape(data) == (0,0) or (0,) or () or None:
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single data set
-        cpt = singledim(data, minseglen, extrainf)
+        cpt = singledim(data=data, minseglen=minseglen, extrainf=extrainf)
         return(cpt)
     else:
-        rep = len(data)
-        n = len(data.T)
-        cpt = None
+        rep = shape(data)[0]
+        n = shape(data)[1]
+        cpt = [None] * rep
         if extrainf == False:
-            for i in range(1, rep):
-                cpt[i] = singledim(data[i,:], minseglen, extrainf)
-            cpt.rename(columns = {'cpt', 'null', 'alt'}, inplace = True)
+            for i in range(1, rep+1):
+                cpt[i-1] = singledim(data=data[i-1,:], minseglen=minseglen, extrainf=extrainf)
         return(cpt)
 
 def single_meanvar_exp(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True):
@@ -160,47 +163,52 @@ def single_meanvar_exp(data, minseglen, penalty = "MBIC", pen_value = 0, Class =
     """
     if sum(less_than(data,0)) > 0:
         exit('Exponential test statistic requires positive data')
-    if shape(data) == (0,0) or (0,) or () or None:
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         n = size(data)
     else:
-        n = len(data.T)
+        n = shape(data)[1]
     if n < 4:
         exit('Data must have atleast 4 observations to fit a changepoint model.')
     if n < (2 * minseglen):
         exit('Minimum segment legnth is too large to include a change in this data')
 
-    penalty_decision(penalty, pen_value, n, diffparam = 1, asymcheck = "meanvar_exp", method = "AMOC")
-    if shape(data) == (0,0) or (0,) or () or None:
-        tmp = single_meanvar_exp_calc(data, minseglen, extrainf = True)
+    penalty_decision(penalty=penalty, pen_value=pen_value, n=n, diffparam = 1, asymcheck = "meanvar_exp", method = "AMOC")
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
+        tmp = single_meanvar_exp_calc(data=data, minseglen=minseglen, extrainf = True)
         if penalty == "MBIC":
             tmp[2] = tmp[2] + log(tmp[0]) + log(n - tmp[0] + 1)
-        ans = decision(tmp[0], tmp[1], tmp[2], penalty, n, pen_value, diffparam = 1)
+        ans = decision(tau=tmp[0], null=tmp[1], alt=tmp[2], penalty=penalty, n=n, pen_value=pen_value, diffparam = 1)
         if Class == True:
-            return(class_input(data, cpttype = "mean and variance", method = "AMOC", test_stat = "Exponential", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt]))
+            return(class_input(data=data, cpttype = "mean and variance", method = "AMOC", test_stat = "Exponential", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = append(0, ans.cpt)))
         else:
             an = (2 * log(log(n))) ** (1/2)
             bn = 2 * log(log(n)) + (1/2) * log(log(log(n))) - (1/2) * log(pi)
-            out = [ans.cpt, exp(-2 * exp(-an * sqrt(abs(tmp[1] - tmp[2])) + an * bn)) - exp(-2 * exp(an * bn))] #Chen & Gupta (2000) pg149
-            out.columns({'cpt', 'p value'})
+            out = append(ans.cpt, exp(-2 * exp(-an * sqrt(abs(tmp[1] - tmp[2])) + an * bn)) - exp(-2 * exp(an * bn))) #Chen & Gupta (2000) pg149
             return(out)
     else:
-        tmp = single_meanvar_exp_calc(data, minseglen, extrainf = True)
+        tmp = single_meanvar_exp_calc(data=data, minseglen=minseglen, extrainf = True)
         if penalty == "MBIC":
             tmp[:,2] = tmp[:,2] + log(tmp[:,0]) + log(n - tmp[:,0] + 1)
-        ans = decision(tmp[:,0], tmp[:,1], tmp[:,2], penalty, n, pen_value, diffparam = 1)
+        ans = decision(tau=tmp[:,0], null=tmp[:,1], alt=tmp[:,2], penalty=penalty, n=n, pen_value=pen_value, diffparam = 1)
         if Class == True:
-            rep = len(data)
-            out = list()
-            for i in range(1, rep):
-                out[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Exponential", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt[i]])
+            rep = shape(data)[0]
+            out = [None] * rep
+            for i in range(1, rep+1):
+                out[i-1] = class_input(data=data[i-1,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Exponential", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = append(0, ans.cpt[i-1]))
             return(out)
         else:
             an = (2 * log(log(n))) ** (1/2)
             bn = 2 * log(log(n)) + (1/2) * log(log(log(n))) - (1/2) * log(pi)
-            out = vstack(ans.cpt, exp(-2 * exp(-an * sqrt(abs(tmp[:,1] - tmp[:,2])) + bn)) - exp(-2 * exp(bn))) #chen & Gupta (2000) pg149
-            out.columns({'cpt', 'p value'})
-            out.rows({None, None})
+            out = transpose(vstack((ans.cpt, exp(-2 * exp(-an * sqrt(abs(tmp[:,1] - tmp[:,2])) + bn)) - exp(-2 * exp(bn))))) #chen & Gupta (2000) pg149
             return(out)
 
 def segneigh_meanvar_exp(data, Q = 5, pen = 0):
@@ -246,7 +254,7 @@ def segneigh_meanvar_exp(data, Q = 5, pen = 0):
     --------
     PLEASE ENTER DETAILS
     """
-    if sum(data <= 0) > 0:
+    if sum(less_than_equal(data, 0)) > 0:
         exit('Exponential test statistic requires positive data')
     n = size(data)
     if n < 4:
@@ -254,46 +262,51 @@ def segneigh_meanvar_exp(data, Q = 5, pen = 0):
     if Q > ((n/2) + 1):
         exit('Q is larger than the maximum number of segments')
     all_seg = full((n, n),0,dtype=float)
-    for i in range(1, n):
+    for i in range(1, n+1):
         sumx = 0
-        for j in range(i, n):
+        for j in range(i, n+1):
             Len = j - i + 1
-            sumx = sumx + data[j]
-            all_seg[i,j] = Len * log(Len) - Len * log(sumx)
+            sumx = sumx + data[j-1]
+            all_seg[i-1,j-1] = Len * log(Len) - Len * log(sumx)
     like_Q = full((Q, n),0,dtype=float)
-    like_Q[1,:] = all_seg[1,:]
+    like_Q[0,:] = all_seg[0,:]
     cp = full((Q, n),None, dtype='O')
-    for q in range(2, Q):
-        for j in range(q, n):
+    for q in range(2, Q+1):
+        for j in range(q, n+1):
             like = None
             if ((j - 2 - q) < 0):
                 v = q
             else:
-                v = range(q, (j - 2))
-            like = like_Q[(q - 1),v] + all_seg[(v + 1), j]
+                v = list(range(q, (j - 1)))
+            like = like_Q[q - 2,v-1] + all_seg[v, j-1]
 
-            like_Q[q,j] = max(like)
-            cp[q,j] = which_element(like,max(like))[1] + (q - 1)
+            like_Q[q-1,j-1] = max(like)
+            cp[q-1,j-1] = which_element(like,max(like))[0] + (q - 1)
 
     cps_Q = full((Q, Q),None,dtype='O')
-    for q in range(2, Q):
-        cps_Q[q,1] = cp[q,n]
-        for i in range(1, (q - 1)):
-            cps_Q[q, (i + 1)] = cp[(q - i),cps_Q[q,i]]
+    for q in range(2, Q+1):
+        cps_Q[q-1,0] = cp[q-1,n-1]
+        for i in range(1, q):
+            cps_Q[q-1, i] = cp[q-i-1,subtract(cps_Q[q-1,i-1],1)]
 
     op_cps = None
-    k = range(0, (Q - 1))
+    k = list(range(0, Q))
 
-    for i in range(1,size(pen)):
-        criterion = -2 * like_Q[:,n] + k * pen[i]
-        op_cps = [op_cps, which_element(criterion, min(criterion)) - 1]
+    for i in range(1,size(pen)+1):
+        criterion = -2 * like_Q[:,n-1] + k * pen[i-1]
+        op_cps = append(op_cps, which_element(criterion, min(criterion)) - 1)
     if op_cps == (Q - 1):
         warn('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
     if op_cps == 0:
         cpts = n
     else:
-        cpts = [sorted(cps_Q[op_cps + 1,:][cps_Q[op_cps + 1,:] > 0], reverse = True), n]
-    return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = like_Q[:,n]))
+        cpts = append(sorted(truefalse(cps_Q[op_cps,:],greater_than(cps_Q[op_cps,:],0))), n)
+
+    cps = lapply(cps_Q, sorted)
+    op_cpts = op_cps
+    like = criterion[op_cps]
+    like_Q=like_Q[:,n-1]
+    return(list((cps, op_cpts, pen, pen, like, like_Q)))
 
 def multiple_meanvar_exp(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
     """
@@ -357,7 +370,7 @@ def multiple_meanvar_exp(data, minseglen, mul_method = "PELT", penalty = "MBIC",
     --------
     PLEASE ENTER DETAILS
     """
-    if sum(data < 0) > 0:
+    if sum(less_than(data,0)) > 0:
         exit('Exponential test statistic requires positive data')
     if(not(mul_method == "PELT" or mul_method == "BinSeg" or mul_method == "SegNeigh")):
         exit("Multiple Method is not recognised")
@@ -367,32 +380,40 @@ def multiple_meanvar_exp(data, minseglen, mul_method = "PELT", penalty = "MBIC",
             exit('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
         costfunc = "meanvar_exp_mbic"
     diffparam = 1
-    if shape(data) == (0,0) or (0,) or () or None:
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         n = size(data)
     else:
-        n = len(data.T)
+        n = shape(data)[1]
     if n < (2 * minseglen):
         exit('Minimum segment legnth is too large to include a change in this data')
-    pen_value = penalty_decision(penalty, pen_value, n, diffparam = 1, asymcheck = costfunc, method = mul_method)
-    if shape(data) == (0,0) or (0,) or () or None:
+    pen_value = penalty_decision(penalty=penalty, pen_value=pen_value, n=n, diffparam = 1, asymcheck = costfunc, method = mul_method)
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         out = data_input(data = data, method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
         if Class == True:
-            return(class_input(data, cpttype = "mean and variance", method = mul_method, test_stat = "Exponential", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
+            return(class_input(data=data, cpttype = "mean and variance", method = mul_method, test_stat = "Exponential", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
         else:
-            return(out[[2]])
+            return(out[1])
     else:
-        rep = len(data)
-        out = list()
-        for i in range(1, rep):
-            out[[i]] = data_input(data[i,:], method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
+        rep = shape(data)[0]
+        out = [None] * rep
+        for i in range(1, rep+1):
+            out[i-1] = data_input(data=data[i-1,:], method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
         cpts = lapply(out, second_element)
 
         if Class == True:
-            ans = list()
-            for i in range(1, rep):
-                ans[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = mul_method, test_stat = "Exponential", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[[i]], Q = Q)
+            ans = [None] * rep
+            for i in range(1, rep+1):
+                ans[i-1] = class_input(data[i-1,:], cpttype = "mean and variance", method = mul_method, test_stat = "Exponential", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[i-1], Q = Q)
             return(ans)
         else:
             return(cpts)

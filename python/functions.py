@@ -139,6 +139,11 @@ def lapply(x,y):
     multiple_meanvar_exp
     multiple_meanvar_gamma
     param
+    segneigh_var_css
+    segneigh_mean_cusum
+    segneigh_meanvar_exp
+    segneigh_meanvar_gamma
+    segneigh_meanvar_poisson
 
     Author(s)
     ---------
@@ -253,6 +258,11 @@ def greater_than(a,b):
     -----
     segniegh_meanvar_norm
     data_input
+    segneigh_var_css
+    segneigh_mean_cusum
+    segneigh_meanvar_exp
+    segneigh_meanvar_gamma
+    segneigh_meanvar_poisson
 
     Author
     ------
@@ -295,6 +305,11 @@ def less_than(a,b):
     Usage
     -----
     single_meanvar_exp
+    multiple_meanvar_exp
+    segneigh_meanvar_gamma
+    segneigh_meanvar_poisson
+    single_meanvar_poisson
+    multiple_meanvar_poisson
 
     Author(s)
     ---------
@@ -386,6 +401,7 @@ def less_than_equal(a,b):
     multiple_meanvar_gamma
     segneigh_meanvar_gamma
     single_meanvar_gamma
+    segneigh_meanvar_exp
 
     Author(s)
     ---------
@@ -487,6 +503,11 @@ def truefalse(a,b):
     PELT_meanvar_norm
     segneigh_meanvar_norm
     data_input
+    segneigh_var_css
+    segneigh_mean_cusum
+    segneigh_meanvar_exp
+    segneigh_meanvar_gamma
+    segneigh_meanvar_poisson
 
     Author(s)
     ---------

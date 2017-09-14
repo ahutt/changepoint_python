@@ -234,7 +234,7 @@ def param_trendar(object):
     seglen = seg_len(object)
     data = object.data_set
     n = len(data) - 1
-    sumstat = vstack((cumsum(append([0],delete(data,0))),cumsum(append([0],delete(data,n))),cumsum(append([0],multiply(delete(data,0),delete(data,n)))),cumsum(append([0],multiply(delete(data,0),list(range(1,n+1))))),cumsum(append([0],multiply(delete(data,n),range(0,n))))))
+    sumstat = transpose(vstack((cumsum(append([0],delete(data,0))),cumsum(append([0],delete(data,n))),cumsum(append([0],multiply(delete(data,0),delete(data,n)))),cumsum(append([0],multiply(delete(data,0),list(range(1,n+1))))),cumsum(append([0],multiply(delete(data,n),range(0,n)))))))
     cptsumstat = array(subtract(sumstat[object.cpts,:],sumstat[append([0],cpts(object)),:]))
     cptsumstat.shape = (len(cptsumstat)/7,7)
     cptsumstat[:,3] = subtract(cptsumstat[:,3],multiply(cptsumstat[:,0],append([0],cpts(object))))

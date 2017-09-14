@@ -1,4 +1,4 @@
-from numpy import repeat, shape, size, mean
+from numpy import repeat, shape, size, mean, append
 from functions import lapply,second_element
 from penalty_decision import penalty_decision
 from data_input import data_input
@@ -78,43 +78,51 @@ def multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0
             exit('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
         costfunc = "var_norm_mbic"
     diffparam = 1
-    if shape(data) == ((0,0) or (0,) or () or None):
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         n = size(data)
         mu = mu[0]
     else:
-        n = len(data.T)
+        n = shape(data)[1]
     if n < 4:
         exit('Data must have at least 4 observations to fit a changepoint model.')
     if n < 2 * minseglen:
         exit('Minimum segment legnth is too large to include a change in this data')
-    pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
-    if shape(data) == ((0,0) or (0,) or () or None):
+    pen_value = penalty_decision(penalty=penalty, pen_value=pen_value, n=n, diffparam=diffparam, asymcheck = costfunc, method = mul_method)
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
             #single dataset
-        if know_mean == False and isinstance(mu, None):
+        if know_mean == False and isinstance(mu, None)==True:
             mu = mean(data)
         out = data_input(data = data, method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q, var = mu)
         if Class == True:
-            out = class_input(data, cpttype = "variance", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q)
-            out.param_est = [out.param_est, mean == mu]
+            out = class_input(data=data, cpttype = "variance", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q)
+            out.param_est = append(out.param_est, mu)
             return(out)
         else:
-            return(out[[1]])
+            return(out[1])
     else:
-        rep = len(data)
-        out = list()
+        rep = size(data)[0]
+        out = [None] * rep
         if size(mu) != rep:
             mu = repeat(mu, rep)
-        for i in range(1,rep):
-            if know_mean == False and mu[i] == None:
-                mu = mean(data[i,:])
-            out[[i]] = data_input(data[i,:], method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q, var = mu)
+        for i in range(1,rep+1):
+            if know_mean == False and mu[i-1] == None:
+                mu = mean(data[i-1,:])
+            out[i-1] = data_input(data=data[i-1,:], method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q, var = mu)
         cpts = lapply(out, second_element)
     if Class == True:
-        ans = list()
-        for i in range(1,rep):
-            ans[[i]] = class_input(data[i,:], cpttype = "variance", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[[i]], Q = Q)
-            ans[[i]].param_est = [ans[[i]].param_est, mean == mu[i]]
+        ans = [None] * rep
+        for i in range(1,rep+1):
+            ans[i-1] = class_input(data=data[i-1,:], cpttype = "variance", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[i-1], Q = Q)
+            ans[i-1].param_est = append(ans[i-1].param_est, mu[i-1])
         return(ans)
     else:
         return(cpts)
@@ -189,33 +197,41 @@ def multiple_mean_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC", p
             exit('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
         costfunc = "mean_norm_mbic"
     diffparam = 1
-    if shape(data) == ((0,0) or (0,) or () or None):
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         n = size(data)
     else:
-        n = len(data.T)
+        n = shape(data)[1]
     if n < (2 * minseglen):
         exit('Minimum segment legnth is too large to include a change in this data')
-    pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
-    if shape(data) == ((0,0) or (0,) or () or None):
+    pen_value = penalty_decision(penalty=penalty, pen_value=pen_value, n=n, diffparam=diffparam, asymcheck = costfunc, method = mul_method)
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         out = data_input(data = data, method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
         if Class == True:
-            return(class_input(data, cpttype = "mean", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
+            return(class_input(data=data, cpttype = "mean", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
         else:
-            return(out[[2]])
+            return(out[1])
     else:
-        rep = len(data)
-        out = list()
+        rep = shape(data)[0]
+        out = [None] * rep
         if Class == True:
             cpts = list()
-        for i in range(1,rep):
-            out[[i]] = data_input(data[i,:], method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
+        for i in range(1,rep+1):
+            out[i-1] = data_input(data=data[i-1,:], method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
         cps = lapply(out, second_element)
         if Class == True:
-            ans = list()
-            for i in range(1,rep):
-                ans[[i]] = class_input(data[i,:], cpttype = "mean", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[[i]], Q = Q)
+            ans = [None] * rep
+            for i in range(1,rep+1):
+                ans[i-1] = class_input(data=data[i-1,:], cpttype = "mean", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[i-1], Q = Q)
             return(ans)
         else:
             return(cps)
@@ -290,31 +306,39 @@ def multiple_meanvar_norm(data, minseglen, mul_method = "PELT", penalty = "MBIC"
             exit('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
         costfunc = "meanvar_norm_mbic"
     diffparam = 2
-    if shape(data) == ((0,0) or (0,) or () or None):
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         n = size(data)
     else:
-        n = len(data.T)
+        n = shape(data)[1]
     if n < (2 * minseglen):
         exit('Minimum segment legnth is too large to include a change in this data')
-    pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
-    if shape(data) == ((0,0) or (0,) or () or None):
+    pen_value = penalty_decision(penalty=penalty, pen_value=pen_value, n=n, diffparam=diffparam, asymcheck = costfunc, method = mul_method)
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         out = data_input(data = data, method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
         if Class == True:
-            return(class_input(data, cpttype = "mean and variance", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
+            return(class_input(data=data, cpttype = "mean and variance", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
         else:
-            return(out[[1]])
+            return(out[1])
     else:
-        rep = len(data)
-        out = list()
-        for i in range(1,rep):
-            out[[i]] = data_input(data[i,:], method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
+        rep = shape(data)[0]
+        out = [None] * rep
+        for i in range(1,rep+1):
+            out[i-1] = data_input(data=data[i-1,:], method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
         cps = lapply(out, second_element)
         if Class == True:
-            ans = list()
-            for i in range(1,rep):
-                ans[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estiamtes = param_estimates, out = out[[i]], Q = Q)
+            ans = [None] * rep
+            for i in range(1,rep+1):
+                ans[i-1] = class_input(data=data[i-1,:], cpttype = "mean and variance", method = mul_method, test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estiamtes = param_estimates, out = out[i-1], Q = Q)
             return(ans)
         else:
             return(cps)

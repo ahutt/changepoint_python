@@ -1,8 +1,9 @@
 from penalty_decision import penalty_decision
 from functions import which_max
-from numpy import cumsum, shape, size, square, full, sqrt, subtract, mean
+from numpy import cumsum, shape, size, square, full, sqrt, subtract, mean, append, add
 from decision import decision
 from param_cpt import param
+from sys import exit
 
 def singledim(data, minseglen, extrainf = True):
     """
@@ -26,19 +27,24 @@ def singledim(data, minseglen, extrainf = True):
     -----
     single_var_css_calc
 
+    Details
+    -------
+    This is not intended for use by regular users of the package.
+
     Author(s)
     ---------
     Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     n = size(data)
-    y2 = [0, cumsum(square(data))]
-    taustar = range(minseglen, n - minseglen + 1)
+    y2 = append([0], cumsum(square(data)))
+    taustar = range(minseglen, n - minseglen + 2)
     tmp = (y2[taustar])/(y2[n]) - taustar/n
 
     D = max(abs(tmp))
     tau = which_max(abs(tmp))
     if extrainf == True:
-        out = [{'cpt':tau, 'test statistic':sqrt(n/2) * D}]
+        out = append(tau, sqrt(n/2) * D)
+#line above
         return(out)
     else:
         return(tau)
@@ -91,22 +97,27 @@ def single_var_css_calc(data, minseglen, extrainf = True):
     --------
     PLEASE ENTER DETAILS
     """
-    if shape(data) == (0,0) or (0,) or () or None:
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         cpt = singledim(data, extrainf, minseglen)
         return(cpt)
     else:
-        rep = len(data)
-        n = len(data.T)
+        rep = shape(data)[0]
+        n = shape(data)[1]
         cpt = None
         if extrainf == False:
-            for i in range(1,rep):
-                cpt[i-1] = singledim(data[i,:], extrainf, minseglen)
+            for i in range(1,rep+1):
+                cpt[i-1] = singledim(data = data[i-1,:], extrainf = extrainf, minseglen=minseglen)
         else:
             cpt = full((rep,2), 0, dtype=float)
-            for i in range(1,rep):
-                cpt[i-1,:] = singledim(data[i,:], extrainf, minseglen)
+            for i in range(1,rep+1):
+                cpt[i-1,:] = singledim(data = data[i-1,:], extrinf=extrainf, minseglen=minseglen)
             cpt.rename(columns = {'cpt', 'test statistic'}, inplace = True)
+#line above
         return(cpt)
 
 def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True):
@@ -158,26 +169,44 @@ def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = Tru
     PLEASE ENTER DETAILS.
     """
     if size(pen_value) > 1:
-        print('Only one dimensional penalties can be used for CSS')
+        exit('Only one dimensional penalties can be used for CSS')
     if penalty == "MBIC":
         print("MBIC penalty is not valid for nonparametric test statistics.")
     diffparam = 1
-    if shape(data) == (0,0) or (0,) or () or None:
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
-        n = size(data)
+        n = len(data)
     else:
-        n = len(data.T)
+        n = shape(data)[1]
     if n < 4:
-        print('Data must have atleast 4 observations to fit a changepoint model.')
+        exit('Data must have atleast 4 observations to fit a changepoint model.')
     if n < (2 * minseglen):
-        print('Minimum segment legnth is too large to include a change in this data')
+        exit('Minimum segment legnth is too large to include a change in this data')
 
-    pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = "var_css", method = "AMOC")
-    if shape(data) == (0,0) or (0,) or () or None:
-        tmp = single_var_css_calc(data, minseglen, extrainf = True)
+    pen_value = penalty_decision(penalty=penalty, pen_value=pen_value, n=n, diffparam=diffparam, asymcheck = "var_css", method = "AMOC")
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
+        tmp = single_var_css_calc(data=data, minseglen=minseglen, extrainf = True)
         ans = decision(tau = tmp[0], null = tmp[1], penalty = "Manual", n = n, diffparam = 1, pen_value = pen_value)
         if Class == True:
-            out = "cpt".__new__
+            class class_out:
+                def __init__(self, data_set = None, cpttype = None, method = None, test_stat = None, pen_type = None, pen_value = None, ncpts_max = None, cpts = None):
+                    self.data_set = data_set
+                    self.cpttype = cpttype
+                    self.method = method
+                    self.test_stat = test_stat
+                    self.pen_type = pen_type
+                    self.pen_value = pen_value
+                    self.ncpts_max = ncpts_max
+                    self.cpts
+            out=class_out()
             out.data_set = data
             out.cpttype = "variance"
             out.method = "AMOC"
@@ -186,7 +215,7 @@ def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = Tru
             out.pen_value = ans.pen
             out.ncpts_max = 1
             if ans.cpt != n:
-                out.cpts = [ans.cpt, n]
+                out.cpts = append(ans.cpt, [n])
             else:
                 out.cpts = ans.cpt
             if param_estimates == True:
@@ -195,26 +224,36 @@ def single_var_css(data, minseglen, penalty = "MBIC", pen_value = 0, Class = Tru
         else:
             return(ans.cpt)
     else:
-        tmp = single_var_css_calc(data, minseglen, extrainf = True)
+        tmp = single_var_css_calc(data=data, minseglen=minseglen, extrainf = True)
         ans = decision(tau = tmp[:,0], null = tmp[:,1], penalty = "Manual",  n = n, diffparam = 1, pen_value = pen_value)
         if Class == True:
-            rep = len(data)
-            out = len()
-            for i in range(1,rep):
-                out[[i-1]] = "cpt".__new__
-                out[[i-1]].data_set = data[i-1,:]
-                out[[i-1]].cpttype = "variance"
-                out[[i-1]].method = "AMOC"
-                out[[i-1]].test_stat = "CSS"
-                out[[i-1]].pen_type = penalty
-                out[[i-1]].pen_value = ans.pen
-                out[[i-1]].cpts_max = 1
+            rep = shape(data)[0]
+            out = [None] * rep
+            for i in range(1,rep+1):
+                class class_out:
+                    def __init__(self, data_set = None, cpttype = None, method = None, test_stat = None, pen_type = None, pen_value = None, ncpts_max = None, cpts = None):
+                        self.data_set = data_set
+                        self.cpttype = cpttype
+                        self.method = method
+                        self.test_stat = test_stat
+                        self.pen_type = pen_type
+                        self.pen_value = pen_value
+                        self.ncpts_max = ncpts_max
+                        self.cpts
+                out[i-1] = class_out()
+                out[i-1].data_set = data[i-1,:]
+                out[i-1].cpttype = "variance"
+                out[i-1].method = "AMOC"
+                out[i-1].test_stat = "CSS"
+                out[i-1].pen_type = penalty
+                out[i-1].pen_value = ans.pen
+                out[i-1].ncpts_max = 1
                 if ans.cpt[i-1] != n:
-                    out[[i-1]].cpts = [ans.cpt[i-1], n]
+                    out[i-1].cpts = append(ans.cpt[i-1], [n])
                 else:
-                    out[[i-1]].cpts = ans.cpt[i-1]
+                    out[i-1].cpts = ans.cpt[i-1]
                 if param_estimates == True:
-                    out[[i-1]] = param(out[[i-1]])
+                    out[i-1] = param(out[i-1])
             return(out)
         else:
             return(ans.cpt)
@@ -237,6 +276,10 @@ def singledim2(data, minseglen, extrainf = True):
     -------
     If extrainf == True, a vector is returned. Otherwise, a value is returned.
 
+    Details
+    -------
+    This is not intended for use by regular users of the package.
+
     Usage
     -----
     single_mean_cusum_calc
@@ -247,13 +290,13 @@ def singledim2(data, minseglen, extrainf = True):
     """
     n = size(data)
     ybar = mean(data)
-    y = [0, cumsum(subtract(data,ybar))]
+    y = append([0], cumsum(subtract(data,ybar)))
     y = y/n
 
-    M = max(abs(y[range(minseglen,n - minseglen + 1)]))
-    tau = which_max(abs(y[range(minseglen, n - minseglen + 1)])) + minseglen - 1
+    M = max(abs(y[list(range(minseglen,n - minseglen + 2))]))
+    tau = subtract(add(which_max(abs(y[list(range(minseglen, n - minseglen + 2))])),minseglen),1)
     if extrainf == True:
-        out = [{'cpt':tau, 'test statistic':M}]
+        out = append(tau,M)
         return(out)
     else:
         return(tau)
@@ -306,21 +349,25 @@ def single_mean_cusum_calc(data, minseglen, extrainf = True):
     --------
     PLEASE ENTER DETAILS
     """
-    if shape(data) == (0,0) or (0,) or () or None:
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
-        cpt = singledim2(data, extrainf, minseglen)
+        cpt = singledim2(data=data, extrainf=extrainf, minseglen=minseglen)
         return(cpt)
     else:
-        rep = len(data)
-        n = len(data.T)
-        cpt = None
+        rep = shape(data)[0]
+        n = shape(data)[1]
+        cpt = [None] * rep
         if extrainf == False:
-            for i in range(1,rep):
-                cpt[i-1] = singledim2(data[i-1,:], extrainf, minseglen)
-            cpt.rename(columns = {'cpt', 'test statistic'}, inplace = True)
+            for i in range(1,rep+1):
+                cpt[i-1] = singledim2(data=data[i-1,:], extrainf=extrainf, minseglen=minseglen)
+#            cpt.rename(columns = {'cpt', 'test statistic'}, inplace = True)
         return(cpt)
 
-def single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", pen_value = 0.05, Class = True):
+def single_mean_cusum(data, minseglen, param_estimates=True, penalty = "Asymptotic", pen_value = 0.05, Class = True):
     """
     single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", pen_value = 0.05, Class = True)
 
@@ -371,26 +418,44 @@ def single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", 
     PLEASE ENTER DETAILS
     """
     if size(pen_value) > 1:
-        print('Only one dimensional penalties can be used for CUSUM')
+        exit('Only one dimensional penalties can be used for CUSUM')
     if penalty == "MBIC":
-        print("MBIC penalty is not valid for nonparametric test statistics.")
+        exit("MBIC penalty is not valid for nonparametric test statistics.")
 
-    if shape(data) == (0,0) or (0,) or () or None:
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         n = size(data)
     else:
-        n = len(data.T)
+        n = shape(data)[1]
     if n < 2:
-        print('Data must have atleast 2 observations to fit a changepoint model.')
+        exit('Data must have atleast 2 observations to fit a changepoint model.')
     if n < (2 * minseglen):
-        print('Minimum segment legnth is too large to include a change in this data')
+        exit('Minimum segment legnth is too large to include a change in this data')
 
-    pen_value = penalty_decision(penalty, pen_value, n, diffparam = 1, asymcheck = "mean_cusum", method = "AMOC")
-    if shape(data) == (0,0) or (0,) or () or None:
-        tmp = single_mean_cusum_calc(data, minseglen, extrainf = True)
+    pen_value = penalty_decision(penalty=penalty, pen_value=pen_value, n=n, diffparam = 1, asymcheck = "mean_cusum", method = "AMOC")
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
+        tmp = single_mean_cusum_calc(data=data, minseglen=minseglen, extrainf = True)
         ans = decision(tau = tmp[0], null = tmp[1], penalty = penalty, n = n, diffparam = 1, pen_value = pen_value)
         if Class == True:
-            out = "cpt".__new__
+            class class_out2:
+                def __init__(self, data_set = None, cpttype = None, method = None, test_stat = None, pen_type = None, pen_value = None, ncpts_max = None, cpts = None):
+                    self.data_set = data_set
+                    self.cpttype = cpttype
+                    self.method = method
+                    self.test_stat = test_stat
+                    self.pen_type = pen_type
+                    self.pen_value = pen_value
+                    self.ncpts_max = ncpts_max
+                    self.cpts
+            out = class_out2()
             out.data_set = data
             out.cpttype = "mean"
             out.method = "AMOC"
@@ -399,7 +464,7 @@ def single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", 
             out.pen_value = ans.pen
             out.ncpts_max = 1
             if ans.cpt != n:
-                out.cpts = [ans.cpt, n]
+                out.cpts = append(ans.cpt, [n])
             else:
                 out.cpts = ans.cpt
             if param_estimates == True:
@@ -408,26 +473,36 @@ def single_mean_cusum(data, minseglen, param_estimates, penalty = "Asymptotic", 
         else:
             return(ans.cpt)
     else:
-        tmp = single_mean_cusum_calc(data, minseglen, extrainf = True)
+        tmp = single_mean_cusum_calc(data=data, minseglen=minseglen, extrainf = True)
         ans = decision(tau = tmp[:,0], null = tmp[:,1], penalty = penalty, n = n, diffparam = 1, pen_value = pen_value)
         if Class == True:
-            rep = len(data)
-            out = list()
-            for i in range(1,rep):
-                out[[i]] = "cpt".__new__
-                out[[i]].data_set = data[i,:]
-                out[[i]].cpttype = "mean"
-                out[[i]].method = "AMOC"
-                out[[i]].test_stat = "CUSUM"
-                out[[i]].pen_type = penalty
-                out[[i]].pen_value = ans.pen
-                out[[i]].ncpts_max = 1
-                if ans.cpt[i] != n:
-                    out[[i]].cpts = [ans.cpt[i],n]
+            rep = shape(data)[0]
+            out = [None] * rep
+            for i in range(1,rep+1):
+                class class_out2:
+                    def __init__(self, data_set = None, cpttype = None, method = None, test_stat = None, pen_type = None, pen_value = None, ncpts_max = None, cpts = None):
+                        self.data_set = data_set
+                        self.cpttype = cpttype
+                        self.method = method
+                        self.test_stat = test_stat
+                        self.pen_type = pen_type
+                        self.pen_value = pen_value
+                        self.ncpts_max = ncpts_max
+                        self.cpts
+                out[i-1] = class_out2()
+                out[i-1].data_set = data[i,:]
+                out[i-1].cpttype = "mean"
+                out[i-1].method = "AMOC"
+                out[i-1].test_stat = "CUSUM"
+                out[i-1].pen_type = penalty
+                out[i-1].pen_value = ans.pen
+                out[i-1].ncpts_max = 1
+                if ans.cpt[i-1] != n:
+                    out[i-1].cpts = append(ans.cpt[i-1],[n])
                 else:
-                    out[[i]].cpts = ans.cpt[i]
+                    out[i-1].cpts = ans.cpt[i-1]
                 if param_estimates == True:
-                    out[[i]] = param(out[[i]])
+                    out[i-1] = param(out[i-1])
             return(out)
         else:
             return(ans.cpt)

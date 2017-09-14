@@ -119,7 +119,7 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
         ans.ncpts_max = Q
 
     if method == "BinSeg":
-        l = []
+        l = [None] * (len(out.cps)/2)
         for i in range(1, len(out.cps)/2 + 1):
             l[i-1] = out.cps[0,list(subtract(range(1,i+1),1))]
 

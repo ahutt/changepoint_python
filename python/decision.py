@@ -2,6 +2,25 @@ from sys import exit
 from numpy import size, subtract
 
 def single_decision(tau, null, alt, n = 0, diffparam = 1, pen_value = 0):
+    """
+    single_decision(tau, null, alt, n = 0, diffparam = 1, pen_value = 0):
+
+    Description
+    -----------
+    This is a subfunction for decision.
+
+    Usage
+    -----
+    decision
+
+    Details
+    -------
+    This is not intended for use by regular users of the package.
+
+    Author(s)
+    ---------
+    Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
+    """
     if alt == None:
         teststat = null
     else:
@@ -67,7 +86,11 @@ def decision(tau, null, alt = None, penalty = "MBIC", n = 0, diffparam = 1, pen_
 
     Examples
     --------
+    PLEASE ENTER DETAILS
     """
+    class class1:
+        def __init__(self,cpt = None):
+            self.cpt = cpt
     if alt == None:
         if size(tau) != size(null):
             exit("Lengths of tau and null do not match")
@@ -76,20 +99,14 @@ def decision(tau, null, alt = None, penalty = "MBIC", n = 0, diffparam = 1, pen_
             exit("Lengths of tau, null and alt do not match")
     if size(tau) == 1:
         out = single_decision(tau = tau, null = null, alt = alt, n = n, diffparam = diffparam, pen_value = pen_value)
-#        out.columns = ['cpt']
-        cpt = out
+        out=class1()
+        out.cpt = out
         pen = pen_value
-        return(list((cpt, pen)))
+        return(list((out, pen)))
     else:
         rep = size(tau)
-        out = [0] * rep
-        if alt == None:
-            alt = [None] * rep
-        else:
-            alt = alt
+        out = [None] * rep
         for i in range(1,rep+1):
-            out[i-1] = single_decision(tau[i-1], null[i-1], alt[i-1], n, diffparam, pen_value)
-#        out.columns = ['cpt']
-        cpt = out
-        pen = pen_value
-        return(list((cpt, pen)))
+            out[i-1] = single_decision(tau = tau[i-1], null = null[i-1], alt=alt[i-1], n=n, diffparam=diffparam,pen_value=pen_value)
+        out.cpt = out
+        return(list((out,pen)))

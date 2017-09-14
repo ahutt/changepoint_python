@@ -1,5 +1,5 @@
-from numpy import inf, log, shape, full, apply_over_axes, size, cumsum, subtract
-from functions import which_element,lapply,second_element
+from numpy import inf, log, shape, full, size, cumsum, subtract, append
+from functions import which_element,lapply,second_element, less_than, truefalse
 from penalty_decision import penalty_decision
 from _warnings import warn
 from decision import decision
@@ -34,20 +34,19 @@ def singledim(data, minseglen, extrainf = True):
     Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     n = size(data)
-    y = [0, cumsum(data)]
+    y = append(0, cumsum(data))
     if y[n] == 0:
         null = inf
     else:
         null = 2 * y[n] * log(n) - 2 * y[n] * log(y[n])
-    taustar = range(minseglen, n - minseglen)
+    taustar = list(range(minseglen, n - minseglen+1))
     tmp = 2 * log(taustar) * y[taustar] - 2 * y[taustar] * log(y[taustar]) + 2 * log(n - taustar) * (y[n] - y[taustar]) - 2 * (y[n] - y[taustar]) * log(y[n] - y[taustar])
     tmp[which_element(tmp,None)] = inf
-    tau = which_element(tmp,min(tmp))[1]
-    taulike = tmp[tau]
+    tau = which_element(tmp,min(tmp))[0]
+    taulike = tmp[tau-1]
     tau = tau + minseglen - 1 # correcting for the fact that we are starting at minseglen
     if extrainf == True:
-        out = [tau, null, taulike]
-        out.columns({'cpt', 'null' , 'alt'})
+        out = append(tau, null, taulike)
         return(out)
     else:
         return(tau)
@@ -102,17 +101,20 @@ def single_meanvar_poisson_calc(data, minseglen, extrainf = True):
     --------
     PLEASE ENTER DETAILS
     """
-    if shape(data) == (0,0) or (0,) or () or None:
-        cpt = singledim(data, minseglen, extrainf)
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
+        cpt = singledim(data=data, minseglen=minseglen, extrainf=extrainf)
         return(cpt)
     else:
-        rep = len(data)
-        n = len(data.T)
-        cpt = None
+        rep = shape(data)[0]
+        n = shape(data)[1]
+        cpt = [None] * rep
         if extrainf == False:
-            for i in range(1,rep):
-                cpt[i,:] = singledim(data[i,:], minseglen, extrainf)
-            cpt.columns({'cpt', 'null' , 'alt'})
+            for i in range(1,rep+1):
+                cpt[i-1,:] = singledim(data=data[i-1,:], minseglen=minseglen, extrainf=extrainf)
         return(cpt)
 
 def single_meanvar_poisson(data, minseglen, penalty = "MBIC", pen_value = 0, Class = True, param_estimates = True):
@@ -161,40 +163,54 @@ def single_meanvar_poisson(data, minseglen, penalty = "MBIC", pen_value = 0, Cla
     --------
     PLEASE ENTER DETAILS
     """
-    if sum(data < 0) > 0:
+    if sum(less_than(data,0)) > 0:
         exit('Poisson test statistic requires positive data')
-    if sum(isinstance(data, int) == True) != size(data):
+    dummy = []
+    for i in range(0,size(data)):
+        if type(data[i]) == int:
+            dummy.append(1)
+        else:
+            dummy.append(0)
+    if sum(dummy) != size(data):
         exit('Poisson test statistic requires integer data')
-    if shape(data) == (0,0) or (0,) or () or None:
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         n = size(data)
     else:
-        n = len(data.T)
+        n = shape(data)[1]
     if n < 4:
         exit('Data must have atleast 4 observations to fit a changepoint model.')
     if n < (2 * minseglen):
         exit('Minimum segment legnth is too large to include a change in this data')
 
-    pen_value = penalty_decision(penalty, pen_value, n, diffparam = 1, asymcheck = "meanvar_poisson", method = "AMOC")
-    if shape(data) == (0,0) or (0,) or () or None:
-        tmp = single_meanvar_poisson_calc(data, minseglen, extrainf = True)
+    pen_value = penalty_decision(penalty=penalty, pen_value=pen_value, n=n, diffparam = 1, asymcheck = "meanvar_poisson", method = "AMOC")
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
+        tmp = single_meanvar_poisson_calc(data=data, minseglen=minseglen, extrainf = True)
         if penalty == "MBIC":
             tmp[2] = tmp[2] + log(tmp[0]) + log(n - tmp[0] + 1)
-        ans = decision(tmp[0], tmp[1], tmp[2], penalty, n, pen_value, diffparam = 1)
+        ans = decision(tau=tmp[0], null=tmp[1], alt=tmp[2], penalty=penalty, n=n, pen_value=pen_value, diffparam = 1)
         if Class == True:
-            return(class_input(data, cpttype = "mean and variance", method = "AMOC", test_stat = "Poisson", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0,ans.cpt]))
+            return(class_input(data=data, cpttype = "mean and variance", method = "AMOC", test_stat = "Poisson", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0,ans.cpt]))
         else:
             return(ans.cpt)
     else:
-        tmp = single_meanvar_poisson_calc(data, minseglen, extrainf = True)
+        tmp = single_meanvar_poisson_calc(data=data, minseglen=minseglen, extrainf = True)
         if penalty == "MBIC":
-            tmp[:,2] = tmp[:,2] + log(tmp[:,1]) + log(n - tmp[:,1] + 1)
-        ans = decision(tmp[:,0], tmp[:,1], tmp[:,2], penalty, n, pen_value, diffparam = 1)
+            tmp[:,2] = tmp[:,2] + log(tmp[:,0]) + log(n - tmp[:,0] + 1)
+        ans = decision(tau=tmp[:,0], null=tmp[:,1], alt=tmp[:,2], penalty=penalty, n=n, pen_value=pen_value, diffparam = 1)
         if Class == True:
-            rep = len(data)
-            out = list()
-            for i in range(1,rep):
-                out[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Poisson", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0,ans.cpt[i]])
+            rep = shape(data)[0]
+            out = [None]*rep
+            for i in range(1,rep+1):
+                out[i-1] = class_input(data=data[i-1,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Poisson", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0,ans.cpt[i]])
             return(out)
         else:
             return(ans.cpt)
@@ -240,7 +256,7 @@ def segneigh_meanvar_poisson(data, Q = 5, pen = 0):
     --------
     PLEASE ENTER DETAILS
     """
-    if sum(data < 0) > 0:
+    if sum(less_than(data,0)) > 0:
         exit('Poisson test statistic requires positive data')
     if sum(isinstance(data, int) == data) != size(data):
         exit('Poisson test statistic requires integer data')
@@ -250,50 +266,55 @@ def segneigh_meanvar_poisson(data, Q = 5, pen = 0):
     if Q > ((n/2) + 1):
         exit('Q is larger than the maximum number of segments')
     all_seg = full((n,n),0,dtype=float)
-    for i in range(1,n):
+    for i in range(1,n+1):
         sumx = 0
-        for j in range(i,n):
+        for j in range(i,n+1):
             Len = j - i + 1
-            sumx = sumx + data[j]
+            sumx = sumx + data[j-1]
             if sumx == 0:
-                all_seg[i,j] = -inf
+                all_seg[i-1,j-1] = -inf
             else:
-                all_seg[i,j] = sumx * log(sumx) - sumx * log(Len)
+                all_seg[i-1,j-1] = sumx * log(sumx) - sumx * log(Len)
     like_Q = full((Q,n),0,dtype=float)
     like_Q[0,:] = all_seg[0,:]
     cp = full((Q, n),None,dtype='O')
-    for q in range(2,Q):
-        for j in range(q,n):
+    for q in range(2,Q+1):
+        for j in range(q,n+1):
             like = None
             if (j - 2 - q) < 0:
                 v = q
             else:
-                v = range(q, j - 2)
-            like = like_Q[q - 1,v] + all_seg[v + 1,j]
+                v = list(range(q, j - 1))
+            like = like_Q[q-1,v-1] + all_seg[v,j-1]
 
-            like_Q[q,j] = max(like)
-            cp[q,j] = which_element(like,max(like))[0] + (q - 1)
+            like_Q[q-1,j-1] = max(like)
+            cp[q-1,j-1] = which_element(like,max(like))[0] + (q - 1)
 
     cps_Q = full((Q,Q), None, dtype='O')
-    for q in range(2,Q):
-        cps_Q[q,1] = cp[q,n]
-        for i in range(1,q-1):
-            cps_Q[q,i+1] = cp[q-i,cps_Q[q,i]]
+    for q in range(2,Q+1):
+        cps_Q[q-1,0] = cp[q-1,n-1]
+        for i in range(1,q):
+            cps_Q[q-1,i] = cp[q-i-1,subtract(cps_Q[q-1,i-1],1)]
 
     op_cps = None
-    k = range(0, Q - 1)
+    k = list(range(0, Q))
 
-    for i in range(1,size(pen)):
-        criterion = -2 * like_Q[:,n] + k * pen[i]
+    for i in range(1,size(pen)+1):
+        criterion = -2 * like_Q[:,n-1] + k * pen[i-1]
 
-        op_cps = [op_cps, subtract(which_element(criterion,min(criterion)),1)]
+        op_cps = append(op_cps, subtract(which_element(criterion,min(criterion)),1))
     if op_cps == Q - 1:
         warn('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
     if op_cps == 0:
         cpts = n
     else:
-        cpts = [sorted(cps_Q[op_cps,:][cps_Q[op_cps,:] > 0]), n]
-    return(list(cps = (apply_over_axes(cps_Q, 1)).T, cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps], like_Q = like_Q[:,n-1]))
+        cpts = append(sorted(truefalse(cps_Q[op_cps,:],less_than(cps_Q[op_cps,:],0))), n)
+
+        cps = lapply(cps_Q,sorted)
+        op_cpts = op_cps
+        like = criterion[op_cps]
+        like_Q=like_Q[:,n-1]
+    return(list((cps, cpts, op_cpts, pen, like, like_Q)))
 
 def multiple_meanvar_poisson(data, minseglen, mul_method = "PELT", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
     """
@@ -357,7 +378,7 @@ def multiple_meanvar_poisson(data, minseglen, mul_method = "PELT", penalty = "MB
     --------
     PLEASE ENTER DETAILS
     """
-    if sum(data < 0) > 0:
+    if sum(less_than(data,0)) > 0:
         exit('Poisson test statistic requires positive data')
     if sum(isinstance(data, int) == data) != size(data):
         exit('Poisson test statistic requires integer data')
@@ -371,35 +392,43 @@ def multiple_meanvar_poisson(data, minseglen, mul_method = "PELT", penalty = "MB
         costfunc = "meanvar_poisson_mbic"
 
     diffparam = 1
-    if shape(data) == (0,0) or (0,) or () or None:
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         n = size(data)
     else:
-        n = len(data.T)
+        n = shape(data)[1]
     if n < (2 * minseglen):
         exit('Minimum segment legnth is too large to include a change in this data')
 
-    pen_value = penalty_decision(penalty, pen_value, n, diffparam = 1, asymcheck = costfunc, method = mul_method)
-    if shape(data) == (0,0) or (0,) or () or None:
+    pen_value = penalty_decision(penalty=penalty, pen_value=pen_value, n=n, diffparam = 1, asymcheck = costfunc, method = mul_method)
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         out = data_input(data = data, method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
 
         if Class == True:
-            return(class_input(data, cpttype = "mean and variance", method = mul_method, test_stat = "poisson", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
+            return(class_input(data=data, cpttype = "mean and variance", method = mul_method, test_stat = "poisson", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
         else:
-            return(out[[1]])
+            return(out[1])
     else:
-        rep = len(data)
-        out = list()
-        for i in range(1,rep):
-            out[[i]] = data_input(data[i-1,:], method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
+        rep = shape(data)[0]
+        out = [None] * rep
+        for i in range(1,rep+1):
+            out[i-1] = data_input(data=data[i-1,:], method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q)
 
         cpts = lapply(out, second_element)
 
         if Class == True:
-            ans = list()
-            for i in range(1,rep):
-                ans[[i]] = class_input(data[i,:], cpttype = "mean and variance", method = mul_method, test_stat = "Poisson", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[[i-1]], Q = Q)
+            ans = [None] * rep
+            for i in range(1,rep+1):
+                ans[i-1] = class_input(data[i-1,:], cpttype = "mean and variance", method = mul_method, test_stat = "Poisson", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[i-1], Q = Q)
             return(ans)
         else:
             return(cpts)

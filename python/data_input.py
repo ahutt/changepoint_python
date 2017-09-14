@@ -12,20 +12,6 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
     -----------
     This is not intended for use by regular users of the package.
 
-    Parameters
-    ----------
-    data :
-    method :
-    pen_value :
-    costfunc :
-    minseglen :
-    Q :
-    var :
-    shape :
-
-    Returns
-    -------
-
     Usage
     -----
     multiple_meanvar_exp
@@ -37,16 +23,11 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
 
     Details
     -------
+    This is not intended for use by regular users of the package.
 
     Author(s)
     ---------
     Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
-
-    References
-    ----------
-
-    Examples
-    --------
     """
     if var != 0:
         mu = var

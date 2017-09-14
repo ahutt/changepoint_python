@@ -1,6 +1,6 @@
-from numpy import size, cumsum, full, inf, repeat, shape, sqrt
+from numpy import size, cumsum, transpose, full, inf, repeat, shape, sqrt, append, square, subtract
 from _warnings import warn
-from functions import which_max, which_element, greater_than_equal
+from functions import which_max, lapply, which_element, greater_than_equal, greater_than, truefalse
 from penalty_decision import penalty_decision
 from class_input import class_input
 
@@ -54,37 +54,37 @@ def segneigh_var_css(data, Q = 5, pen = 0):
     if Q > ((n/2) + 1):
         exit('Q is larger than the maximum number of segments')
 
-    y2 = [0, cumsum(data ** 2)]
+    y2 = append(0, cumsum(square(data)))
     oldmax = 1000
 
     test = None
     like_Q = full((Q,n),0,dtype=float)
     cp = full((Q,n),None,dtype='O')
-    for q in range(2,Q): # no of segments
-        for j in range(q,n):
+    for q in range(2,Q+1): # no of segments
+        for j in range(q,n+1):
             like = None
-            v = range(q-1,j-1)
+            v = list(range(q-1,j-1))
             if q == 2:
-                like = abs(sqrt(j/2) * (y2[v+1]/y2[j+1] - v/j))
+                like = abs(sqrt(j/2) * (y2[v]/y2[j] - v/j))
             else:
-                like = like_Q[q-1,v] + abs(sqrt((j - cp[q-1,v])/2) * ((y2[v+1] - y2[cp[q-1,v] + 1])/(y2[j+1] - y2[cp[q-1,v]+ 1]) - (v - cp[q-1,v])/(j - cp[q-1,v])))
-            like_Q[q,j] = max(like)
-            cp[q,j] = which_element(like,max(like))[1] + (q - 2)
+                like = like_Q[q-2,v-1] + abs(sqrt((j - cp[q-2,v-1])/2) * ((y2[v] - y2[cp[q-2,v-1]])/(y2[j] - y2[cp[q-2,v-1]]) - (v - cp[q-2,v-1])/(j - cp[q-2,v-1])))
+            like_Q[q-1,j-1] = max(like)
+            cp[q-1,j-1] = which_element(like,max(like))[0] + (q - 2)
 
     cps_Q = full((Q,Q),None,dtype='O')
-    for q in range(2,Q):
-        cps_Q[q,1] = cp[q,n]
-        for i in range(1,q-1):
-            cps_Q[q,i+1] = cp[q-i,cps_Q[q,i]]
+    for q in range(2,Q+1):
+        cps_Q[q-1,0] = cp[q-1,n-1]
+        for i in range(1,q):
+            cps_Q[q-1,i] = cp[q-i-1,subtract(cps_Q[q-1,i-1],1)]
 
     op_cps = 0
     flag = 0
-    for q in range(2,Q):
-        criterion = None
-        cpttmp = [0, sorted(cps_Q[q,range(1,q-1)]), n]
-        for i in range(1,q-1):
-            criterion[i] = abs(sqrt((cpttmp[i+2] - cpttmp[i])/2) * ((y2[cpttmp[i+1]+1] - y2[cpttmp[i+2]+1] - y2[cpttmp[i] + 1]) - (cpttmp[i+1]-cpttmp[i])/(cpttmp[i+2] - cpttmp[i])))
-            if criterion[i] < pen:
+    for q in range(2,Q+1):
+        criterion = [None] * (q-1)
+        cpttmp = append(append(0, sorted(cps_Q[q-1,subtract(list(range(1,q)),1)])), n)
+        for i in range(1,q):
+            criterion[i-1] = abs(sqrt((cpttmp[i+1] - cpttmp[i-1])/2) * ((y2[cpttmp[i]] - y2[cpttmp[i-1]])/(y2[cpttmp[i+1]] - y2[cpttmp[i-1]]) - (cpttmp[i] - cpttmp[i-1])/(cpttmp[i+1] - cpttmp[i-1])))
+            if criterion[i-1] < pen:
                 flag = 1
         if flag == 1:
             break
@@ -94,9 +94,14 @@ def segneigh_var_css(data, Q = 5, pen = 0):
     if op_cps == 0:
         cpts = n
     else:
-        cpts = [sorted(cps_Q[op_cps+1,:][cps_Q[op_cps+1,:] > 0]), n]
+        cpts = append(sorted(truefalse(cps_Q[op_cps,:], greater_than(cps_Q[op_cps,:],0))),n)
 
-    return(list(cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = like_Q[:,n]))
+    cps = transpose(lapply(cps_Q,sorted))
+    op_cpts = op_cps
+    pen = pen
+    like = criterion[op_cps]
+    like_Q = like_Q[:,n-1]
+    return(list((cps, cpts, op_cpts, pen, like, like_Q)))
 
 def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
     """
@@ -150,46 +155,47 @@ def binseg_var_css(data, Q = 5, pen = 0, minseglen = 2):
     if Q > ((n/2) + 1):
         exit('Q is larger than the maximum number of segments')
 
-    y2 = [0, cumsum(data ** 2)]
-    tau = [0,n]
+    y2 = append(0, cumsum(square(data)))
+    tau = append(0,n)
     cpt = full((2,Q),None,dtype='O')
     oldmax = inf
 
-    for q in range(1,Q):
+    for q in range(1,Q+1):
         Lambda = repeat(0,n-1)
         i = 1
-        st = tau[1] + 1
-        end = tau[2]
-        for j in range(1,n-1):
+        st = tau[0] + 1
+        end = tau[1]
+        for j in range(1,n):
             if j == end:
                 st = end + 1
                 i = i + 1
-                end = tau[i+1]
+                end = tau[i]
             else:
-                if ((j - st) >= minseglen) & ((end - j) >= minseglen):
-                    Lambda[j] = sqrt((end - st + 1)/2) * ((y2[j+1] - y2[st])/(y2[end+1] - y2[st]) - (j - st + 1)/(end - st + 1))
-        k =which_max(abs(Lambda))
-        cpt[1,q] = k
-        cpt[2,q] = min(oldmax, max(abs(Lambda)))
+                if ((j - st) >= minseglen) and ((end - j) >= minseglen):
+                    Lambda[j-1] = sqrt((end - st + 1)/2) * ((y2[j] - y2[st-1])/(y2[end] - y2[st-1]) - (j - st + 1)/(end - st + 1))
+        k = which_max(abs(Lambda))
+        cpt[0,q-1] = k
+        cpt[1,q-1] = min(oldmax, max(abs(Lambda)))
         oldmax = min(oldmax, max(abs(Lambda)))
-        tau = sorted([tau, k])
+        tau = sorted(append(tau, k))
     op_cps = None
-    p = range(1,Q-1)
-    for i in range(1,size(pen)):
-        criterion = greater_than_equal(cpt[2,:],pen[i])
+    p = list(range(1,Q))
+    for i in range(1,size(pen)+1):
+        criterion = greater_than_equal(cpt[1,:],pen[i-1])
         if sum(criterion) == 0:
             op_cps = 0
         else:
-            op_cps = [op_cps, max(which_element(criterion,True))]
+            op_cps = append(op_cps, max(which_element(criterion,True)))
     if op_cps == Q:
         warn('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
 
     if op_cps == 0:
         cpts = n
     else:
-        cpts = [sorted(cpt[1,range(1,op_cps)]), n]
-
-    return(list(cps = cpt, cpts = cpts, op_cpts = op_cps, pen = pen))
+        cpts = append(sorted(cpt[0,subtract(list(range(1,op_cps+1)),1)]), n)
+    cps = cpt
+    op_cpts = op_cps
+    return(list((cps, cpts, op_cpts, pen)))
 
 def multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", pen_value = 0, Q = 5, Class = True, param_estimates = True):
     """
@@ -260,42 +266,50 @@ def multiple_var_css(data, minseglen, mul_method = "BinSeg", penalty = "MBIC", p
     else:
         exit("MBIC penalty is not valid for nonparametric test statistics.")
     diffparam = 1
-    if shape(data) == (0,0) or (0,) or () or None:
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         n = size(data)
     else:
-        n = len(data.T)
+        n = shape(data)[1]
     if n < (2 * minseglen):
         exit('Minimum segment legnth is too large to include a change in this data')
 
-    pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
-    if shape(data) == (0,0) or (0,) or () or None:
+    pen_value = penalty_decision(penalty=penalty, pen_value=pen_value, n=n, diffparam=diffparam, asymcheck = costfunc, method = mul_method)
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         if mul_method == "BinSeg":
-            out = binseg_var_css(data, Q, pen_value)
+            out = binseg_var_css(data=data, Q=Q, pen_value=pen_value)
         elif mul_method == "SegNeigh":
-            out = segneigh_var_css(data, Q, pen_value)
+            out = segneigh_var_css(data=data, Q=Q, pen_value=pen_value)
         if Class == True:
-            return(class_input(data, cpttype = "variance", method = mul_method, test_stat = "CSS", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
+            return(class_input(data=data, cpttype = "variance", method = mul_method, test_stat = "CSS", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
         else:
             return(out)
     else:
-        rep = len(data)
-        out = list()
+        rep = shape(data)[0]
+        out = []
         if Class == True:
-            cpts = list()
+            cpts = []
         if mul_method == "BinSeg":
-            for i in range(1,rep):
-                out = [out, list(binseg_var_css(data[i,:], Q, pen_value))]
+            for i in range(1,rep+1):
+                out = append(out, list(binseg_var_css(data=data[i-1,:], Q=Q, pen_value=pen_value)))
             if Class == True:
                 cpts = out
         elif mul_method == "SegNeigh":
-            for i in range(1,rep):
-                out = [out, list(segneigh_var_css(data[i,:], Q, pen_value))]
+            for i in range(1,rep+1):
+                out = append(out, list(segneigh_var_css(data=data[i-1,:], Q=Q, pen_value=pen_value)))
         if Class == True:
-            ans = list()
-            for i in range(1,rep):
-                ans[[i]] = class_input(data[i,:], cpttypes = "variance", method = mul_method, test_stat = "CSS", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[[i]], Q = Q)
+            ans = []
+            for i in range(1,rep+1):
+                ans[i-1] = class_input(data=data[i-1,:], cpttypes = "variance", method = mul_method, test_stat = "CSS", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out[[i]], Q = Q)
             return(ans)
         else:
             return(out)
@@ -351,37 +365,37 @@ def segneigh_mean_cusum(data, Q = 5, pen = 0):
     if Q > ((n/2) + 1):
         exit('Q is larger than the maximum number of segments')
 
-    y = [0, cumsum(data)]
+    y = append(0, cumsum(data))
     oldmax = 1000
 
     test = None
-    like_Q = full((Q,n),0,dtype='O')
+    like_Q = full((Q,n),0,dtype=float)
     cp = full((Q,n),None,dtype='O')
-    for q in range(2,Q): #no of segments
-        for j in range(q,n):
+    for q in range(2,Q+1): #no of segments
+        for j in range(q,n+1):
             like = None
-            v = range(q-1,j-1)
+            v = list(range(q-1,j))
             if q == 2:
-                like = abs((y[v+1] - (v/j) * y[j+2])/j)
+                like = abs((y[v] - (v/j) * y[j])/j)
             else:
-                like = like_Q[q-1,v] + abs(((y[v+1] - y[cp[q-1,v]+1]) - ((v - cp[q-1,v])/(j - cp[q-1,v])) * (y[j+1] - y[cp[q-1,v]+1]))/(j - cp[q-1,v]))
-            like_Q[q,j] = max(like)
-            cp[q,j] = which_element(like,max(like))[1] + (q - 2)
+                like = like_Q[q-2,v-1] + abs(((y[v] - y[cp[q-2,v-1]]) - ((v - cp[q-2,v-1])/(j - cp[q-2,v-1])) * (y[j] - y[cp[q-2,v-1]]))/(j - cp[q-2,v-1]))
+            like_Q[q-1,j-1] = max(like)
+            cp[q-1,j-1] = which_element(like,max(like))[0] + (q - 2)
 
     cps_Q = full((Q,Q),None,dtype=None)
-    for q in range(2,Q):
-        cps_Q[q,1] = cp[q,n]
-        for i in range(1,q-1):
-            cps_Q[q,i+1] = cp[q-1,cps_Q[q,i]]
+    for q in range(2,Q+1):
+        cps_Q[q-1,0] = cp[q-1,n-1]
+        for i in range(1,q):
+            cps_Q[q-1,i] = cp[q-i-1,cps_Q[q-1,i-1]]
 
     op_cps = 0
     flag = 0
-    for q in range(2,Q):
-        criterion = None
-        cpttmp = [0, sorted(cps_Q[q, range(1,q-1)]), n]
-        for i in range(1,q-1):
-            criterion[i] = abs(((y[cpttmp[i+1]+1] - y[cpttmp[i]+1]) - ((cpttmp[i+1] - cpttmp[i])/(cpttmp[i+2] - cpttmp[i])) * (y[cpttmp[i+2]+1] - y[cpttmp[i] + 1]))/(cpttmp[i]))
-            if criterion[i] < pen:
+    for q in range(2,Q+1):
+        criterion = [None] * (q-1)
+        cpttmp = append(0, sorted(cps_Q[q-1, list(range(1,q))]), n)
+        for i in range(1,q):
+            criterion[i-1] = abs(((y[cpttmp[i]] - y[cpttmp[i-1]]) - ((cpttmp[i] - cpttmp[i-1])/(cpttmp[i+1] - cpttmp[i-1])) * (y[cpttmp[i+1]] - y[cpttmp[i-1]]))/(cpttmp[i-1]))
+            if criterion[i-1] < pen:
                 flag = 1
         if flag == 1:
             break
@@ -392,9 +406,13 @@ def segneigh_mean_cusum(data, Q = 5, pen = 0):
     if op_cps == 0:
         cpts = n
     else:
-        cpts = [sorted(cps_Q[op_cps+1,:][cps_Q[op_cps+1,:] > 0]), n]
+        cpts = append(sorted(truefalse(cps_Q[op_cps,:],greater_than(cps_Q[op_cps,:],0))), n)
 
-    return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps+1], like_Q = like_Q[:,n]))
+    cps = lapply(cps_Q, sorted)
+    op_cpts = op_cps
+    like = criterion[op_cps]
+    like_Q = like_Q[:,n-1]
+    return(list((cps, cpts, op_cpts, pen, like, like_Q)))
 
 def binseg_mean_cusum(data, minseglen, Q = 5, pen = 0):
     """
@@ -449,45 +467,47 @@ def binseg_mean_cusum(data, minseglen, Q = 5, pen = 0):
     if Q > (n/2) + 1:
         exit('Q is larger than the maximum number of segments')
 
-    y = [0, cumsum(data)]
-    tau = [0,n]
+    y = append(0, cumsum(data))
+    tau = append(0,n)
     cpt = full((2,Q),0,dtype=float)
     oldmax = inf
 
-    for q in range(1,Q):
+    for q in range(1,Q+1):
         Lambda = repeat(0, n - 1)
         i = 1
         st = tau[0] + 1
         end = tau[1]
-        for j in range(1,n-1):
+        for j in range(1,n):
             if j == end:
                 st = end + 1
                 i = i + 1
                 end = tau[i]
             else:
-                if (j - st >= minseglen) and (end - j >= minseglen):
-                    Lambda[j] = ((y[j] - y[st]) - ((j - st + 1)/(end - st + 1)) * (y[end] - y[st]))/(end - st + 1)
+                if ((j - st) >= minseglen) and ((end - j) >= minseglen):
+                    Lambda[j-1] = ((y[j] - y[st-1]) - ((j - st + 1)/(end - st + 1)) * (y[end] - y[st-1]))/(end - st + 1)
         k = which_max(abs(Lambda))
-        cpt[1,q] = k
-        cpt[2,q] = min(oldmax, max(abs(Lambda)))
-        tau = sorted([tau,k])
+        cpt[0,q-1] = k
+        cpt[1,q-1] = min(oldmax, max(abs(Lambda)))
+        tau = sorted(append(tau,k))
     op_cps = None
-    p = range(1,Q-1)
-    for i in range(1, len(pen)):
-        criterion = greater_than_equal(cpt[2,:],pen[i])
+    p = list(range(1,Q))
+    for i in range(1, len(pen)+1):
+        criterion = greater_than_equal(cpt[1,:],pen[i-1])
         if sum(criterion) == 0:
             op_cps = 0
         else:
-            op_cps = [op_cps, max(which_element(criterion,True))]
+            op_cps = append(op_cps, max(which_element(criterion,True)))
     if op_cps == Q:
         warn('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
 
     if op_cps == 0:
         cpts = n
     else:
-        cpts = [sorted(cpt[0,range(0,op_cps - 1)]), n]
+        cpts = list((sorted(cpt[0,subtract(list(range(1,op_cps+1)),1)]), n))
 
-    return(list(cps = cpt, cpts = cpts, op_cpts = op_cps, pen = pen))
+    cps = cpt
+    op_cpts = op_cps
+    return(list((cps, cpts, op_cpts, pen)))
 
 def multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymptotic", pen_value = 0.05, Q = 5, Class = True, param_estimates = True):
     """
@@ -556,42 +576,50 @@ def multiple_mean_cusum(data, minseglen, mul_method = "BinSeg", penalty = "Asymp
     else:
         exit("MBIC penalty is not valid for nonparametric test statistics.")
     diffparam = 1
-    if shape(data) == (0,0) or (0,) or () or None:
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         n = size(data)
     else:
-        n = len(data.T)
+        n = shape(data)[1]
     if n < (2 * minseglen):
         exit('Minimum segment legnth is too large to include a change in this data')
 
-    pen_value = penalty_decision(penalty, pen_value, n, diffparam, asymcheck = costfunc, method = mul_method)
-    if shape(data) == (0,0) or (0,) or () or None:
+    pen_value = penalty_decision(penalty=penalty, pen_value=pen_value, n=n, diffparam=diffparam, asymcheck = costfunc, method = mul_method)
+    try:
+        shape1 = shape(data)[1]
+    except IndexError:
+        shape1 = None
+    if shape1 == None:
         #single dataset
         if mul_method == "BinSeg":
-            out = binseg_mean_cusum(data, Q, pen_value)
+            out = binseg_mean_cusum(data=data, Q=Q, pen_value=pen_value)
         elif mul_method == "SegNeigh":
-            out = segneigh_mean_cusum(data, Q, pen_value)
+            out = segneigh_mean_cusum(data=data, Q=Q, pen_value=pen_value)
         if Class == True:
-            return(class_input(data, cpttype = "mean", method = mul_method, test_stat = "CUSUM", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
+            return(class_input(data=data, cpttype = "mean", method = mul_method, test_stat = "CUSUM", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q))
         else:
             return(out)
     else:
-        rep = len(data)
-        out = list()
+        rep = shape(data)[0]
+        out = [None]*rep
         if Class == True:
             cpts = list()
         if mul_method == "BinSeg":
-            for i in range(1,rep):
-                out = [out, list(binseg_mean_cusum(data[i,:], Q, pen_value))]
+            for i in range(1,rep+1):
+                out = append(out, list(binseg_mean_cusum(data=data[i-1,:], Q=Q, pen_value=pen_value)))
             if Class == True:
                 cpts = out
         elif mul_method == "SegNeigh":
-            for i in range(1,rep):
-                out = [out, list(segneigh_mean_cusum(data[i,:], Q, pen_value))]
+            for i in range(1,rep+1):
+                out = append(out, list(segneigh_mean_cusum(data=data[i-1,:], Q=Q, pen_value=pen_value)))
         if Class == True:
-            ans = list()
-            for i in range(1,rep):
-                ans[[i]] = class_input(data[i,:], cpttype = "mean", method = mul_method, test_stat = "CUSUM", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q)
+            ans = [None] * rep
+            for i in range(1,rep+1):
+                ans[i-1] = class_input(data=data[i-1,:], cpttype = "mean", method = mul_method, test_stat = "CUSUM", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = out, Q = Q)
             return(ans)
         else:
             return(out)

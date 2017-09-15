@@ -1,5 +1,5 @@
 from sys import exit
-from numpy import asarray, size, ndim, ndarray, transpose, full
+from numpy import asarray, size, ndim, ndarray, transpose, full, array, shape
 
 def checkData(data):
     """
@@ -72,6 +72,37 @@ def which_max(a,b):
             return(2)
     else:
         exit('Both inputs need to be either integers or floats.')
+
+def remove_none_matrix(a):
+    """
+    remove_none_matrix(a)
+
+    Description
+    -----------
+    Removes all 'None' elements from the matrix, a.
+
+    Parameters
+    ----------
+    a : Matrix
+
+    Returns
+    -------
+    Matrix with no 'None' elements.
+
+    Usage
+    -----
+    segneigh_meanvar_norm
+
+    Author(s)
+    ---------
+    Alix Hutt
+    """
+    if isinstance(a,ndarray)==True:
+        a = list(a)
+    for i in range(0,shape(a)[1]):
+        a[i] = [x for x in a[i] if x!=None]
+    a = array(a)
+    return(a)
 
 #which_min
 def which_min(a,b):

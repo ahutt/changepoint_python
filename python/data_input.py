@@ -37,8 +37,8 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
         out = PELT_meanvar_norm(data = data, pen = pen_value, minseglen = minseglen)
         cpts = out[1]
     elif method == "BinSeg":
-        cpts = out[1]
         out = binseg_meanvar_norm(data = data, Q = Q, pen = pen_value)
+        cpts = out[1]
         n = size(data)
         if out.op_cpts == 0:
             cpts = n

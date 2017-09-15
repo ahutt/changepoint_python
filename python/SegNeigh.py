@@ -1,6 +1,6 @@
 from numpy import size, full, inf, pi, log, add, set_printoptions, subtract, multiply, append
 #from statistics import mean
-from functions import max_vector,which_element,greater_than,truefalse,lapply
+from functions import max_vector,which_element,greater_than,truefalse,lapply,remove_none_matrix
 from sys import exit
 from _warnings import warn
 
@@ -235,7 +235,7 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
         cpts1 = [x for x in cpts_unclean if str(x) != 'nan']
         cpts = sorted([x for x in cpts1 if x != None])
 
-    cps_Q = [x for x in cps_Q if x!=None]
+    cps_Q = remove_none_matrix(cps_Q)
     cps = lapply(cps_Q, sorted)
     op_cpts = op_cps
     like = criterion[op_cps]

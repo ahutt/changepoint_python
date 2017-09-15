@@ -68,6 +68,7 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
     Examples
     --------
     """
+    pen_return = pen_value
     if penalty == "SIC0" or penalty == "BIC0":
         pen_return = diffparam * log(n)
     elif penalty == "SIC" or penalty == "BIC":
@@ -96,7 +97,7 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
     if penalty == "Manual" and isinstance(pen_value, (int, float)) == False:
         exit('Your manual penalty cannot be evaluated')
     else:
-        pen_return = pen_value
+        pen_return = pen_return
     if penalty == "Asymptotic":
         if pen_value <= 0 or pen_value > 1:
             exit('Asymptotic penalty values must be > 0 and <= 1')
@@ -122,7 +123,7 @@ def penalty_decision(penalty, pen_value, n, diffparam, asymcheck, method):
             top = -(log(log((1 - alpha + exp(-2 * exp(2 * (log(log(n))) + (diffparam/2) * (log(log(log(n)))) - log(gamma(diffparam/2))))) ** (-1/2))))  +  2 * (log(log(n))) + (diffparam/2) * (log(log(log(n)))) - log(gamma(diffparam/2))
             bottom = (2 * log(log(n))) ** (1/2)
             pen_return = (top/bottom) ** 2
-        elif asymcheck == "var.css":
+        elif asymcheck == "var_css":
             if pen_value == 0.01:
                 pen_return = 1.628
             elif pen_value == 0.05:

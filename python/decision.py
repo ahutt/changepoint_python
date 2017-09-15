@@ -88,9 +88,6 @@ def decision(tau, null, alt = None, penalty = "MBIC", n = 0, diffparam = 1, pen_
     --------
     PLEASE ENTER DETAILS
     """
-    class class1:
-        def __init__(self,cpt = None):
-            self.cpt = cpt
     if alt == None:
         if size(tau) != size(null):
             exit("Lengths of tau and null do not match")
@@ -99,10 +96,8 @@ def decision(tau, null, alt = None, penalty = "MBIC", n = 0, diffparam = 1, pen_
             exit("Lengths of tau, null and alt do not match")
     if size(tau) == 1:
         out = single_decision(tau = tau, null = null, alt = alt, n = n, diffparam = diffparam, pen_value = pen_value)
-        out=class1()
-        out.cpt = out
         pen = pen_value
-        return(list((out, pen)))
+        return(list((out,pen)))
     else:
         rep = size(tau)
         out = [None] * rep

@@ -194,11 +194,11 @@ def single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = T
         ans = decision(tau=tmp[0], null=tmp[1], alt=tmp[2], penalty = penalty, n = n, diffparam = 1, pen_value = pen_value)
 
         if Class == True:
-            return(class_input(data = data, cpttype = "mean", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans[1], minseglen = minseglen, param_estimates = param_estimates, out = append([0], ans[0])))
+            return(class_input(data = data, cpttype = "mean", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = append(0, ans[0])))
         else:
             alogn = (2 * log(log(n))) ** (-1/2)
             blogn = (alogn ** 2) + ((1/2) * alogn * log(log(log(n)))) # Chen & Gupta (2000) pg10
-            out = append(ans.cpt, exp(-2 * (pi ** (1/2)) * exp(- alogn * sqrt(abs(tmp[1] - tmp[2])) + (alogn ** (-1)) * blogn)) - exp(-2 * (pi ** (1/2)) * exp((alogn ** (-1)) * blogn)))
+            out = append(ans[0], exp(-2 * (pi ** (1/2)) * exp(- alogn * sqrt(abs(tmp[1] - tmp[2])) + (alogn ** (-1)) * blogn)) - exp(-2 * (pi ** (1/2)) * exp((alogn ** (-1)) * blogn)))
             return(out)
     else:
         tmp = single_mean_norm_calc(data = data, minseglen = minseglen, extrainf = True)
@@ -209,12 +209,12 @@ def single_mean_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class = T
             rep = shape(data)[0]
             out = [None]*rep
             for i in range(1, rep+1):
-                out[i-1] = class_input(data = data, cpttype = "mean", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt[i]])
+                out[i-1] = class_input(data = data, cpttype = "mean", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans[1], minseglen = minseglen, param_estimates = param_estimates, out = append(0, ans[0][i-1]))
             return(out)
         else:
             alogn = (2 * log(log(n))) ** (-1/2)
             blogn = (alogn ** (-1)) + (1/2) * alogn * log(log(log(n)))
-            out = transpose(vstack((ans.cpt, exp(-2 * (pi ** (1/2)) * exp(-alogn * sqrt(abs(tmp[:,1] - tmp[:,2])) + (alogn ** 1) * blogn)) - exp( -2 * (pi ** (1/2)) * exp((alogn ** (-1)) * blogn)))))
+            out = transpose(vstack((ans[0], exp(-2 * (pi ** (1/2)) * exp(-alogn * sqrt(abs(tmp[:,1] - tmp[:,2])) + (alogn ** 1) * blogn)) - exp( -2 * (pi ** (1/2)) * exp((alogn ** (-1)) * blogn)))))
             return(out)
 
 def single_var_norm_calc(data, mu, minseglen, extrainf = True):
@@ -367,8 +367,8 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
             tmp[2] = tmp[2] + log(tmp[0]) + log(n - tmp[0] + 1)
         ans = decision(tmp[0], tmp[1], tmp[2], penalty, n, pen_value, diffparam = 1)
         if Class == True:
-            out = class_input(data = data, cpttype = "variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt])
-            out.param_est = [out.param_est, mean == mu]
+            out = class_input(data = data, cpttype = "variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = append(0, ans.cpt))
+            out.param_est = append(out.param_est, mu)
             return(out)
         else:
             alogn = sqrt(2 * log(log(n)))
@@ -392,7 +392,7 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
         if Class == True:
             out = [None] * rep
             for i in range(1,rep+1):
-                out[i-1] = class_input(data=data, cpttype = "variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, menseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt[i]])
+                out[i-1] = class_input(data=data, cpttype = "variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, menseglen = minseglen, param_estimates = param_estimates, out = append(0, ans.cpt[i-1]))
                 out[i-1].param_est = append(out[i-1].param_est, mu[i-1])
             return(out)
         else:
@@ -596,7 +596,7 @@ def single_meanvar_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class 
             tmp[2] = tmp[2] + log(tmp[0]) + log(n - tmp[0] + 1)
         ans = decision(tau=tmp[0], null=tmp[1], alt=tmp[2], penalty=penalty, n=n, pen_value=pen_value, diffparam = 2)
         if Class == True:
-            return(class_input(data = data, cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0, ans.cpt]))
+            return(class_input(data = data, cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = append(0, ans.cpt)))
         else:
             alogn = sqrt(2 * log(log(n)))
             blogn = 2 * log(log(n)) + log(log(log(n)))
@@ -608,7 +608,7 @@ def single_meanvar_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class 
             rep = shape(data)[0]
             out = [None] * rep
             for i in range(1, rep+1):
-                out[i-1] = class_input(data=data[i-1,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = [0,ans.cpt[i]])
+                out[i-1] = class_input(data=data[i-1,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = append(0,ans.cpt[i-1]))
             return(out)
         else:
             alogn = sqrt(2 * log(log(n)))

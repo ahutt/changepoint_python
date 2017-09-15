@@ -165,9 +165,9 @@ def binseg_meanvar_norm(data, Q = 5, pen = 0):
     PLEASE ENTER DETAILS.
     """
     n = size(data)
-    y2 = append([0], cumsum(square(data)))
-    y = append([0], cumsum(data))
-    tau = [0,n]
+    y2 = append(0, cumsum(square(data)))
+    y = append(0, cumsum(data))
+    tau = append(0,n)
     cpt = full((2,Q), 0, dtype = float)
     oldmax = 1000
 

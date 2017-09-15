@@ -1,6 +1,6 @@
-from numpy import size, full, inf, pi, log, add, set_printoptions, subtract, multiply, append, sort, array
+from numpy import size, full, inf, pi, log, add, set_printoptions, subtract, multiply, append
 #from statistics import mean
-from functions import max_vector,which_element,greater_than,truefalse
+from functions import max_vector,which_element,greater_than,truefalse,lapply
 from sys import exit
 from _warnings import warn
 
@@ -205,30 +205,38 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
             else:
                 v = list(range(q,j-1))
                 like = list(add(like_Q[q-2,subtract(v,1)],all_seg[v,j-1]))
+
             like_Q[q-1,j-1] = max_vector(like)
             cp[q-1,j-1] = which_element(like,max_vector(like))[0] + (q - 1)
+
     cps_Q = full((Q,Q),None, dtype='O')
     for q in range(2,Q+1):
         cps_Q[q-1,0] = cp[q-1,n-1]
         for i in range(1, q):
             cps_Q[q-1,i] = cp[(q-i-1),cps_Q[q-1,i-1]-1]
-    op_cps = None
+
     k = list(range(0,Q))
-    if isinstance(pen,list) == True:
-        for i in range(1,size(pen)):
-            criterion = add(multiply(-2,like_Q[:,n-1]),multiply(k,pen[i-1]))
-            op_cps = subtract(which_element(criterion,min(criterion)),1)
-    else:
-        criterion = list(add(multiply(-2,like_Q[:,n-1]),multiply(k,pen)))
+
+    for i in range(1,size(pen)+1):
+        if isinstance(pen,list)==False:
+            pen = [pen]
+        else:
+            pen = pen
+        criterion = add(multiply(-2,like_Q[:,n-1]),multiply(k,pen[i-1]))
+
         op_cps = subtract(which_element(criterion,min(criterion)),1)
+
     if op_cps == Q-1:
         warn('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
     if op_cps == 0:
         cpts = n
     else:
-        cpts_unclean = list(sorted(append(truefalse(cps_Q[op_cps,:],greater_than(cps_Q[op_cps,:][0],0)),[n])))
-        cpts = [x for x in cpts_unclean if str(x) != 'nan']
-    cps = sort(array(cps_Q),axis=1)
+        cpts_unclean = append(truefalse(cps_Q[op_cps,:],greater_than(cps_Q[op_cps,:][0],0)),n)
+        cpts1 = [x for x in cpts_unclean if str(x) != 'nan']
+        cpts = sorted([x for x in cpts1 if x != None])
+
+    cps_Q = [x for x in cps_Q if x!=None]
+    cps = lapply(cps_Q, sorted)
     op_cpts = op_cps
     like = criterion[op_cps]
     like_Q = multiply(-2,like_Q[:,n-1])

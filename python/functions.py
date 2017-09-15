@@ -144,6 +144,7 @@ def lapply(x,y):
     segneigh_meanvar_exp
     segneigh_meanvar_gamma
     segneigh_meanvar_poisson
+    segneigh_meanvar_norm
 
     Author(s)
     ---------
@@ -276,7 +277,9 @@ def greater_than(a,b):
     else:
         l = []
         for i in a:
-            if i > b:
+            if i == None:
+                c=[]
+            elif i > b:
                 c = True
             else:
                 c = False
@@ -649,7 +652,7 @@ def which_element(a,b):
     See R function 'which'.
     """
     l = []
-    if isinstance(a,list) == True:
+    if isinstance(a,(list,ndarray)) == True:
         for i in range(0,len(a)):
             if a[i] == b:
                 l.append(i+1)

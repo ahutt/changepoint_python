@@ -1,10 +1,10 @@
 from numpy import inf, subtract, transpose, delete, diff, multiply
 from functions import sapply
 
-class class1:
-    def __init__(self, shape = None):
-        self.shape = shape
-param_est = class1()
+#class class1:
+#    def __init__(self, shape = None):
+#        self.shape = shape
+#param_est = class1()
 
 class class2:
     def __init__(self, data_set = None, cpttype = None, method = None, test_stat = None, pen_type = None, pen_value = None, minseglen = None, cpts = None, ncpts_max = None, cpts_full = None, pen_value_full = None, param_est = None):
@@ -21,11 +21,11 @@ class class2:
         self.pen_value_full = pen_value_full
         self.param_est = param_est
 
-    def __str__(self):
-        return("Changepoint type : change in %s" '\n' "Method of analysis : %s" '\n' "Test statistic : %s" '\n' "Type of penalty : %s with value, %s" '\n' "Minimum Segment Length : %s" '\n' "Maximum no. of cpts : %s" '\n' "Changepoint Locations : %s" % (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts[1]))
-
     def __repr__(self):
-        return('ans("%s","%s","%s","%s","%s","%s","%s", "%s")' % (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts[1]))
+        return("Type of changepoint : change in %s" '\n' "Method of analysis : %s" '\n' "Test statistic : %s" '\n' "Penalty type : %s with value, %s" '\n' "Minimum Segment Length : %s" '\n' "Maximum no. of cpts : %s" '\n' "Changepoint Locations : %s" % (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts[1]))
+
+#    def __repr__(self):
+#        return('ans("%s","%s","%s","%s","%s","%s","%s", "%s")' % (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts[1]))
 
 def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = [], Q = None, shape = None):
     """

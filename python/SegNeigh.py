@@ -1,6 +1,6 @@
 from numpy import size, full, inf, pi, log, add, set_printoptions, subtract, multiply, append
 #from statistics import mean
-from functions import max_vector,which_element,greater_than,truefalse,remove_none_matrix,sort_array
+from functions import max_vector,which_element,greater_than,truefalse,sort_rows
 from sys import exit
 from _warnings import warn
 
@@ -230,15 +230,14 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
         warn('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
     if op_cps == 0:
         cpts = n
-    else:
-        cpts_unclean = append(truefalse(cps_Q[op_cps,:],greater_than(cps_Q[op_cps,:][0],0)),n)
-        cpts1 = [x for x in cpts_unclean if str(x) != 'nan']
-        cpts = sorted([x for x in cpts1 if x != None])
 
-    cps_Q = remove_none_matrix(cps_Q)
-    cps = sort_array(cps_Q)
+    else:
+        cpts = append(sorted(truefalse(cps_Q[op_cps,:],greater_than((cps_Q[op_cps,:])[0],0))),n)
+
+    cps = sort_rows(cps_Q)
+    cpts = sorted([x for x in cpts if x != None])
     op_cpts = op_cps
-    like = criterion[op_cps]
-    like_Q = multiply(-2,like_Q[:,n-1])
-    final_list = list((cps, cpts, list(op_cpts), pen, like, like_Q))
+    like=criterion[op_cps]
+    like_Q=multiply(-2, like_Q[:,n-1])
+    final_list = list((cps, cpts, op_cpts, pen, like, like_Q))
     return(final_list)

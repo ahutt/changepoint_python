@@ -21,5 +21,5 @@ vector2 = multiple_mean_data = [0.92335052, -0.52320490, -0.14613555, -0.1359175
 from cpt import cpt_mean, cpt_var, cpt_meanvar
 
 #print(cpt_mean(data=vector2))
-cpt_mean(data=vector1, penalty="None", method="SegNeigh")
+print(cpt_mean(data=vector1, penalty="None", method="SegNeigh"))
 #result should be:

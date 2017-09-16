@@ -1,5 +1,5 @@
 from sys import exit
-from numpy import asarray, size, ndim, ndarray, transpose, full, array, shape, append
+from numpy import asarray, size, ndim, ndarray, transpose, full, array, shape, append,inf
 
 def checkData(data):
     """
@@ -73,21 +73,22 @@ def which_max(a,b):
     else:
         exit('Both inputs need to be either integers or floats.')
 
-def remove_none_matrix(a):
+
+def sort_rows(a):
     """
-    remove_none_matrix(a)
+    sort_rows(a)
 
     Description
     -----------
-    Removes all 'None' elements from the matrix, a.
+    Takes all the elements of a row of a and puts them in ascending order.
 
     Parameters
     ----------
-    a : Matrix
+    a : Matrix or array.
 
     Returns
     -------
-    Matrix with no 'None' elements.
+    Ordered matrix.
 
     Usage
     -----
@@ -97,12 +98,19 @@ def remove_none_matrix(a):
     ---------
     Alix Hutt
     """
-    if isinstance(a,ndarray)==True:
-        a = list(a)
-    for i in range(0,shape(a)[1]):
-        a[i] = [x for x in a[i] if x!=None]
-    a = array(a)
+    q=shape(a)[0]
+    p = shape(a)[1]
+    for i in range(0, q):
+        for j in range(0,p):
+            if a[i][j]==None:
+                a[i][j] = inf
+        a[i] = sorted(a[i])
+    for m in range(0,q):
+        for n in range(0,p):
+            if a[m][n]==inf:
+                a[m][n] = None
     return(a)
+
 
 def sort_array(a):
     """
@@ -122,7 +130,7 @@ def sort_array(a):
 
     Usage
     -----
-    segneigh_meanvar_norm
+    Currently not used anywhere in the package.
 
     Author(s)
     ---------
@@ -337,13 +345,16 @@ def greater_than(a,b):
     else:
         l = []
         for i in a:
-            if i == None:
-                c=[]
-            elif i > b:
-                c = True
+            NoneType = type(None)
+            if isinstance(i,NoneType)==True:
+                c=None
             else:
-                c = False
+                if i > b:
+                    c = True
+                else:
+                    c = False
             l.append(c)
+        l = [x for x in l if x != None]
         return(l)
 
 def less_than(a,b):
@@ -571,6 +582,7 @@ def truefalse(a,b):
     segneigh_meanvar_exp
     segneigh_meanvar_gamma
     segneigh_meanvar_poisson
+    data_input
 
     Author(s)
     ---------

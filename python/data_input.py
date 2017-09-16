@@ -1,8 +1,8 @@
-from numpy import mean, size, append
+from numpy import mean, size, append, array
 from PELT import PELT_meanvar_norm
 from BinSeg import binseg_meanvar_norm
 from SegNeigh import segneigh_meanvar_norm
-from functions import greater_than
+from functions import greater_than, truefalse
 
 def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", shape=1):
     """
@@ -46,9 +46,9 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
             cpts = append(sorted(out.cps[0,list(range(1,out.cpts+1))]),n)
     elif method == "SegNeigh":
         out = segneigh_meanvar_norm(data = data, Q = Q, pen = pen_value)
-        n = size(data)
-        if out.op_cpts == 0:
-            cpts = n
-        else:
-            cpts = append(sorted(out.cps[out.op_cpts,:][greater_than(out.cps[out.op_cpts,:],0)]),n)
+#        n = size(data)
+#        if out[2] == 0:
+#            cpts = n
+#        else:
+#            cpts = append(sorted(truefalse(array(out[0])[out[2],:],greater_than(array(out[0])[out[2],:],0))),n)
     return(out)

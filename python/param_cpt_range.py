@@ -103,7 +103,7 @@ def param_mean(object, cpts):
     Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     nseg = len(cpts) - 1
-    data = data_set(object)
+    data = array(data_set(object))
     tmpmean = [None] * nseg
     for j in range(1, nseg+1):
         tmpmean[j-1] = mean(data[list(range(cpts[j-1]+1,cpts[j]))])

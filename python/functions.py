@@ -1,5 +1,5 @@
 from sys import exit
-from numpy import asarray, size, ndim, ndarray, transpose, full, array, shape
+from numpy import asarray, size, ndim, ndarray, transpose, full, array, shape, append
 
 def checkData(data):
     """
@@ -104,7 +104,37 @@ def remove_none_matrix(a):
     a = array(a)
     return(a)
 
-#which_min
+def sort_array(a):
+    """
+    sort_array(a)
+
+    Description
+    -----------
+    Takes all the elements of a and puts them into a sorted list.
+
+    Parameters
+    ----------
+    a : Matrix or array.
+
+    Returns
+    -------
+    List of elements of a in ascending order.
+
+    Usage
+    -----
+    segneigh_meanvar_norm
+
+    Author(s)
+    ---------
+    Alix Hutt
+    """
+    q=shape(a)[0]
+    l=[]
+    for j in range(0,q):
+        l=append(l,a[j])
+    l = sorted(l)
+    return(l)
+
 def which_min(a,b):
     """
     which_min(a,b)
@@ -175,7 +205,6 @@ def lapply(x,y):
     segneigh_meanvar_exp
     segneigh_meanvar_gamma
     segneigh_meanvar_poisson
-    segneigh_meanvar_norm
 
     Author(s)
     ---------

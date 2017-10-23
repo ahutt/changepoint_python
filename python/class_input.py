@@ -1,4 +1,4 @@
-from numpy import inf, subtract, transpose, delete, diff, multiply
+from numpy import inf, subtract, transpose, delete, diff, multiply, size
 from functions import sapply
 
 #class class1:
@@ -22,7 +22,7 @@ class class2:
         self.param_est = param_est
 
     def __repr__(self):
-        return("Type of changepoint : change in %s" '\n' "Method of analysis : %s" '\n' "Test statistic : %s" '\n' "Penalty type : %s with value, %s" '\n' "Minimum Segment Length : %s" '\n' "Maximum no. of cpts : %s" '\n' "Changepoint Locations : %s" '\n' "Range of segmentations : \n %s \n For penalty values : %s"% (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts, self.cpts_full, self.pen_value_full))
+        return("Type of changepoint : Change in %s" '\n' "Method of analysis : %s" '\n' "Test statistic : %s" '\n' "Penalty type : %s with value, %s" '\n' "Minimum Segment Length : %s" '\n' "Maximum no. of cpts : %s" '\n' "Changepoint Locations : %s" '\n' "Range of segmentations : \n %s \n For penalty values : %s"% (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts, self.cpts_full, self.pen_value_full))
 
 #    def __repr__(self):
 #        return('ans("%s","%s","%s","%s","%s","%s","%s", "%s")' % (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts[1]))
@@ -119,11 +119,11 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
         ans.ncpts_max = Q
 
     if method == "BinSeg":
-        l = [None] * (len(out.cps)/2)
-        for i in range(1, len(out.cps)/2 + 1):
-            l[i-1] = out.cps[0,list(subtract(range(1,i+1),1))]
+        l = [None] * int((size(out[0])/2))
+        for i in range(1, int(len(out[0])/2) + 1):
+            l[i-1] = out[0][0,list(subtract(range(1,i+1),1))]
 
-        m = transpose(sapply(l, list(range(1,max(sapply(1,len)) + 1))))
+        m = transpose(sapply(l, list(range(1,max(sapply(l,len)) + 1))))
 
         ans.cpts_full = m
         ans.pen_value_full = out[0][0,:]

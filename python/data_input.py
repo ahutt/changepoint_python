@@ -40,14 +40,14 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
         out = binseg_meanvar_norm(data = data, Q = Q, pen = pen_value)
         cpts = out[1]
         n = size(data)
-        if out.op_cpts == 0:
+        if out[1] == [0]:
             cpts = n
-        else:
-            cpts = append(sorted(out.cps[0,list(range(1,out.cpts+1))]),n)
+#        else:
+#            cpts = append(sorted(out[0][0,list(range(1,int(out[1])+1))]),n)
     elif method == "SegNeigh":
         out = segneigh_meanvar_norm(data = data, Q = Q, pen = pen_value)
-#        n = size(data)
-#        if out[2] == 0:
+        n = size(data)
+#        if out[2] == [0]:
 #            cpts = n
 #        else:
 #            cpts = append(sorted(truefalse(array(out[0])[out[2],:],greater_than(array(out[0])[out[2],:],0))),n)

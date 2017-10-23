@@ -219,6 +219,5 @@ def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
         while last != 0:
             fcpt = append(fcpt,int(lastchangecpts[last - 1, 1]))
             last = int(lastchangecpts[last - 1, 0])
-        print(fcpt)
         cpt = sorted(fcpt)
         return(transpose(cpt))

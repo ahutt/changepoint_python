@@ -476,6 +476,8 @@ def less_than_equal(a,b):
     segneigh_meanvar_gamma
     single_meanvar_gamma
     segneigh_meanvar_exp
+    mll_var_EFK
+    PELT_var_norm
 
     Author(s)
     ---------
@@ -522,6 +524,7 @@ def compare(a,b):
     Usage
     -----
     PELT_meanvar_norm
+    PELT_var_norm
 
     Author(s)
     ---------
@@ -547,7 +550,7 @@ def compare(a,b):
                     l.append(False)
             return(l)
         else:
-            exit("lengths of inputs are not applicable")
+            exit('lengths of inputs are not applicable')
     else:
         l = []
         for i in range(0,size(a)):
@@ -583,6 +586,8 @@ def truefalse(a,b):
     segneigh_meanvar_gamma
     segneigh_meanvar_poisson
     data_input
+    mll_var_EFK
+    PELT_var_norm
 
     Author(s)
     ---------

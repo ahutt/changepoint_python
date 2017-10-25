@@ -5,12 +5,27 @@ from _warnings import warn
 from sys import exit
 
 def mll_var_EFK(x,n):
+    """
+    PLEASE ENTER DETAILS
+    """
     neg = less_than_equal(x,0)
     x = [0.00000000001 if i == True else i for i in neg]
     output = n*(add(log(2*pi)+1,log(divide(x,n))))
     return(output)
 
-def PELT_var_norm(data, pen=0, know_mean=False, mu=None, nprune=False):
+def PELT_var_norm(data, pen=0, minseglen=1, know_mean=False, mu=None, nprune=False):
+    """
+    PLEASE ENTER DETAILS
+
+    Usage
+    -----
+    PELT
+    """
+    if minseglen == 1:
+        minseglen = 1
+    else:
+        warn("Minseglen has not been implemented yet so setting minseglen = 1.")
+        minseglen = 1
     if know_mean == False and mu == None:
         mu = mean(data)
     n = size(data)
@@ -28,7 +43,8 @@ def PELT_var_norm(data, pen=0, know_mean=False, mu=None, nprune=False):
     checklist = None
     noprune = None
     for tstar in range(1,n+1):
-        tmpt = [checklist,tstar-2]
+        tmpt = append(checklist,tstar-2)
+        tmpt = [x for x in tmpt if x != None]
         tmplike = lastchangelike[tmpt-1,0] + mll_var_EFK(y2[tstar]-y2[tmpt],tstar-tmpt)+pen
         if tstar == n:
             lastchangelike[tstar-1,:] = append(min(append(tmplike, mll_var_EFK(y2[tstar]-y2[0],tstar))),0)
@@ -54,6 +70,70 @@ def PELT_var_norm(data, pen=0, know_mean=False, mu=None, nprune=False):
             fcpt = append(fcpt, lastchangecpts[last-1,1])
             fcpt = [x for x in fcpt if x != None]
             last = lastchangecpts[last-1,0]
+        cpt = sorted(fcpt)
+        return(cpt)
+
+def mll_mean_EFK(x2,x,n):
+    """
+    PLEASE ENTER DETAILS
+    """
+    output = subtract(x2,divide(square(x),n))
+    return(output)
+
+def PELT_mean_norm(data, pen=0, minseglen=1, nprune = False):
+    """
+    PLEASE ENTER DETAILS
+
+    Usage
+    -----
+    PELT
+    """
+    if minseglen == 1:
+        minseglen = 1
+    else:
+        warn("Minseglen has not been implemented yet so setting minseglen = 1.")
+        minseglen = 1
+    n = size(data)
+    y2 = append(0, cumsum(square(data)))
+    y = append(0, cumsum(data))
+
+    lastchangecpts = full((n,2), None, dtype = 'O')
+    lastchangelike = full((n,2), None, dtype = 'O')
+    checklist = None
+    lastchangelike[0,:]=append(mll_mean_EFK(y2[1],y[1],1),add(mll_mean_EFK(y2[n]-y2[1],y[n]-y[1],n-1),pen))
+    lastchangecpts[0,:]=[0,1]
+    lastchangelike[1,:]=append(mll_mean_EFK(y2[2],y[2],2),add(mll_mean_EFK(y2[n]-y2[2],y[n]-y[2],n-2),pen))
+    lastchangecpts[1,:]=[0,2]
+    lastchangelike[2,:]=append(mll_mean_EFK(y2[3],y[3],3),add(mll_mean_EFK(y2[n]-y2[3],y[n]-y[3],n-3),pen))
+    lastchangecpts[2,:]=[0,3]
+    noprune = None
+    for tstar in range(4,n+1):
+        tmplike = None
+        tmpt = append(checklist,tstar-2)
+        tmpt = [x for x in tmpt if x != None]
+        tmplike = add(lastchangelike[tmpt-1,0] + mll_mean_EFK(y2[tstar]-y2[tmpt],y[tstar]-y[tmpt],tstar-tmpt),pen)
+        if tstar == n:
+            lastchangelike[tstar-1,:] = append(min(append(tmplike,mll_mean_EFK(y2[tstar],y[tstar],tstar))),0)
+        else:
+            lastchangelike[tstar-1,:] = append(min(append(tmplike,mll_mean_EFK(y2[tstar],y[tstar],tstar))),add(mll_mean_EFK(y2[n]-y2[tstar],y[n]-y[tstar],n-tstar),pen))
+        if lastchangelike[tstar-1,0] == mll_mean_EFK(y2[tstar],y[tstar],tstar):
+            lastchangecpts[tstar,:]= [0,tstar]
+        else:
+            cpt = truefalse(tmpt,compare(tmplike,lastchangelike[tstar-1,0]))[0]
+            lastchangecpts[tstar-1,:] = append(cpt,tstar)
+        checklist = truefalse(tmpt,less_than_equal(tmplike,add(lastchangelike[tstar-1,0],pen)))
+        if nprune == True:
+            noprune = append(noprune,size(checklist))
+            noprune = [x for x in noprune if x != None]
+    if nprune == True:
+        return(noprune)
+    else:
+        fcpt = None
+        last = n
+        while last != 0:
+            fcpt = append(fcpt,lastchangecpts[last-1,1])
+            last = lastchangecpts[last-1,0]
+            fcpt = [x for x in fcpt if x != None]
         cpt = sorted(fcpt)
         return(cpt)
 
@@ -113,7 +193,6 @@ def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
 
     Usage
     -----
-    data_input
     range_of_penalties
 
     Details
@@ -153,6 +232,7 @@ def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
     checklist = None
     for tstar in range(4,n+1):
         tmpt = [checklist,tstar - 2]
+        tmpt = [x for x in tmpt if x != None]
         tmpt = twoD_to_oneD(tmpt)
         tmplike = add(add(array(lastchangelike)[subtract(tmpt,1),0], mll_meanvar_EFK(-subtract(y2[tmpt],y2[tstar]), -subtract(y[tmpt],y[tstar]), -subtract(tmpt,tstar))),pen)
         if tstar == n:
@@ -183,13 +263,21 @@ def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
         cpt = sorted(fcpt)
         return(transpose(cpt))
 
-def PELT(data, pen = 0, minseglen = 1, costfunc = "mean_norm", nprune = False):
+def PELT(data, pen, minseglen = 1, costfunc = "mean_norm", nprune = False):
+    """
+    PLEASE ENTER DETAILS.
+
+    Usage
+    -----
+    data_input
+    range_of_penalties
+    """
     if costfunc == "meanvar_norm":
-        output = PELT_meanvar_norm(data=data, minseglen = 1, pen = 0, nprune = False)
+        output = PELT_meanvar_norm(data = data, minseglen = 1, pen = pen, nprune = False)
     elif costfunc == "mean_norm":
-        output = PELT_mean_norm()
+        output = PELT_mean_norm(data = data, minseglen = 1, pen = pen, nprune = False)
     elif costfunc == "var_norm":
-        output = PELT_var_norm()
+        output = PELT_var_norm(data = data, minseglen = 1, pen = pen, nprune = False)
     else:
-        exit("Unknown costfunc.")
+        exit("Unknown costfunc for PELT.")
     return(output)

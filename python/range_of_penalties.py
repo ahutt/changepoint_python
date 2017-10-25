@@ -60,7 +60,7 @@ def range_of_penalties(sumstat, minseglen, cost = "mean_norm", PELT = True, shap
 
         for b in range(1, size(pen_interval)+1):
 
-            ans = PELT_meanvar_norm(sumstat)
+            ans = PELT(data = sumstat, pen = pen_interval[b-1], costfunc = cost, minseglen = minseglen)
             resultingcpts = ans[1]
             new_numcpts[b-1] = size(resultingcpts)
             new_cpts[b-1] = [delete(resultingcpts, [size(resultingcpts)-1])]

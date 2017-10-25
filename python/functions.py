@@ -525,6 +525,7 @@ def compare(a,b):
     -----
     PELT_meanvar_norm
     PELT_var_norm
+    PELT_mean_norm
 
     Author(s)
     ---------
@@ -588,6 +589,7 @@ def truefalse(a,b):
     data_input
     mll_var_EFK
     PELT_var_norm
+    PELT_mean_norm
 
     Author(s)
     ---------

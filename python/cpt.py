@@ -299,6 +299,8 @@ def cpt_meanvar(data, penalty = "MBIC", pen_value = 0, method = "AMOC", Q = 5, t
     if test_stat == "Normal":
         if method == "AMOC":
             return(single_meanvar_norm(data = data, penalty = penalty, pen_value = pen_value, Class = Class, param_estimates = param_estimates, minseglen = minseglen))
+        elif method == "PELT" or method == "BinSeg":
+            return(multiple_meanvar_norm(data = data, mul_method = method, penalty = penalty, pen_value = pen_value, Class = Class, param_estimates = param_estimates, minseglen = minseglen))
         elif method == "SegNeigh":
             warn("SegNeigh is computationally slow, use PELT instead")
             return(multiple_meanvar_norm(data = data, penalty = penalty, pen_value = pen_value, Q = Q, Class = Class, param_estimates = param_estimates, minseglen = minseglen, mul_method = method))

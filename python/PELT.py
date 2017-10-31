@@ -111,7 +111,8 @@ def PELT_mean_norm(data, pen=0, minseglen=1, nprune = False):
         tmplike = None
         tmpt = append(checklist,tstar-2)
         tmpt = [x for x in tmpt if x != None]
-        tmplike = add(lastchangelike[tmpt-1,0] + mll_mean_EFK(y2[tstar]-y2[tmpt],y[tstar]-y[tmpt],tstar-tmpt),pen)
+        tmpt = twoD_to_oneD(tmpt)
+        tmplike = add(add(array(lastchangelike)[subtract(tmpt,1),0],mll_mean_EFK(subtract(y2[tstar],y2[tmpt]),subtract(y[tstar],y[tmpt]),subtract(tstar,tmpt))),pen)
         if tstar == n:
             lastchangelike[tstar-1,:] = append(min(append(tmplike,mll_mean_EFK(y2[tstar],y[tstar],tstar))),0)
         else:
@@ -119,8 +120,13 @@ def PELT_mean_norm(data, pen=0, minseglen=1, nprune = False):
         if lastchangelike[tstar-1,0] == mll_mean_EFK(y2[tstar],y[tstar],tstar):
             lastchangecpts[tstar,:]= [0,tstar]
         else:
-            cpt = truefalse(tmpt,compare(tmplike,lastchangelike[tstar-1,0]))[0]
-            lastchangecpts[tstar-1,:] = append(cpt,tstar)
+            cpt = truefalse(tmpt,compare(tmplike,lastchangelike[tstar-1,0]))
+            cpt = twoD_to_oneD(cpt)
+            if ndim(cpt) == 0:
+                cpt = cpt
+            else:
+                cpt = cpt[0]
+            lastchangecpts[tstar-1,:] = twoD_to_oneD(append(cpt,tstar))
         checklist = truefalse(tmpt,less_than_equal(tmplike,add(lastchangelike[tstar-1,0],pen)))
         if nprune == True:
             noprune = append(noprune,size(checklist))

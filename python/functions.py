@@ -667,6 +667,7 @@ def twoD_to_oneD(list):
     Usage
     -----
     PELT_meanvar_norm
+    PELT_mean_norm
 
     Author(s)
     ---------
@@ -688,8 +689,8 @@ def twoD_to_oneD(list):
                 if isinstance(list[0], (float, int)) == True:
                     return(list)
                 else:
-                    list[0].append(list[1])
-                    return(list[0])
+                    out = append(list[0],list[1])
+                    return(out)
             else:
                 return(list)
 

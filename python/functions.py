@@ -93,6 +93,7 @@ def sort_rows(a):
     Usage
     -----
     segneigh_meanvar_norm
+    segneigh_var_norm
 
     Author(s)
     ---------
@@ -332,6 +333,7 @@ def greater_than(a,b):
     segneigh_meanvar_exp
     segneigh_meanvar_gamma
     segneigh_meanvar_poisson
+    segneigh_var_norm
 
     Author
     ------
@@ -586,6 +588,7 @@ def truefalse(a,b):
     segneigh_meanvar_exp
     segneigh_meanvar_gamma
     segneigh_meanvar_poisson
+    segneigh_var_norm
     data_input
     mll_var_EFK
     PELT_var_norm
@@ -722,6 +725,7 @@ def which_element(a,b):
     segneigh_mean_cusum
     binseg_mean_cusum
     param
+    segneigh_var_norm
 
     Author(s)
     ---------

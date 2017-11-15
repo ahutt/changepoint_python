@@ -131,7 +131,8 @@ def sort_array(a):
 
     Usage
     -----
-    Currently not used anywhere in the package.
+    segneigh_mean_norm
+    segneigh_var_norm
 
     Author(s)
     ---------
@@ -334,6 +335,7 @@ def greater_than(a,b):
     segneigh_meanvar_gamma
     segneigh_meanvar_poisson
     segneigh_var_norm
+    segneigh_mean_norm
 
     Author
     ------
@@ -589,6 +591,7 @@ def truefalse(a,b):
     segneigh_meanvar_gamma
     segneigh_meanvar_poisson
     segneigh_var_norm
+    segneigh_mean_norm
     data_input
     mll_var_EFK
     PELT_var_norm

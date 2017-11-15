@@ -138,8 +138,7 @@ def segneigh_mean_norm(data, Q = 5, pen = 0):
     if op_cps == 0:
         cpts = n
     else:
-        cpts = append(sorted(truefalse(cps_Q[op_cps,:],greater_than(cps_Q[op_cps,:],0))), n) #reference in functions (greater_than, truefalse)
-
+        cpts = append(sorted(truefalse(cps_Q[op_cps,:],greater_than(cps_Q[op_cps,:],0))), n)
     cps = sort_rows(cps_Q) #reference in functions (sort_rows)
     op_cpts = op_cps
     like = criterion[op_cps]
@@ -253,3 +252,21 @@ def segneigh_meanvar_norm(data, Q = 5, pen = 0):
     like_Q=multiply(-2, like_Q[:,n-1])
     final_list = list((cps, cpts, op_cpts, pen, like, like_Q))
     return(final_list)
+
+def SegNeigh(data, Q, pen, minseglen = 1, costfunc = "mean_norm", know_mean = False, mu = None):
+    """
+    PLEASE ENTER DETAILS.
+    Usage
+    -----
+    data_input
+    range_of_penalties
+    """
+    if costfunc == "meanvar_norm":
+        output = segneigh_meanvar_norm(data = data, Q = Q, pen = pen, know_mean = know_mean, mu = mu)
+    elif costfunc == "mean_norm":
+        output = segneigh_mean_norm(data = data, Q = Q, pen = pen)
+    elif costfunc == "var_norm":
+        output = segneigh_var_norm(data = data, Q = Q, pen = pen)
+    else:
+        exit("Unknown costfunc for SegNeigh.")
+    return(output)

@@ -262,11 +262,11 @@ def SegNeigh(data, Q, pen, minseglen = 1, costfunc = "mean_norm", know_mean = Fa
     range_of_penalties
     """
     if costfunc == "meanvar_norm":
-        output = segneigh_meanvar_norm(data = data, Q = Q, pen = pen, know_mean = know_mean, mu = mu)
+        output = segneigh_meanvar_norm(data = data, Q = Q, pen = pen)
     elif costfunc == "mean_norm":
         output = segneigh_mean_norm(data = data, Q = Q, pen = pen)
     elif costfunc == "var_norm":
-        output = segneigh_var_norm(data = data, Q = Q, pen = pen)
+        output = segneigh_var_norm(data = data, Q = Q, pen = pen, know_mean = know_mean, mu = mu)
     else:
         exit("Unknown costfunc for SegNeigh.")
     return(output)

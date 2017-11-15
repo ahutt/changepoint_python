@@ -1,7 +1,7 @@
 from numpy import mean, size, append, array
 from PELT import PELT
 from BinSeg import binseg_meanvar_norm
-from SegNeigh import segneigh_meanvar_norm
+from SegNeigh import SegNeigh
 from functions import greater_than, truefalse
 
 def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", shape=1):
@@ -45,7 +45,7 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
         else:
             cpts = append(sorted(out[0][0,list(range(1,int(out[1])+1))]),n)
     elif method == "SegNeigh":
-        out = segneigh_meanvar_norm(data = data, Q = Q, pen = pen_value)
+        out = SegNeigh(data = data, Q = Q, pen = pen_value, mu = mu)
         n = size(data)
         if out[2] == [0]:
             cpts = n

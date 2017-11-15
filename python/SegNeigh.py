@@ -138,9 +138,14 @@ def segneigh_mean_norm(data, Q = 5, pen = 0):
     if op_cps == 0:
         cpts = n
     else:
-        cpts = append(sorted(cps_Q[op_cps + 1,:][cps_Q[op_cps + 1,:] > 0]), n) #fix this line.
-#
-#    return(list(cps = cps_Q.sort(axis = 1), cpts = cpts, op_cpts = op_cps, pen = pen, like = criterion[op_cps + 1], like_Q = -2 * like_Q[:,n]))
+        cpts = append(sorted(truefalse(cps_Q[op_cps,:],greater_than(cps_Q[op_cps,:],0))), n) #reference in functions (greater_than, truefalse)
+
+    cps = sort_rows(cps_Q) #reference in functions (sort_rows)
+    op_cpts = op_cps
+    like = criterion[op_cps]
+    like_Q = multiply(-2, like_Q[:,n-1])
+
+    return(list((cps, cpts, op_cpts, pen, like, like_Q)))
 
 def segneigh_meanvar_norm(data, Q = 5, pen = 0):
     """

@@ -5,7 +5,7 @@ def mll_var(x,n):
     """
     PLEASE ENTER DETAILS
     """
-    neg = less_than_equal(x,0) #reference function
+    neg = less_than_equal(x,0)
     x = [0.00000000001 if i == True else i for i in neg]
     output = multiply(-0.5,multiply(n,add(log(2 * pi),add(log(x/n),1))))
     return(output)
@@ -36,7 +36,7 @@ def binseg_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
                 null = mll_var(y2[end] - y2[st - 1], end - st + 1)
             else:
                 Lambda[j-1] = mll_var(y2[j] - y2[st - 1], j - st + 1) + mll_var(y2[end] - y2[j], end - j) - null
-        k = which_max(Lambda)[0] #reference
+        k = which_max(Lambda)[0]
         cpt[0,q-1] = k
         cpt[1,q-1] = min(oldmax, max(Lambda))
         oldmax = min(oldmax, max(Lambda))
@@ -44,11 +44,11 @@ def binseg_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
     op_cps = None
     p = range(1,Q)
     for i in range(1, size(pen)+1):
-        criterion = greater_than_equal((2 * cpt[1,:]),pen[i-1]) # reference
+        criterion = greater_than_equal((2 * cpt[1,:]),pen[i-1])
         if sum(criterion) == 0:
             op_cps = 0
         else:
-            op_cps = append(op_cps, max(which_element(criterion,True))) #reference
+            op_cps = append(op_cps, max(which_element(criterion,True)))
             op_cps = [x for x in op_cps if x != None]
     cps = cpt
     op_cpts = op_cps

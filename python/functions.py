@@ -1,5 +1,5 @@
 from sys import exit
-from numpy import asarray, size, ndim, ndarray, transpose, full, array, shape, append,inf
+from numpy import asarray, size, ndim, ndarray, transpose, full, shape, append,inf
 
 def checkData(data):
     """
@@ -94,6 +94,7 @@ def sort_rows(a):
     -----
     segneigh_meanvar_norm
     segneigh_var_norm
+    binseg_var_norm
 
     Author(s)
     ---------
@@ -336,6 +337,7 @@ def greater_than(a,b):
     segneigh_meanvar_poisson
     segneigh_var_norm
     segneigh_mean_norm
+    binseg_var_norm
 
     Author
     ------
@@ -482,6 +484,7 @@ def less_than_equal(a,b):
     segneigh_meanvar_exp
     mll_var_EFK
     PELT_var_norm
+    mll_var
 
     Author(s)
     ---------
@@ -725,6 +728,7 @@ def which_element(a,b):
     segneigh_meanvar_gamma
     segneigh_var_css
     binseg_var_css
+    binseg_var_norm
     segneigh_mean_cusum
     binseg_mean_cusum
     param

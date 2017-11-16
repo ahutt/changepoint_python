@@ -1,52 +1,59 @@
-from numpy import log, pi, size, cumsum, square, subtract, full, repeat, multiply, add, divide, power, append, float64
-#from statistics import mean
-from functions import truefalse2, less_than_equal, greater_than_equal
+from numpy import log, pi, size, cumsum, square, subtract, full, repeat, multiply, add, divide, power, append, float64, mean
+from functions import truefalse2, less_than_equal, greater_than_equal, which_max, which_element
 
-#The hashed out functions have not been tested, documented and are currently not used anywhere in the package.
+def mll_var(x,n):
+    """
+    PLEASE ENTER DETAILS
+    """
+    neg = less_than_equal(x,0) #reference function
+    x = [0.00000000001 if i == True else i for i in neg]
+    output = multiply(-0.5,multiply(n,add(log(2 * pi),add(log(x/n),1))))
+    return(output)
 
-#def mll_var(x,n):
-#    neg = x <= 0
-#    x[neg == True] = 0.00000000001
-#    return(-0.5 * n * (log(2 * pi) + log(x/n) + 1))
+def binseg_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
+    """
+    PLEASE ENTER DETAILS
+    """
+    n = size(data)
+    if know_mean == False and mu == None:
+        mu = mean(data)
+    y2 = append(0, cumsum(square(subtract(data,mu))))
+    tau = [0,n]
+    cpt = full((2,Q),0,dtype=float)
+    oldmax = 1000
 
-#def binseg_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
-#    n = size(data)
-#    if know_mean == False & mu == None:
-#        mu = mean(data)
-#    y2 = [0, cumsum(square(subtract(data,mu)))]
-#    tau = [0,n]
-#    cpt = zeros([2,Q])
-#    oldmax = 1000
-#
-#    for q in range(1,Q):
-#        Lambda = repeat(0, n - 1)
-#        i = 1
-#        st = tau[0] + 1
-#        end = tau[1]
-#        null = mll_var(y2[end] - y2[st - 1], end - st + 1)
-#        for j in range(1, n - 1):
-#            if j == end:
-#                st = end + 1
-#                i = i + 1
-#                end = tau[i]
-#                null = mll_var(y2[end] - y2[st - 1], end - st + 1)
-#            else:
-#                Lambda[j] = mll_var(y2[j + 1] - y2[st - 1], j - st + 1) + mll_var(y2[end] - y2[j], end - j) - null
-#        k = which_max(Lambda)[0]
-#        cpt[0,q] = k
-#        cpt[1,q] = min(oldmax, max(Lambda))
-#        oldmax = min(oldmax, max(Lambda))
-#        tau = sorted([tau,k])
-#    op_cps = None
-#    p = range(1,Q-1)
-#    for i in range(1, size(pen)):
-#        criterion = (2 * cpt[2,:]) >= pen[i-1]
-#        if sum(criterion) == 0:
-#            op_cps = 0
-#        else:
-#            op_cps = [op_cps, max(which((criterion) == True))]
-#    return(list(cps = cpt, op_cpts = op_cps, pen = pen))
-#
+    for q in range(1,Q+1):
+        Lambda = repeat(0, n - 1)
+        i = 1
+        st = tau[0] + 1
+        end = tau[1]
+        null = mll_var(y2[end] - y2[st - 1], end - st + 1)
+        for j in range(1, n):
+            if j == end:
+                st = end + 1
+                i = i + 1
+                end = tau[i]
+                null = mll_var(y2[end] - y2[st - 1], end - st + 1)
+            else:
+                Lambda[j-1] = mll_var(y2[j] - y2[st - 1], j - st + 1) + mll_var(y2[end] - y2[j], end - j) - null
+        k = which_max(Lambda)[0] #reference
+        cpt[0,q-1] = k
+        cpt[1,q-1] = min(oldmax, max(Lambda))
+        oldmax = min(oldmax, max(Lambda))
+        tau = sorted(append(tau,k))
+    op_cps = None
+    p = range(1,Q)
+    for i in range(1, size(pen)+1):
+        criterion = greater_than_equal((2 * cpt[1,:]),pen[i-1]) # reference
+        if sum(criterion) == 0:
+            op_cps = 0
+        else:
+            op_cps = append(op_cps, max(which_element(criterion,True))) #reference
+            op_cps = [x for x in op_cps if x != None]
+    cps = cpt
+    op_cpts = op_cps
+    return(list((cps, op_cpts, pen)))
+
 #def mll_mean(x2,x,n):
 #    return(-0.5 * (x2 - (x ** 2)/n))
 #

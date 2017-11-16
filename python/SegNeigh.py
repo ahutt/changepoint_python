@@ -259,7 +259,6 @@ def SegNeigh(data, Q, pen, minseglen = 1, costfunc = "mean_norm", know_mean = Fa
     Usage
     -----
     data_input
-    range_of_penalties
     """
     if costfunc == "meanvar_norm":
         output = segneigh_meanvar_norm(data = data, Q = Q, pen = pen)

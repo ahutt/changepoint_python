@@ -220,3 +220,21 @@ def binseg_meanvar_norm(data, Q = 5, pen = 0):
     op_cpts = op_cps
     pen = pen
     return(list((cps, op_cpts, pen)))
+
+def BinSeg(data, Q, pen, know_mean, mu, costfunc = "mean_norm"):
+    """
+    PLEASE ENTER DETAILS.
+
+    Usage
+    -----
+    data_input
+    """
+    if costfunc == "meanvar_norm":
+        output = binseg_meanvar_norm(data = data, Q = Q, pen = pen)
+    elif costfunc == "mean_norm":
+        output = binseg_mean_norm(data = data, Q = Q, pen = pen)
+    elif costfunc == "var_norm":
+        output = binseg_var_norm(data = data, Q = Q, pen = pen, know_mean = know_mean, mu = mu)
+    else:
+        exit("Unknown costfunc for BinSeg.")
+    return(output)

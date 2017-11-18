@@ -1,6 +1,6 @@
 from numpy import mean, size, append, array
 from PELT import PELT
-from BinSeg import binseg_meanvar_norm
+from BinSeg import BinSeg
 from SegNeigh import SegNeigh
 from functions import greater_than, truefalse
 
@@ -34,10 +34,10 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
     else:
         mu = mean(data)
     if method == "PELT":
-        out = PELT(data = data, pen = pen_value, minseglen = minseglen, costfunc = costfunc)
+        out = PELT(data = data, pen = pen_value, minseglen = minseglen, costfunc = costfunc, mu = mu)
         cpts = out[1]
     elif method == "BinSeg":
-        out = binseg_meanvar_norm(data = data, Q = Q, pen = pen_value)
+        out = BinSeg(data = data, Q = Q, pen = pen_value, mu = mu, costfunc = costfunc)
         cpts = out[1]
         n = size(data)
         if out[1] == [0]:
@@ -45,7 +45,7 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
         else:
             cpts = append(sorted(out[0][0,list(range(1,int(out[1])+1))]),n)
     elif method == "SegNeigh":
-        out = SegNeigh(data = data, Q = Q, pen = pen_value, mu = mu)
+        out = SegNeigh(data = data, Q = Q, pen = pen_value, mu = mu, costfunc = costfunc)
         n = size(data)
         if out[2] == [0]:
             cpts = n

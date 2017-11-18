@@ -269,7 +269,7 @@ def PELT_meanvar_norm(data, minseglen = 1, pen = 0, nprune = False):
         cpt = sorted(fcpt)
         return(transpose(cpt))
 
-def PELT(data, pen, minseglen = 1, costfunc = "mean_norm", nprune = False):
+def PELT(data, pen, minseglen = 1, costfunc = "mean_norm", nprune = False, know_mean = False, mu = None):
     """
     PLEASE ENTER DETAILS.
 
@@ -283,7 +283,7 @@ def PELT(data, pen, minseglen = 1, costfunc = "mean_norm", nprune = False):
     elif costfunc == "mean_norm":
         output = PELT_mean_norm(data = data, minseglen = 1, pen = pen, nprune = False)
     elif costfunc == "var_norm":
-        output = PELT_var_norm(data = data, minseglen = 1, pen = pen, nprune = False)
+        output = PELT_var_norm(data = data, minseglen = 1, pen = pen, know_mean = know_mean, mu = mu, nprune = False)
     else:
         exit("Unknown costfunc for PELT.")
     return(output)

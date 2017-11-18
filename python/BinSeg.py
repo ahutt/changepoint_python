@@ -221,7 +221,7 @@ def binseg_meanvar_norm(data, Q = 5, pen = 0):
     pen = pen
     return(list((cps, op_cpts, pen)))
 
-def BinSeg(data, Q, pen, know_mean, mu, costfunc = "mean_norm"):
+def BinSeg(data, Q, pen, mu, know_mean = False, costfunc = "mean_norm"):
     """
     PLEASE ENTER DETAILS.
 

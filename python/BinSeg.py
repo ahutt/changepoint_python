@@ -1,5 +1,6 @@
 from numpy import log, pi, size, cumsum, square, subtract, full, repeat, multiply, add, divide, power, append, float64, mean
 from functions import truefalse2, less_than_equal, greater_than_equal, which_max, which_element
+from sys import exit
 
 def mll_var(x,n):
     """
@@ -57,7 +58,8 @@ def binseg_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
 def mll_mean(x2,x,n):
     """
     """
-    return(multiply(-0.5,divide((subtract(x2,square(x)),n))))
+    output = multiply(-0.5,divide(subtract(x2,square(x)),n))
+    return(output)
 
 def binseg_mean_norm(data, Q = 5, pen = 0):
     """
@@ -77,10 +79,10 @@ def binseg_mean_norm(data, Q = 5, pen = 0):
         null = mll_mean(subtract(y2[end],y2[st - 1]), subtract(y[end],y[st - 1]), end - st + 1)
         for j in range(1, n):
             if j == end:
-                st = end + 1
-                i = i + 1
-                end = tau[i]
-                null = mll_mean(subtract(y2[end],y2[st - 1]), subtract(y[end],y[st - 1]), end - st + 1)
+               st = end + 1
+               i = i + 1
+               end = tau[i]
+               null = mll_mean(subtract(y2[end],y2[st - 1]), subtract(y[end],y[st - 1]), end - st + 1)
             else:
                 Lambda[j-1] = mll_mean(subtract(y2[j],y2[st - 1]), subtract(y[j],y[st - 1]), j - st + 1) + mll_mean(subtract(y2[end],y2[j]), subtract(y[end],y[j]), end - j) - null
         k = which_max(Lambda)[0]
@@ -88,7 +90,7 @@ def binseg_mean_norm(data, Q = 5, pen = 0):
         cpt[1,q-1] = min(oldmax, max(Lambda))
         oldmax = min(oldmax, max(Lambda))
         tau = sorted(append(tau,k))
-    op_cps = None
+        op_cps = None
     p = range(1,Q)
     for i in range(1, size(pen)+1):
         criterion = greater_than_equal((multiply(cpt[1,:],2)),pen[i-1]) #reference

@@ -33,29 +33,18 @@ def checkData(data):
         if i == None:
             exit("Missing value: None is not allowed in the data as changepoint methods are only sensible for regularly spaced data.")
 
-def which_max(a,b):
+def which_max(a):
     """
-    which_max(a,b)
+    which_max(a)
 
     description
     -----------
-    If a >= b, 1 is returned. Otherwise, 2 is returned.
-
-    Parameters
-    ----------
-    a : Any int or float.
-    b : Any int or float.
-
-    Returns
-    -------
-    1 or 0.
-    If a >= b, 1 is returned. Otherwise, 2 is returned. If one of a or b aren't numeric, an error message is returned.
 
     Usage
     -----
-    class_input
     binseg_var_css
     binseg_mean_cusum
+    binseg_mean_norm
 
     Author(s)
     ---------
@@ -65,13 +54,14 @@ def which_max(a,b):
     ----------
     See R function 'which.max'.
     """
-    if isinstance(a, (int, float)) == True and isinstance(b, (int, float)) == True:
-        if a >= b:
-            return(1)
-        else:
-            return(2)
+    if isinstance(a, (int, float)) == True:
+        return([0])
+    elif isinstance(a,(list, ndarray))==True:
+        m = max(a)
+        output = [i for i, j in enumerate(a) if j==m]
+        return(output)
     else:
-        exit('Both inputs need to be either integers or floats.')
+        exit('Input needs to be an integer, float or list.')
 
 
 def sort_rows(a):

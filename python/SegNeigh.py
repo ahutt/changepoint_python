@@ -115,8 +115,8 @@ def segneigh_mean_norm(data, Q = 5, pen = 0):
     for q in range(2,Q+1):
         for j in range(q,n+1):
             like = None
-            v = range(q-1,j)
-            like = add(like_Q[q-2,v-1],all_seg[v+2,j-1])
+            v = list(range(q-1,j))
+            like = add(like_Q[q-2,subtract(v,1)],all_seg[add(v,2),j-1])
 
             like_Q[q-1,j-1] = max(like)
             cp[q-1,j-1] = which_element(like,max(like))[0] + (q - 2) #reference in functions (which_element)

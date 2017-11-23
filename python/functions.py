@@ -84,6 +84,7 @@ def sort_rows(a):
     -----
     segneigh_meanvar_norm
     segneigh_var_norm
+    segneigh_mean_norm
     binseg_var_norm
 
     Author(s)
@@ -723,6 +724,7 @@ def which_element(a,b):
     binseg_mean_cusum
     param
     segneigh_var_norm
+    segneigh_mean_norm
 
     Author(s)
     ---------

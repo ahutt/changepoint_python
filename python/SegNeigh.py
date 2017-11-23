@@ -1,4 +1,4 @@
-from numpy import size, full, inf, pi, log, add, set_printoptions, subtract, multiply, append, square, mean, divide
+from numpy import size, full, inf, pi, log, add, set_printoptions, subtract, multiply, array, append, square, mean, divide
 from functions import max_vector,which_element,greater_than,truefalse,sort_rows
 from sys import exit
 from _warnings import warn
@@ -115,31 +115,40 @@ def segneigh_mean_norm(data, Q = 5, pen = 0):
     for q in range(2,Q+1):
         for j in range(q,n+1):
             like = None
-            v = list(range(q-1,j))
-            like = add(like_Q[q-2,subtract(v,1)],all_seg[add(v,2),j-1])
+            v = array(range(q-1,j))
+            like = add(like_Q[q-2,subtract(v,1)],all_seg[v,j-1])
 
             like_Q[q-1,j-1] = max(like)
-            cp[q-1,j-1] = which_element(like,max(like))[0] + (q - 2) #reference in functions (which_element)
+            cp[q-1,j-1] = which_element(like,max(like))[0] + (q - 2)
+
     cps_Q = full((Q,Q),None,dtype='O')
     for q in range(2,Q+1):
         cps_Q[q-1,0] = cp[q-1,n-1]
         for i in range(1,q):
-            cps_Q[q-1,i] = cp[q-i-1,(cps_Q[q-1,i-1])]
-
+            element = cps_Q[q-1,i-1] - 1
+            cps_Q[q-1,i] = cp[(q-i-1),element]
     op_cps = None
-    k = range(0,Q)
+    k = array(range(0,Q))
 
     for i in range(1,size(pen)+1):
-        criterion = -2 * like_Q[:,n-1] + k * pen[i-1]
+        if size(pen) == 1:
+            pen = [pen]
+        else:
+            pen = pen
+        criterion = add(multiply(-2,like_Q[:,n-1]), multiply(k,pen[i-1]))
 
-        op_cps = append(op_cps, which_element(criterion,min(criterion))-1)
+        op_cps = append(op_cps, subtract(which_element(criterion,min(criterion)),1))
+    op_cps = [x for x in op_cps if x != None]
+    if size(op_cps) == 1:
+        op_cps = op_cps[0]
     if op_cps == Q -1:
         warn('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')
     if op_cps == 0:
         cpts = n
     else:
-        cpts = append(sorted(truefalse(cps_Q[op_cps,:],greater_than(cps_Q[op_cps,:],0))), n)
-    cps = sort_rows(cps_Q) #reference in functions (sort_rows)
+        variable = [x for x in cps_Q[op_cps,:] if x != None]
+        cpts = append(sorted(truefalse(variable,greater_than(cps_Q[op_cps,:],0))), n)
+    cps = sort_rows(cps_Q)
     op_cpts = op_cps
     like = criterion[op_cps]
     like_Q = multiply(-2, like_Q[:,n-1])

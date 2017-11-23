@@ -50,5 +50,6 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
         if out[2] == [0]:
             cpts = n
         else:
-            cpts = append(sorted(truefalse(array(out[0])[out[2],:],greater_than(array(out[0])[out[2],:],0))),n)
+            variable = [x for x in out[0][out[2],:] if x != None]
+            cpts = append(sorted(truefalse(variable,greater_than(out[0][out[2],:],0))),n)
     return(out)

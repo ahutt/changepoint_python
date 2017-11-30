@@ -1,4 +1,4 @@
-from numpy import inf, subtract, transpose, delete, diff, multiply, size
+from numpy import inf, subtract, transpose, delete, diff, multiply, size, ndim, add, array
 from functions import sapply
 
 #class class1:
@@ -104,13 +104,25 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
     ans.minseglen = minseglen
 
     if penalty != "CROPS":
+        n = size(data)
         ans.cpts = out[1]
+        if ndim(ans.cpts) != 0:
+            ans.cpts = [x for x in ans.cpts if x != n]
+            ans.cpts = [x for x in ans.cpts if x != 0]
 
         if param_estimates == True:
             if test_stat == "Gamma":
                 ans = param(object=ans, shape=shape)
             else:
                 ans = param(object=ans, shape=None)
+
+    if penalty != "CROPS":
+        n = size(data)
+        ans.cpts = out[1]
+        if ndim(ans.cpts) != 0:
+            ans.cpts = [x for x in ans.cpts if x != n]
+            ans.cpts = [x for x in ans.cpts if x != 0]
+
     if method == "PELT":
         ans.ncpts_max = inf
     elif method == "AMOC":
@@ -120,13 +132,14 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
 
     if method == "BinSeg":
         l = [None] * int((size(out[0])/2))
-        for i in range(1, int(len(out[0])/2) + 1):
-            l[i-1] = out[0][0,list(subtract(range(1,i+1),1))]
-
-        m = transpose(sapply(l, list(range(1,max(sapply(l,len)) + 1))))
+        for i in range(1, int(size(out[0])/2) + 1):
+            l[i-1] = out[0][0,subtract(range(1,i+1),1)]
+        m1 = add(range(1,max(sapply(l,size))+1),0)
+        l = array(l)
+        m = transpose(l[subtract(m1,1)])
 
         ans.cpts_full = m
-        ans.pen_value_full = out[0][0,:]
+        ans.pen_value_full = out[0][1,:]
 
     elif method == "SegNeigh":
         ans.cpts_full = delete(out[0],(0), axis=0)

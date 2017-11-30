@@ -58,7 +58,7 @@ def binseg_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
 def mll_mean(x2,x,n):
     """
     """
-    output = multiply(-0.5,divide(subtract(x2,square(x)),n))
+    output = multiply(-0.5,subtract(x2,divide(square(x),n)))
     return(output)
 
 def binseg_mean_norm(data, Q = 5, pen = 0):
@@ -72,20 +72,20 @@ def binseg_mean_norm(data, Q = 5, pen = 0):
     oldmax = 1000
 
     for q in range(1,Q+1):
-        Lambda = repeat(0,n - 1)
+        Lambda = repeat(0.0,n - 1)
         i = 1
         st = tau[0] + 1
         end = tau[1]
-        null = mll_mean(subtract(y2[end],y2[st - 1]), subtract(y[end],y[st - 1]), end - st + 1)
+        null = mll_mean(subtract(y2[end],y2[st - 1]), subtract(y[end],y[st - 1]), (end - st + 1))
         for j in range(1, n):
             if j == end:
                st = end + 1
                i = i + 1
                end = tau[i]
-               null = mll_mean(subtract(y2[end],y2[st - 1]), subtract(y[end],y[st - 1]), end - st + 1)
+               null = mll_mean(subtract(y2[end],y2[st - 1]), subtract(y[end],y[st - 1]), (end - st + 1))
             else:
-                Lambda[j-1] = mll_mean(subtract(y2[j],y2[st - 1]), subtract(y[j],y[st - 1]), j - st + 1) + mll_mean(subtract(y2[end],y2[j]), subtract(y[end],y[j]), end - j) - null
-        k = which_max(Lambda)[0]
+                Lambda[j-1] = subtract(add(mll_mean(subtract(y2[j],y2[st - 1]), subtract(y[j],y[st - 1]), (j - st + 1)),mll_mean(subtract(y2[end],y2[j]), subtract(y[end],y[j]), (end - j))),null)
+        k = which_max(Lambda)[0] + 1
         cpt[0,q-1] = k
         cpt[1,q-1] = min(oldmax, max(Lambda))
         oldmax = min(oldmax, max(Lambda))
@@ -93,13 +93,16 @@ def binseg_mean_norm(data, Q = 5, pen = 0):
         op_cps = None
     p = range(1,Q)
     for i in range(1, size(pen)+1):
-        criterion = greater_than_equal((multiply(cpt[1,:],2)),pen[i-1]) #reference
+        if size(pen)==1:
+            criterion = greater_than_equal((multiply(cpt[1,:],2)),pen)
+        else:
+            criterion = greater_than_equal((multiply(cpt[1,:],2)),pen[i-1])
         if sum(criterion) == 0:
             op_cps = 0
         else:
-            op_cps = append(op_cps, max(which_element((criterion) == True))) #reference
+            op_cps = append(op_cps, max(which_element(criterion,True)))
     cps = cpt
-    op_cpts = op_cps
+    op_cpts = [x for x in op_cps if x != None]
     return(list((cps, op_cpts, pen)))
 
 def mll_meanvar(x2,x,n):

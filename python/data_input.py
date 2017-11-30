@@ -43,7 +43,7 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
         if out[1] == [0]:
             cpts = n
         else:
-            cpts = append(sorted(out[0][0,list(range(1,int(out[1])+1))]),n)
+            cpts = append(sorted(out[0][0,list(range(0,int(out[1][0])))]),n)
     elif method == "SegNeigh":
         out = SegNeigh(data = data, Q = Q, pen = pen_value, mu = mu, costfunc = costfunc)
         n = size(data)

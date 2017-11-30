@@ -293,8 +293,8 @@ def sapply(x,y):
     See R function 'sapply'.
     """
     v = list()
-    for i in y:
-        v.append(x[i])
+    for i in x:
+        v.append(y(i))
     b = asarray(v)
     return(b)
 
@@ -425,6 +425,7 @@ def greater_than_equal(a,b):
     binseg_meanvar_norm
     binseg_var_css
     binseg_mean_cusum
+    binseg_mean_norm
 
     Author(s)
     ---------
@@ -720,6 +721,7 @@ def which_element(a,b):
     segneigh_var_css
     binseg_var_css
     binseg_var_norm
+    binseg_mean_norm
     segneigh_mean_cusum
     binseg_mean_cusum
     param

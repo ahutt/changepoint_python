@@ -1,0 +1,14 @@
+# Editor temporary/working/backup files #
+
+*~
+#*#
+.#*
+
+
+
+# Compiled source #
+
+*.py[ocd]
+*.so
+*.o
+

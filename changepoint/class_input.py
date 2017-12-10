@@ -1,13 +1,8 @@
-from numpy import inf, subtract, transpose, delete, diff, multiply, size, ndim, add, array
+from numpy import inf, subtract, transpose, delete, diff, multiply, size, ndim, full, shape, append, array
 from functions import sapply
 
-#class class1:
-#    def __init__(self, shape = None):
-#        self.shape = shape
-#param_est = class1()
-
-class class2:
-    def __init__(self, data_set = None, cpttype = None, method = None, test_stat = None, pen_type = None, pen_value = None, minseglen = None, cpts = None, ncpts_max = None, cpts_full = None, pen_value_full = None, param_est = None):
+class class1:
+    def __init__(self, data_set = None, cpttype = None, method = None, test_stat = None, pen_type = None, pen_value = None, minseglen = None, cpts = None, ncpts_max = None, ncpts = None, cpts_full = None, pen_value_full = None, param_est = None):
         self.data_set = data_set
         self.cpttype = cpttype
         self.method = method
@@ -17,19 +12,57 @@ class class2:
         self.minseglen = minseglen
         self.cpts = cpts
         self.ncpts_max = ncpts_max
+        self.ncpts = ncpts
         self.cpts_full = cpts_full
         self.pen_value_full = pen_value_full
         self.param_est = param_est
 
     def __repr__(self):
-        return("Type of changepoint : Change in %s" '\n' "Method of analysis : %s" '\n' "Test statistic : %s" '\n' "Penalty type : %s with value, %s" '\n' "Minimum Segment Length : %s" '\n' "Maximum no. of cpts : %s" '\n' "Changepoint Locations : %s" '\n' "Range of segmentations : \n %s \n For penalty values : %s"% (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts, self.cpts_full, self.pen_value_full))
+        return("Type of changepoint : Change in %s" '\n' "Method of analysis : %s" '\n' "Test statistic : %s" '\n' "Penalty type : %s with value, %s" '\n' "Minimum Segment Length : %s" '\n' "Maximum number of cpts : %s" '\n' "Number of changepoints : %s" '\n' "Changepoint Locations : %s"% (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.ncpts, self.cpts))
 
-#    def __repr__(self):
-#        return('ans("%s","%s","%s","%s","%s","%s","%s", "%s")' % (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts[1]))
 
-def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = [], Q = None, shape = None):
+class class2:
+    def __init__(self, data_set = None, cpttype = None, method = None, test_stat = None, pen_type = None, pen_value = None, minseglen = None, cpts = None, ncpts_max = None, ncpts = None, cpts_full = None, pen_value_full = None, param_est = None):
+        self.data_set = data_set
+        self.cpttype = cpttype
+        self.method = method
+        self.test_stat = test_stat
+        self.pen_type = pen_type
+        self.pen_value = pen_value
+        self.minseglen = minseglen
+        self.cpts = cpts
+        self.ncpts_max = ncpts_max
+        self.ncpts = ncpts
+        self.cpts_full = cpts_full
+        self.pen_value_full = pen_value_full
+        self.param_est = param_est
+
+    def __repr__(self):
+        return("Type of changepoint : Change in %s" '\n' "Method of analysis : %s" '\n' "Test statistic : %s" '\n' "Penalty type : %s with value, %s" '\n' "Minimum Segment Length : %s" '\n' "Maximum number of cpts : %s" '\n' "Changepoint Locations : %s" '\n' "Range of segmentations : \n %s \n For penalty values : %s" '\n'% (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts, self.cpts_full, self.pen_value_full))
+
+class class3:
+    def __init__(self, data_set = None, cpttype = None, method = None, test_stat = None, pen_type = None, pen_value = None, minseglen = None, cpts = None, ncpts_max = None, ncpts = None, cpts_full = None, pen_value_full = None, param_est = None):
+        self.data_set = data_set
+        self.cpttype = cpttype
+        self.method = method
+        self.test_stat = test_stat
+        self.pen_type = pen_type
+        self.pen_value = pen_value
+        self.minseglen = minseglen
+        self.cpts = cpts
+        self.ncpts_max = ncpts_max
+        self.ncpts = ncpts
+        self.cpts_full = cpts_full
+        self.pen_value_full = pen_value_full
+        self.param_est = param_est
+
+    def __repr__(self):
+        return("Type of changepoint : Change in %s" '\n' "Method of analysis : %s" '\n' "Test statistic : %s" '\n' "Penalty type : %s with value, %s" '\n' "Minimum Segment Length : %s" '\n' "Maximum number of cpts : %s" '\n' "Changepoint Locations : %s"% (self.cpttype, self.method, self.test_stat, self.pen_type, self.pen_value, self.minseglen, self.ncpts_max, self.cpts,))
+
+
+def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = [], Q = None, Shape = None):
     """
-    class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = [], Q = None, shape = None)
+    class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen, param_estimates, out = [], Q = None, Shape = None)
 
     Description
     -----------
@@ -94,7 +127,12 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
     else:
         from param_cpt import param
 
-    ans = class2()
+    if method == "PELT":
+        ans = class1()
+    elif method == "SegNeigh" or method == "BinSeg":
+        ans = class2()
+    else:
+        ans = class3()
     ans.data_set = data
     ans.cpttype = cpttype
     ans.method = method
@@ -125,20 +163,26 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
 
     if method == "PELT":
         ans.ncpts_max = inf
+        ans.ncpts = size(ans.cpts)
+
     elif method == "AMOC":
         ans.ncpts_max = 1
     else:
         ans.ncpts_max = Q
 
     if method == "BinSeg":
-        l = [None] * int((size(out[0])/2))
+        nrows_cps = shape(out[0])[0]
+        ncols_cps = shape(out[0])[1]
+        if (nrows_cps > ncols_cps) == True:
+            l = full((nrows_cps,nrows_cps), None, dtype = 'O')
+        else:
+            l = full((ncols_cps,ncols_cps), None, dtype = 'O')
         for i in range(1, int(size(out[0])/2) + 1):
-            l[i-1] = out[0][0,subtract(range(1,i+1),1)]
-        m1 = add(range(1,max(sapply(l,size))+1),0)
-        l = array(l)
-        m = transpose(l[subtract(m1,1)])
-
-        ans.cpts_full = m
+            l[i-1] = append(out[0][0,subtract(range(1,i+1),1)],([None]*(int(size(out[0])/2) - i)))
+#        m1 = array(range(1,max(sapply(l,size))+1))
+#        m = transpose(l[subtract(m1,1)])
+        # above two lines may need fixing in the future then replace 'l' with 'm' in the next line.
+        ans.cpts_full = l
         ans.pen_value_full = out[0][1,:]
 
     elif method == "SegNeigh":

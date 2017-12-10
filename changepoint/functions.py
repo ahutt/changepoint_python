@@ -292,9 +292,10 @@ def sapply(x,y):
     ----------
     See R function 'sapply'.
     """
-    v = list()
-    for i in x:
-        v.append(y(i))
+    v = []
+    for i in range(1,shape(x)[0]+1):
+        for j in range(1,shape(x)[1]+1):
+            v.append(y(x[i-1,j-1]))
     b = asarray(v)
     return(b)
 

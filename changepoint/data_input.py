@@ -1,4 +1,4 @@
-from numpy import mean, size, append, array
+from numpy import mean, size, append, array, subtract
 from PELT import PELT
 from BinSeg import BinSeg
 from SegNeigh import SegNeigh
@@ -6,7 +6,7 @@ from functions import greater_than, truefalse
 
 def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", shape=1):
     """
-    data_input(data, method, pen_value, costfunc, minseglen, Q, var=0, shape=1)
+    data_input(data, method, pen_value, minseglen, Q, var, costfunc, shape)
 
     Description
     -----------
@@ -33,17 +33,20 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
         mu = var
     else:
         mu = mean(data)
+    n = size(data)
     if method == "PELT":
         out = PELT(data = data, pen = pen_value, minseglen = minseglen, costfunc = costfunc, mu = mu)
         cpts = out[1]
+
     elif method == "BinSeg":
         out = BinSeg(data = data, Q = Q, pen = pen_value, mu = mu, costfunc = costfunc)
         cpts = out[1]
-        n = size(data)
         if out[1] == [0]:
             cpts = n
         else:
-            cpts = append(sorted(out[0][0,list(range(0,int(out[1][0])))]),n)
+            cpts = append(sorted(out[0][0,subtract(array(range(1,int(out[1][0]+1))),1)]),n)
+        out = list((out[0], cpts, out[1], out[2]))
+
     elif method == "SegNeigh":
         out = SegNeigh(data = data, Q = Q, pen = pen_value, mu = mu, costfunc = costfunc)
         n = size(data)
@@ -52,4 +55,5 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
         else:
             variable = [x for x in out[0][out[2],:] if x != None]
             cpts = append(sorted(truefalse(variable,greater_than(out[0][out[2],:],0))),n)
+            #out = list((out[0], cpts, out[1], out[2]))
     return(out)

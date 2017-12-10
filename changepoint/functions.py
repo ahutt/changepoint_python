@@ -27,9 +27,9 @@ def checkData(data):
     ---------
     Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
-    if isinstance(data, (int, float, list)) == False:
-        exit("Only numeric data allowed.")
     for i in data:
+        if type(i) == str:
+            exit("Only numeric data allowed.")
         if i == None:
             exit("Missing value: None is not allowed in the data as changepoint methods are only sensible for regularly spaced data.")
 
@@ -597,12 +597,12 @@ def truefalse(a,b):
     Alix Hutt
     """
     if size(a) == 1 and size(b) == 1:
-        if b == True:
+        if b == True or b == [True]:
             return(a)
         else:
             return([])
     elif len(a) > 1 and size(b) == 1:
-        if b == True:
+        if b == True or b == [True]:
             return(a)
         else:
             return([])

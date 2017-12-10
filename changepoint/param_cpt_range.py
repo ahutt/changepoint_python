@@ -106,7 +106,7 @@ def param_mean(object, cpts):
     data = array(data_set(object))
     tmpmean = [None] * nseg
     for j in range(1, nseg+1):
-        tmpmean[j-1] = mean(data[list(range(cpts[j-1]+1,cpts[j]))])
+        tmpmean[j-1] = mean(data[list(range(int(cpts[j-1])+1,int(cpts[j])))])
     return(tmpmean)
 
 def param_var(object, cpts):

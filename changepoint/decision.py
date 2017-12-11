@@ -103,5 +103,4 @@ def decision(tau, null, alt = None, penalty = "MBIC", n = 0, diffparam = 1, pen_
         out = [None] * rep
         for i in range(1,rep+1):
             out[i-1] = single_decision(tau = tau[i-1], null = null[i-1], alt=alt[i-1], n=n, diffparam=diffparam,pen_value=pen_value)
-        out.cpt = out
         return(list((out,pen)))

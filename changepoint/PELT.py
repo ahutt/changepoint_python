@@ -141,7 +141,7 @@ def PELT_mean_norm(data, pen=0, minseglen=1, nprune = False):
             last = lastchangecpts[last-1,0]
             fcpt = [x for x in fcpt if x != None]
         cpt = sorted(fcpt)
-        return(cpt)
+        return(transpose(cpt))
 
 def mll_meanvar_EFK(x2,x,n):
     """

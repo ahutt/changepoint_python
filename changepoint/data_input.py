@@ -40,12 +40,12 @@ def data_input(data, method, pen_value, minseglen, Q, var=0, costfunc="None", sh
 
     elif method == "BinSeg":
         out = BinSeg(data = data, Q = Q, pen = pen_value, mu = mu, costfunc = costfunc)
-        cpts = out[1]
-        if out[1] == [0]:
-            cpts = n
-        else:
-            cpts = append(sorted(out[0][0,subtract(array(range(1,int(out[1][0]+1))),1)]),n)
-        out = list((out[0], cpts, out[1], out[2]))
+        #cpts = out[1]
+        #if out[2] == [0]:
+            #cpts = n
+        #else:
+            #cpts = append(sorted(out[0][0,subtract(array(range(1,int(out[1][0]+1))),1)]),n)
+            #out = list((out[0], cpts, out[2], out[3]))
 
     elif method == "SegNeigh":
         out = SegNeigh(data = data, Q = Q, pen = pen_value, mu = mu, costfunc = costfunc)

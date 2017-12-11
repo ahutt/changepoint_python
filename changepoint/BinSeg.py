@@ -1,5 +1,5 @@
 from numpy import log, pi, size, cumsum, square, subtract, full, repeat, multiply, add, divide, power, append, float64, mean
-from functions import truefalse2, less_than_equal, greater_than_equal, which_max, which_element
+from functions import truefalse2, less_than_equal, greater_than_equal, which_max, which_element, twoD_to_oneD
 from sys import exit
 
 def mll_var(x,n):
@@ -101,9 +101,13 @@ def binseg_mean_norm(data, Q = 5, pen = 0):
             op_cps = 0
         else:
             op_cps = append(op_cps, max(which_element(criterion,True)))
+            op_cps = [x for x in op_cps if x != None]
+            if size(op_cps) == 1:
+                op_cps = twoD_to_oneD(op_cps) #reference function
     cps = cpt
-    op_cpts = [x for x in op_cps if x != None]
-    return(list((cps, op_cpts, pen)))
+    cpts = sorted(cpt[0,subtract(range(1,op_cps+1),1)])
+    op_cpts = op_cps
+    return(list((cps, cpts, op_cpts, pen)))
 
 def mll_meanvar(x2,x,n):
     """

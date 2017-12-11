@@ -670,6 +670,7 @@ def twoD_to_oneD(list):
     -----
     PELT_meanvar_norm
     PELT_mean_norm
+    binseg_mean_norm
 
     Author(s)
     ---------

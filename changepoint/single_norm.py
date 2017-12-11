@@ -1,4 +1,4 @@
-from numpy import cumsum, square, shape, full, transpose, size, log, exp, sqrt, pi, vstack, repeat, append, add, subtract, divide, seterr, mean
+from numpy import cumsum, square, shape, full, transpose, size, log, exp, sqrt, pi, vstack, repeat, append, add, subtract, divide, seterr, mean, array, multiply
 from penalty_decision import penalty_decision
 from decision import decision
 from math import gamma
@@ -268,18 +268,21 @@ def single_var_norm_calc(data, mu, minseglen, extrainf = True):
     PLEASE ENTER DETAILS
     """
     n = size(data)
-    y = append([0], cumsum(square(subtract(data,mu))))
+    if mu == None:
+        y = append([0], cumsum(square(subtract(data,0))))
+    else:
+        y = append([0], cumsum(square(subtract(data,mu))))
     null = n * log(y[n]/n)
-    taustar = list(range(minseglen, n - minseglen + 2))
+    taustar = array(range(minseglen, n - minseglen + 2))
     sigma1 = y[taustar]/taustar
     neg = less_than_equal(sigma1,0)
     neg = [x for x in neg if x is True]
     sigma1[neg] = 1 * ((10) ** (-10))
-    sigman = (y[n] - y[taustar])/(n - taustar)
+    sigman = divide(subtract(y[n],y[taustar]),subtract(n,taustar))
     neg = less_than_equal(sigman, 0)
     neg = [x for x in neg if x is True]
     sigman[neg] = 1 * (10 ** (-10))
-    tmp = taustar * log(sigma1) + (n - taustar) * log(sigman)
+    tmp = add(multiply(taustar,log(sigma1)),multiply(subtract(n,taustar),log(sigman)))
 
     tau = which_element(tmp,min(tmp))[0]
     taulike = tmp[tau-1]
@@ -345,7 +348,8 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
     if shape1 == None:
         #single dataset
         n = size(data)
-        mu = mu[0]
+        if mu != None:
+            mu = mu[0]
     else:
         n = shape(data)[1]
     if n < 4:
@@ -365,9 +369,9 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
         tmp = single_var_norm_calc(data, mu, minseglen, extrainf = True)
         if penalty == "MBIC":
             tmp[2] = tmp[2] + log(tmp[0]) + log(n - tmp[0] + 1)
-        ans = decision(tmp[0], tmp[1], tmp[2], penalty, n, pen_value, diffparam = 1)
+        ans = decision(tau=tmp[0], null=tmp[1], alt=tmp[2], penalty=penalty, n=n, pen_value=pen_value, diffparam = 1)
         if Class == True:
-            out = class_input(data = data, cpttype = "variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = append(0, ans.cpt))
+            out = class_input(data = data, cpttype = "variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = pen_value, minseglen = minseglen, param_estimates = param_estimates, out = append(0, ans[0]))
             out.param_est = append(out.param_est, mu)
             return(out)
         else:
@@ -433,16 +437,16 @@ def singledim2(data, minseglen, extrainf = True):
     y = append(0, cumsum(data))
     y2 = append(0, cumsum(square(data)))
     null = n * log((y2[n] - (y[n] ** 2/n))/n)
-    taustar = list(range(minseglen, n - minseglen + 2))
+    taustar = array(range(minseglen, n - minseglen + 2))
     sigma1 = ((y2[taustar] - ((y[taustar] ** 2)/taustar))/taustar)
     neg = less_than_equal(sigma1, 0)
     neg = [x for x in neg if x is True]
     sigma1[neg] = 1 * (10 ** (-10))
-    sigman = ((y2[n] - y2[taustar]) - (((y[n] - y[taustar]) ** 2)/(n - taustar)))/(n - taustar)
+    sigman = divide(subtract((y2[n]-y2[taustar-1]),divide(square(y[n]-y[taustar])),subtract(n,taustar)),subtract(n,taustar))
     neg = less_than_equal(sigman, 0)
     neg = [x for x in neg if x is True]
     sigman[neg] = 1 * (10 ** (-10))
-    tmp = taustar * log(sigma1) + (n - taustar) * log(sigman)
+    tmp = add(multiply(taustar,log(sigma1)),multiply(subtract(n,taustar),log(sigman)))
 
     tau = which_element(tmp,min(tmp))[0]
     taulike = tmp[tau-1]

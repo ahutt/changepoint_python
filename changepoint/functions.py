@@ -343,9 +343,8 @@ def greater_than(a,b):
     else:
         l = []
         for i in a:
-            NoneType = type(None)
-            if isinstance(i,NoneType)==True:
-                c=None
+            if i is None:
+                c = None
             else:
                 if i > b:
                     c = True

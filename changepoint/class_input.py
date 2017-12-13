@@ -187,7 +187,10 @@ def class_input(data, cpttype, method, test_stat, penalty, pen_value, minseglen,
 
     elif method == "SegNeigh":
         ans.cpts_full = delete(out[0],(0), axis=0)
-        ans.pen_value_full = multiply(diff(out[5]), -1)
+        if ndim(out[5]) == 0:
+            ans.pen_value_full = multiply(diff([out[5]]), -1)
+        else:
+            ans.pen_value_full = multiply(diff(out[5]), -1)
 
     elif penalty == "CROPS":
         m = transpose(sapply(out[1], list(range(1,max(sapply(out[1], len)) + 1))))

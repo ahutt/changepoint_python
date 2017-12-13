@@ -1,4 +1,4 @@
-from numpy import append, mean, subtract, delete, var, power, multiply, divide, add, cumsum, transpose, vstack, array, size, full
+from numpy import append, mean, subtract, delete, var, power, multiply, divide, add, cumsum, transpose, vstack, array, size, full, int8
 from sys import exit
 
 def cpts(object):
@@ -177,8 +177,10 @@ def param_var(object):
     data = object.data_set
     seglen = seg_len(object)
     tmpvar = [None] * nseg(object)
+    tmpvar = array(tmpvar)
+    data1 = array(data)
     for j in range(1, nseg(object)+1):
-        tmpvar[j-1] = var(data[subtract(list(range(cpts[j-1]+1,cpts[j])),1)])
+        tmpvar[j-1] = var(data1[int8(subtract(range(int(cpts[j-1])+1,int(cpts[j])+1),1))])
     tmpvar = multiply(tmpvar,divide(subtract(seglen,1),seglen))
     return(tmpvar)
 
@@ -337,21 +339,21 @@ def param(object, shape = None):
         object.param_est = list(variance)
     elif cpttype(object) == "mean and variance":
         if test_stat(object) == "Normal":
-            mean = param_mean(mean)
-            variance = param_var(variance)
-            object.param_est = list(mean,variance)
+            mean = param_mean(object)
+            variance = param_var(object)
+            object.param_est = list((mean,variance))
         elif test_stat(object) == "Gamma":
             scale = param_scale(object,shape = shape)
             if shape != None:
-                object.param_est == list(scale, shape)
+                object.param_est == list((scale, shape))
             else:
-                object.param_est == list(scale)
+                object.param_est == list((scale))
         elif test_stat(object) == "Exponential":
             rate = divide(1,param_mean(object))
-            object.param_est = list(rate)
+            object.param_est = list((rate))
         elif test_stat == "Poisson":
             Lambda = param_mean(object)
-            object.param_est = list(Lambda)
+            object.param_est = list((Lambda))
         else:
             exit("Unknown test statistic for a change in mean and variance.")
     elif cpttype(object) == "trend":
@@ -359,7 +361,7 @@ def param(object, shape = None):
             tmp = param_trend(object)
             thetaS = tmp[:,0]
             thetaT = tmp[:,1]
-            object.param_est = list(thetaS,thetaT)
+            object.param_est = list((thetaS,thetaT))
         else:
             exit("Unknown test statistic for a change in trend.")
     elif cpttype(object) == "trendar":
@@ -368,7 +370,7 @@ def param(object, shape = None):
             beta = tmp[:,0]
             thetajpo = tmp[:,1]
             thetaj = tmp[:,2]
-            object.param_est = list(beta, thetajpo, thetaj)
+            object.param_est = list((beta, thetajpo, thetaj))
         else:
             exit("Unknown test statistic for a change in trendar.")
     elif cpttype(object) == "meanar":
@@ -376,7 +378,7 @@ def param(object, shape = None):
             tmp = param_meanar(object)
             beta1 = tmp[:,0]
             beta2 = tmp[:,1]
-            object.param_est = list(beta1,beta2)
+            object.param_est = list((beta1,beta2))
         else:
             exit("Unknown test statistic for a change in meanar.")
     else:

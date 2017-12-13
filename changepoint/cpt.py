@@ -198,6 +198,9 @@ def cpt_var(data, penalty = "MBIC", pen_value = 0, know_mean = False, mu = None,
             return(single_var_norm(data = data, penalty = penalty, pen_value = pen_value, know_mean = know_mean, mu = mu, Class = Class, param_estimates = param_estimates, minseglen = minseglen))
         elif method == "PELT" or method == "BinSeg":
             return(multiple_var_norm(data = data, penalty = penalty, pen_value = pen_value, Q = Q, know_mean = know_mean, mu = mu, Class = Class, param_estimates = param_estimates, minseglen = minseglen, mul_method = method))
+        elif method == "SegNeigh":
+            warn("SegNeigh is computationally slow, use PELT instead")
+            return(multiple_var_norm(data=data,mul_method=method, penalty=penalty, pen_value=pen_value, Q=Q, know_mean=know_mean, mu =mu, Class=Class, param_estimates=param_estimates, minseglen=minseglen))
         else:
             exit("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
     elif test_stat == "CSS":

@@ -442,7 +442,7 @@ def singledim2(data, minseglen, extrainf = True):
     neg = less_than_equal(sigma1, 0)
     neg = [x for x in neg if x is True]
     sigma1[neg] = 1 * (10 ** (-10))
-    sigman = divide(subtract((y2[n]-y2[taustar-1]),divide(square(y[n]-y[taustar])),subtract(n,taustar)),subtract(n,taustar))
+    sigman = divide(subtract((y2[n]-y2[taustar-1]),divide(square(y[n]-y[taustar]),subtract(n,taustar))),subtract(n,taustar))
     neg = less_than_equal(sigman, 0)
     neg = [x for x in neg if x is True]
     sigman[neg] = 1 * (10 ** (-10))
@@ -600,7 +600,7 @@ def single_meanvar_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class 
             tmp[2] = tmp[2] + log(tmp[0]) + log(n - tmp[0] + 1)
         ans = decision(tau=tmp[0], null=tmp[1], alt=tmp[2], penalty=penalty, n=n, pen_value=pen_value, diffparam = 2)
         if Class == True:
-            return(class_input(data = data, cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = append(0, ans.cpt)))
+            return(class_input(data = data, cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans[1], minseglen = minseglen, param_estimates = param_estimates, out = append(0, ans[0])))
         else:
             alogn = sqrt(2 * log(log(n)))
             blogn = 2 * log(log(n)) + log(log(log(n)))
@@ -612,7 +612,7 @@ def single_meanvar_norm(data, minseglen, penalty = "MBIC", pen_value = 0, Class 
             rep = shape(data)[0]
             out = [None] * rep
             for i in range(1, rep+1):
-                out[i-1] = class_input(data=data[i-1,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans.pen, minseglen = minseglen, param_estimates = param_estimates, out = append(0,ans.cpt[i-1]))
+                out[i-1] = class_input(data=data[i-1,:], cpttype = "mean and variance", method = "AMOC", test_stat = "Normal", penalty = penalty, pen_value = ans[1], minseglen = minseglen, param_estimates = param_estimates, out = append(0,ans.cpt[i-1]))
             return(out)
         else:
             alogn = sqrt(2 * log(log(n)))

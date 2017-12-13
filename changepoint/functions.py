@@ -630,6 +630,8 @@ def truefalse2(a,b,c):
     -------
     mll_meanvar_EFK
     mll_meanvar
+    mll_var_EFK
+    mll_var
 
     Usage
     -----

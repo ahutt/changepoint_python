@@ -1,4 +1,4 @@
-from numpy import repeat, shape, size, mean, append
+from numpy import repeat, shape, size, mean, append, ndim
 from functions import lapply,second_element
 from penalty_decision import penalty_decision
 from data_input import data_input
@@ -85,7 +85,10 @@ def multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0
     if shape1 == None:
         #single dataset
         n = size(data)
-        mu = mu[0]
+        if ndim(mu)==0:
+            mu = mu
+        else:
+            mu = mu[0]
     else:
         n = shape(data)[1]
     if n < 4:
@@ -99,7 +102,7 @@ def multiple_var_norm(data, mul_method = "PELT", penalty = "MBIC", pen_value = 0
         shape1 = None
     if shape1 == None:
             #single dataset
-        if know_mean == False and isinstance(mu, None)==True:
+        if know_mean == False and mu == None:
             mu = mean(data)
         out = data_input(data = data, method = mul_method, pen_value = pen_value, costfunc = costfunc, minseglen = minseglen, Q = Q, var = mu)
         if Class == True:

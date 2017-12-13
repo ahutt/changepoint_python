@@ -20,23 +20,25 @@ def cpts(object):
     ---------
     Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
-    if isinstance(object.cpts, (float, int)) == True:
-        return([])
-    else:
-        a = subtract(delete(object.cpts, size(object.cpts)-1),1)
-        if isinstance(a, list) == True:
-            return(object.cpts[a])
-        else:
-            if a >= 0:
-                return(object.cpts[a])
-            else:
-                a = -a
-                b = delete(object.cpts, a)
-                if len(b) == 1:
-                    b = int(b)
-                    return(object.cpts[b])
-                else:
-                    return(object.cpts[b])
+    length=size(object.cpts)-1
+    return(delete(object.cpts,length))
+#    if isinstance(object.cpts, (float, int)) == True:
+#        return([])
+#    else:
+#        a = subtract(delete(object.cpts, size(object.cpts)-1),1)
+#        if isinstance(a, list) == True:
+#            return(object.cpts[a])
+#        else:
+#            if a >= 0:
+#                return(object.cpts[a])
+#            else:
+#                a = -a
+#                b = delete(object.cpts, a-1)
+#                if len(b) == 1:
+#                    b = int(b)
+#                    return(object.cpts[b-1])
+#                else:
+#                    return(object.cpts[b-1])
 
 def seg_len(object):
     """
@@ -76,7 +78,7 @@ def ncpts(object):
     ---------
     Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
-    return(cpts(object))
+    return(size(cpts(object)))
 
 def nseg(object):
     """
@@ -174,12 +176,13 @@ def param_var(object):
     Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
     cpts = append([0], object.cpts)
-    data = object.data_set
+    nseg = len(cpts)-1
+    data = array(object.data_set)
     seglen = seg_len(object)
-    tmpvar = [None] * nseg(object)
+    tmpvar = [None] * nseg
     tmpvar = array(tmpvar)
     data1 = array(data)
-    for j in range(1, nseg(object)+1):
+    for j in range(1, nseg+1):
         tmpvar[j-1] = var(data1[int8(subtract(range(int(cpts[j-1])+1,int(cpts[j])+1),1))])
     tmpvar = multiply(tmpvar,divide(subtract(seglen,1),seglen))
     return(tmpvar)

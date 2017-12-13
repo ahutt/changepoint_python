@@ -1,5 +1,4 @@
 from numpy import pi, size, cumsum, square, subtract, add, log, append, full, array, multiply, power, ndim, divide, transpose, mean
-#from statistics import mean
 from functions import compare, truefalse, twoD_to_oneD, truefalse2, less_than_equal
 from _warnings import warn
 from sys import exit
@@ -9,7 +8,7 @@ def mll_var_EFK(x,n):
     PLEASE ENTER DETAILS
     """
     neg = less_than_equal(x,0)
-    x = [0.00000000001 if i == True else i for i in neg]
+    x = truefalse2(x,neg,0.00000000001)
     output = n*(add(log(2*pi)+1,log(divide(x,n))))
     return(output)
 
@@ -42,10 +41,11 @@ def PELT_var_norm(data, pen=0, minseglen=1, know_mean=False, mu=None, nprune=Fal
     lastchangecpts[2,:] = [0,3]
     checklist = None
     noprune = None
-    for tstar in range(1,n+1):
+
+    for tstar in range(4,n+1):
         tmpt = append(checklist,tstar-2)
         tmpt = [x for x in tmpt if x != None]
-        tmplike = lastchangelike[tmpt-1,0] + mll_var_EFK(y2[tstar]-y2[tmpt],tstar-tmpt)+pen
+        tmplike = add(add(lastchangelike[subtract(tmpt,1),0],mll_var_EFK(y2[tstar]-y2[tmpt],subtract(tstar,tmpt))),pen)
         if tstar == n:
             lastchangelike[tstar-1,:] = append(min(append(tmplike, mll_var_EFK(y2[tstar]-y2[0],tstar))),0)
         else:
@@ -70,7 +70,7 @@ def PELT_var_norm(data, pen=0, minseglen=1, know_mean=False, mu=None, nprune=Fal
             fcpt = append(fcpt, lastchangecpts[last-1,1])
             fcpt = [x for x in fcpt if x != None]
             last = lastchangecpts[last-1,0]
-        cpt = sorted(fcpt)
+        cpt = transpose(sorted(fcpt))
         return(cpt)
 
 def mll_mean_EFK(x2,x,n):

@@ -364,7 +364,7 @@ def single_var_norm(data, minseglen, penalty = "MBIC", pen_value = 0, know_mean 
     except IndexError:
         shape1 = None
     if shape1 == None:
-        if know_mean == False and mu == False:
+        if know_mean == False and mu == None:
             mu = mean(data)
         tmp = single_var_norm_calc(data, mu, minseglen, extrainf = True)
         if penalty == "MBIC":

@@ -125,12 +125,14 @@ def param_var(object, cpts):
     ---------
     Alix Hutt with credit to Rebecca Killick for her work on the R package 'changepoint'.
     """
-    nseg = len(cpts)
+    nseg = len(cpts) - 1
     data = data_set(object)
     seglen = seg_len(object)
     tmpvar = [None] * nseg
+    tmpvar = array(tmpvar)
+    data1 = array(data)
     for j in range(1,nseg+1):
-        tmpvar[j-1] = var(data[list(range(cpts[j-1]+1,cpts[j]))])
+        tmpvar[j-1] = var(data1[array(range(cpts[j-1]+1,cpts[j]+1))])
     tmpvar = divide(multiply(tmpvar,subtract(seglen,1)),seglen)
     return(tmpvar)
 

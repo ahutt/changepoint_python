@@ -1,4 +1,4 @@
-from numpy import log, pi, size, cumsum, square, subtract, full, repeat, multiply, add, divide, power, append, float64, mean
+from numpy import log, pi, size, cumsum, array, square, subtract, full, repeat, multiply, add, divide, power, append, float64, mean
 from functions import truefalse2, less_than_equal, greater_than_equal, which_max, which_element, twoD_to_oneD
 from sys import exit
 
@@ -7,8 +7,8 @@ def mll_var(x,n):
     PLEASE ENTER DETAILS
     """
     neg = less_than_equal(x,0)
-    x = [0.00000000001 if i == True else i for i in neg]
-    output = multiply(-0.5,multiply(n,add(log(2 * pi),add(log(x/n),1))))
+    x = truefalse2(x,neg,0.00000000001)
+    output = multiply(-0.5,multiply(n,add(log(2 * pi),add(log(divide(x,n)),1))))
     return(output)
 
 def binseg_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
@@ -24,7 +24,7 @@ def binseg_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
     oldmax = 1000
 
     for q in range(1,Q+1):
-        Lambda = repeat(0, n - 1)
+        Lambda = repeat(0.0, n - 1)
         i = 1
         st = tau[0] + 1
         end = tau[1]
@@ -36,8 +36,9 @@ def binseg_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
                 end = tau[i]
                 null = mll_var(y2[end] - y2[st - 1], end - st + 1)
             else:
-                Lambda[j-1] = mll_var(y2[j] - y2[st - 1], j - st + 1) + mll_var(y2[end] - y2[j], end - j) - null
-        k = which_max(Lambda)[0]
+                Lambda[j-1] = mll_var(y2[j]-y2[st-1],j-st+1)+mll_var(y2[end]-y2[j],end-j)-null
+        Lambda1 = array(Lambda)
+        k = which_max(Lambda1)[0] + 1
         cpt[0,q-1] = k
         cpt[1,q-1] = min(oldmax, max(Lambda))
         oldmax = min(oldmax, max(Lambda))
@@ -45,6 +46,8 @@ def binseg_var_norm(data, Q = 5, pen = 0, know_mean = False, mu = None):
     op_cps = None
     p = range(1,Q)
     for i in range(1, size(pen)+1):
+        if isinstance(pen,list)==False:
+            pen = [pen]
         criterion = greater_than_equal((2 * cpt[1,:]),pen[i-1])
         if sum(criterion) == 0:
             op_cps = 0
